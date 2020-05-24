@@ -9,6 +9,9 @@
 
 	font-size: 1em;
 }
+*::selection {
+	background-color: $select-color;
+}
 html {
 	background-color: $background-color;
 	color: $text-color;
