@@ -63,16 +63,22 @@ export default Vue.extend({
 .numbercounter-leave-to {
 	opacity: 0;
 	top: 0 !important;
-	// transform: translateX(-1em);
 }
 .numbercounter {
 	position: relative;
 	font-size: 2em;
 	height: 1.5em;
-	width: 100%;
 
-	overflow: hidden;
+    overflow: hidden;
+
 	display: inline-block;
+	mask-image: linear-gradient(
+		0deg,
+		rgba(255, 255, 255, 0) 0%,
+		rgba(0, 0, 0, 1) 25%,
+		rgba(0, 0, 0, 1) 75%,
+		rgba(255, 255, 255, 0) 100%
+	);
 	-webkit-mask-image: linear-gradient(
 		0deg,
 		rgba(255, 255, 255, 0) 0%,
