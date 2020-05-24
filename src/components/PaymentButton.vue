@@ -1,0 +1,30 @@
+<template>
+	<button class="paymentbtn">
+		<h2 class="paymentbtn__title">Sunrin Pay 결제</h2>
+		<p class="paymentbtn__content">pay 호환</p>
+	</button>
+</template>
+
+<script lang="ts">
+import Vue from "vue";
+export default Vue.extend({});
+</script>
+
+<style lang="scss" scoped>
+.paymentbtn {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    
+	font-size: 2.2em;
+	.paymentbtn__title {
+		font-weight: bold;
+		word-break: keep-all;
+	}
+	.paymentbtn__content {
+		font-size: 0.6em;
+		word-break: keep-all;
+	}
+}
+</style>

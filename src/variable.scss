@@ -1,0 +1,16 @@
+$primary-color: #36afff;
+
+$background-color: white;
+$disable-color: #585858;
+$text-color: black;
+$gray-text-color: #707070;
+$select-color: #e9e9e9;
+
+// dark mode
+@media (prefers-color-scheme: dark) {
+	$background-color: #373737 !global;
+	$disable-color: #aeaeae !global;
+	$text-color: white !global;
+	$gray-text-color: #979797 !global;
+	$select-color: #5a5a5a !global;
+}

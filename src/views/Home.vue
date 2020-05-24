@@ -1,6 +1,11 @@
 <template>
 	<div class="home">
-		SUNRIN PAY
+		<h1>Developer page</h1>
+		<router-link to="simplemode">simplemode</router-link><br />
+		<router-link to="detailsmode">detailsmode</router-link><br />
+		<router-link to="payment">payment</router-link><br />
+		<router-link to="payment-clear">payment-clear</router-link><br />
+		<router-link to="payment-errlr">payment-error</router-link><br />
 	</div>
 </template>
 
