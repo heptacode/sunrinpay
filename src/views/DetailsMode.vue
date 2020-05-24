@@ -80,16 +80,20 @@ export default Vue.extend({
 			}
 			.detailsmode__content__prices__item {
 				color: $gray-text-color;
-				font-size: 1.5rem;
+				p {
+					font-size: $small-normal-size;
+				}
 				h2 {
-					font-size: 1.8rem;
+					font-size: $small-large-size;
 				}
 			}
 			.detailsmode__content__prices__item.total {
 				color: $text-color;
-				font-size: 2rem;
+				p {
+					font-size: $normal-size;
+				}
 				h2 {
-					font-size: 2.5rem;
+					font-size: $large-size;
 				}
 			}
 		}
@@ -98,7 +102,7 @@ export default Vue.extend({
 			margin-left: 20px;
 			overflow-y: scroll;
 			.detailsmode__content__list__item {
-				font-size: 1.5rem;
+				font-size: $small-normal-size;
 				width: 100%;
 
 				padding: 10px;
@@ -186,10 +190,11 @@ export default Vue.extend({
 					display: flex;
 					justify-content: space-between;
 					align-items: center;
-
-					font-size: 1.1rem;
+					p {
+						font-size: $small-size;
+					}
 					h2 {
-						font-size: 1.5rem;
+						font-size: $small-normal-size;
 					}
 					width: 100%;
 					text-align: center;

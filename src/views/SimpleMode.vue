@@ -37,13 +37,15 @@ export default Vue.extend({
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		font-size: 2.2rem;
+		p {
+			font-size: $normal-size;
+		}
 		h2 {
-			font-size: 2.6rem;
+			font-size: $large-size;
 		}
 	}
 	.simplemode__content2 {
-		font-size: 2.2rem;
+		font-size: $normal-size;
 	}
 	.simplemode__actions {
 		width: 90%;

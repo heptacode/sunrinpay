@@ -19,6 +19,8 @@ html {
 	bottom: 0;
 
 	font-size: 24px;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
 }
 body {
 	width: 100%;

@@ -5,7 +5,7 @@
 		<router-link to="detailsmode">detailsmode</router-link><br />
 		<router-link to="payment">payment</router-link><br />
 		<router-link to="payment-clear">payment-clear</router-link><br />
-		<router-link to="payment-errlr">payment-error</router-link><br />
+		<router-link to="payment-error">payment-error</router-link><br />
 	</div>
 </template>
 

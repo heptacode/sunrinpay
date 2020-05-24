@@ -18,7 +18,7 @@ export default Vue.extend({});
 	align-items: center;
 
 	background-color: $disable-color;
-	font-size: 2.2em;
+	font-size: $normal-size;
 	.cashbtn__title {
 		font-weight: bold;
 		word-break: keep-all;

@@ -17,7 +17,7 @@ export default Vue.extend({});
     justify-content: center;
     align-items: center;
     
-	font-size: 2.2em;
+	font-size: $normal-size;
 	.paymentbtn__title {
 		font-weight: bold;
 		word-break: keep-all;
