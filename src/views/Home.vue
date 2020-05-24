@@ -6,12 +6,24 @@
 		<router-link to="payment">payment</router-link><br />
 		<router-link to="payment-clear">payment-clear</router-link><br />
 		<router-link to="payment-error">payment-error</router-link><br />
+		<NumberCounter :number="Number(n)"></NumberCounter>
+		<input type="number" v-model="n" />
 	</div>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
-export default Vue.extend({});
+import NumberCounterVue from "../components/NumberCounter.vue";
+export default Vue.extend({
+	data() {
+		return {
+			n: 10,
+		};
+	},
+	components: {
+		NumberCounter: NumberCounterVue,
+	},
+});
 </script>
 
 <style lang="scss" scoped></style>
