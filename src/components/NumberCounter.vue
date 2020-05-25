@@ -3,11 +3,12 @@
 		<span
 			v-for="(i, idx) in getNumberString"
 			:key="getIndex(i,idx)"
-			:class="{'numbercounter__digits':i!=',','numbercounter__digits__ap':i==','}"
-			:style="{ top: i != ',' ? `-${i * 100}%` : `0%`}"
+			class="numbercounter__digits"
+			:class="{'no-transition':isNaN(i)}"
+			:style="{ top: !isNaN(i) ? `-${i * 100}%` : `0%`}"
 		>
-			<span v-for="n in  i != ',' ? 10 : 0" :key="n">{{ n - 1 }}</span>
-			<span v-if="i==','">,</span>
+			<span v-for="n in  (!isNaN(i) ? 10 : 0)" :key="n">{{ n - 1 }}</span>
+			<span v-if="isNaN(i)">{{i}}</span>
 		</span>
 	</transition-group>
 </template>
@@ -55,13 +56,13 @@ export default Vue.extend({
 <style lang="scss" scoped>
 .numbercounter-leave-active,
 .numbercounter-enter-active {
-	transition: 1s;
+	transition: top 0.75s, opacity 0.75s;
 }
 .numbercounter-leave-active {
 	position: absolute !important;
 }
 .numbercounter-move {
-	transition: 1s;
+	transition: 0.75s;
 }
 .numbercounter-enter {
 	opacity: 0;
@@ -100,14 +101,17 @@ export default Vue.extend({
 	);
 	.numbercounter__digits {
 		height: 15em;
-		transition: 1s;
+		transition: top 0.75s, opacity 0.75s;
 		position: relative;
 		display: inline-flex;
 		flex-direction: column;
 		span {
-            flex: 1;
+			flex: 1;
 			white-space: nowrap;
 			line-height: 1.5em;
+		}
+		&.no-transition {
+			transition: none !important;
 		}
 	}
 }

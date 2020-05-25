@@ -3,8 +3,14 @@
 		<QRcode class="payment__qrcode" data="https://github.com/"></QRcode>
 		<div class="payment__content">
 			<h2>Sunrin Pay 결제</h2>
-			<p>QR 코드를 통해 접속하여,<br />결제를 진행해주세요.</p>
-			<p class="payment__content__expirationtime">2:55</p>
+			<p>
+				QR 코드를 통해 접속하여,
+				<br />결제를 진행해주세요.
+			</p>
+			<p class="payment__content__expirationtime">
+				<NumberCounter :number="getMinute"></NumberCounter>:
+				<NumberCounter :number="getSecond"></NumberCounter>
+			</p>
 		</div>
 		<div class="payment__actions">
 			<div class="payment__actions__btn">
@@ -22,10 +28,30 @@
 <script lang="ts">
 import Vue from "vue";
 import QRcodeVue from "../components/QRcode.vue";
+import NumberCounterVue from "../components/NumberCounter.vue";
 export default Vue.extend({
 	components: {
 		QRcode: QRcodeVue,
+		NumberCounter: NumberCounterVue
 	},
+	data() {
+		return {
+			time: 180
+		};
+	},
+	mounted() {
+		setInterval(() => {
+			this.time--;
+		}, 1000);
+	},
+	computed: {
+		getSecond(): number {
+			return this.time % 60;
+		},
+		getMinute(): number {
+			return Math.floor(this.time / 60);
+		}
+	}
 });
 </script>
 
