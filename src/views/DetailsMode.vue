@@ -4,23 +4,25 @@
 			<ul class="detailsmode__content__prices">
 				<div class="detailsmode__content__prices__item">
 					<p>금액</p>
-					<h2>25,955원</h2>
+					<h2>
+						<NumberCounter :number="12900"></NumberCounter>원
+					</h2>
 				</div>
 				<div class="detailsmode__content__prices__item">
 					<p>할인된 금액</p>
-					<h2>-300원</h2>
+					<h2>
+						<NumberCounter :number="900"></NumberCounter>원
+					</h2>
 				</div>
 				<div class="detailsmode__content__prices__item total">
 					<p>결제하실 금액</p>
-					<h2>25,955원</h2>
+					<h2>
+						<NumberCounter :number="12000"></NumberCounter>원
+					</h2>
 				</div>
 			</ul>
 			<ul class="detailsmode__content__list">
-				<li
-					class="detailsmode__content__list__item"
-					v-for="idx in 10"
-					:key="idx"
-				>
+				<li class="detailsmode__content__list__item" v-for="idx in 10" :key="idx">
 					<p class="name">(빙그레)메로나메론맛</p>
 					<p class="count">×1</p>
 					<p class="price">14,700원</p>
@@ -38,12 +40,14 @@
 import Vue from "vue";
 import PaymentButtonVue from "../components/PaymentButton.vue";
 import CashButtonVue from "../components/CashButton.vue";
+import NumberCounterVue from "../components/NumberCounter.vue";
 
 export default Vue.extend({
 	components: {
 		PaymentButton: PaymentButtonVue,
 		CashButton: CashButtonVue,
-	},
+		NumberCounter: NumberCounterVue
+	}
 });
 </script>
 
@@ -84,6 +88,8 @@ export default Vue.extend({
 					font-size: $small-normal-size;
 				}
 				h2 {
+					display: flex;
+					align-items: center;
 					font-size: $small-large-size;
 				}
 			}

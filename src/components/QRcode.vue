@@ -37,7 +37,6 @@ export default Vue.extend({
 		QRgenerate(): void {
 			QRCode.toDataURL(this.data, this.options, (err, url) => {
 				this.qrdata = url;
-				console.log(err, url);
 			});
 		},
 	},

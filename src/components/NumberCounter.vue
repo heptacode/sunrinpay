@@ -32,7 +32,6 @@ export default Vue.extend({
 		getIndex(n: string, idx: number): string {
 			if (n == ",") return n + idx;
 			let reg = this.getNumberString.substring(0, idx + 1).match(/,/gi);
-			console.log(idx, idx - (reg ? reg!.length : 0));
 			return (idx - (reg ? reg!.length : 0)).toString();
 		}
 	},
@@ -80,7 +79,6 @@ export default Vue.extend({
 }
 .numbercounter {
 	position: relative;
-	font-size: 2em;
 	height: 1.5em;
 
 	overflow: hidden;
@@ -101,11 +99,13 @@ export default Vue.extend({
 		rgba(255, 255, 255, 0) 100%
 	);
 	.numbercounter__digits {
+		height: 15em;
 		transition: 1s;
 		position: relative;
 		display: inline-flex;
 		flex-direction: column;
 		span {
+            flex: 1;
 			white-space: nowrap;
 			line-height: 1.5em;
 		}
