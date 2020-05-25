@@ -17,7 +17,7 @@ import NumberCounterVue from "../components/NumberCounter.vue";
 export default Vue.extend({
 	data() {
 		return {
-			n: 10,
+			n: 25565,
 		};
 	},
 	components: {

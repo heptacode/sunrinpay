@@ -2,11 +2,12 @@
 	<transition-group tag="span" name="numbercounter" class="numbercounter">
 		<span
 			v-for="(i, idx) in getNumberString"
-			:key="1 + idx"
-			class="numbercounter__digits"
-			:style="{ top: `-${i * 100}%` }"
+			:key="getIndex(i,idx)"
+			:class="{'numbercounter__digits':i!=',','numbercounter__digits__ap':i==','}"
+			:style="{ top: i != ',' ? `-${i * 100}%` : `0%`}"
 		>
-			<span v-for="n in 10" :key="n">{{ n - 1 }}</span>
+			<span v-for="n in  i != ',' ? 10 : 0" :key="n">{{ n - 1 }}</span>
+			<span v-if="i==','">,</span>
 		</span>
 	</transition-group>
 </template>
@@ -15,40 +16,53 @@
 import Vue, { PropType } from "vue";
 export default Vue.extend({
 	props: {
-		number: { type: Number as PropType<number>, default: 0 },
+		number: { type: Number as PropType<number>, default: 0 }
 	},
 	data() {
 		return {
-			isStarted: false,
+			isStarted: false
 		};
 	},
 	mounted() {
 		setTimeout(() => {
 			this.isStarted = true;
-		}, 500);
+		}, 100);
+	},
+	methods: {
+		getIndex(n: string, idx: number): string {
+			if (n == ",") return n + idx;
+			let reg = this.getNumberString.substring(0, idx + 1).match(/,/gi);
+			console.log(idx, idx - (reg ? reg!.length : 0));
+			return (idx - (reg ? reg!.length : 0)).toString();
+		}
 	},
 	computed: {
 		getNumberString(): string {
-			if (this.isStarted) return this.number.toString();
-			else
-				return [...Array(this.number.toString().length)]
-					.map(() => "0")
+			let numberFormatter = new Intl.NumberFormat();
+			if (this.isStarted) return numberFormatter.format(this.number);
+			else {
+				let zeroString = [...Array(this.number.toString().length)]
+					.map(() => "1")
 					.join("");
-		},
-	},
+				return numberFormatter
+					.format(Number(zeroString))
+					.replace(/1/gi, "0");
+			}
+		}
+	}
 });
 </script>
 
 <style lang="scss" scoped>
 .numbercounter-leave-active,
 .numbercounter-enter-active {
-	transition: 1.5s;
+	transition: 1s;
 }
 .numbercounter-leave-active {
 	position: absolute !important;
 }
 .numbercounter-move {
-	transition: 0.5s;
+	transition: 1s;
 }
 .numbercounter-enter {
 	opacity: 0;
@@ -69,7 +83,7 @@ export default Vue.extend({
 	font-size: 2em;
 	height: 1.5em;
 
-    overflow: hidden;
+	overflow: hidden;
 
 	display: inline-block;
 	mask-image: linear-gradient(
@@ -87,7 +101,7 @@ export default Vue.extend({
 		rgba(255, 255, 255, 0) 100%
 	);
 	.numbercounter__digits {
-		transition: 1.5s;
+		transition: 1s;
 		position: relative;
 		display: inline-flex;
 		flex-direction: column;
