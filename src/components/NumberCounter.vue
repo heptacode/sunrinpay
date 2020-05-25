@@ -1,13 +1,19 @@
 <template>
-	<transition-group tag="span" name="numbercounter" class="numbercounter">
+	<transition-group
+		tag="span"
+		name="numbercounter"
+		class="numbercounter"
+		:enter-class="getActiveClass+'-enter'"
+		:leave-to-class="getActiveClass+'-leave-to'"
+	>
 		<span
 			v-for="(i, idx) in getNumberString"
 			:key="getIndex(i,idx)"
 			class="numbercounter__digits"
 			:class="{'no-transition':isNaN(i)}"
-			:style="{ top: !isNaN(i) ? `-${i * 100}%` : `0%`}"
+			:style="{ top: !isNaN(i) ? `-${(direction == 'top' ? (9-i) : i) * 100}%` : `0%`}"
 		>
-			<span v-for="n in  (!isNaN(i) ? 10 : 0)" :key="n">{{ n - 1 }}</span>
+			<span v-for="n in  (!isNaN(i) ? 10 : 0)" :key="n">{{ direction == 'top' ? 10-n : n-1 }}</span>
 			<span v-if="isNaN(i)">{{i}}</span>
 		</span>
 	</transition-group>
@@ -17,7 +23,8 @@
 import Vue, { PropType } from "vue";
 export default Vue.extend({
 	props: {
-		number: { type: Number as PropType<number>, default: 0 }
+		number: { type: Number as PropType<number>, default: 0 },
+		direction: { type: String as PropType<string>, default: "top" }
 	},
 	data() {
 		return {
@@ -37,6 +44,11 @@ export default Vue.extend({
 		}
 	},
 	computed: {
+		getActiveClass() {
+			return this.direction == "top"
+				? "numbercounter-top"
+				: "numbercounter";
+		},
 		getNumberString(): string {
 			let numberFormatter = new Intl.NumberFormat();
 			if (this.isStarted) return numberFormatter.format(this.number);
@@ -66,7 +78,11 @@ export default Vue.extend({
 }
 .numbercounter-enter {
 	opacity: 0;
-	top: 0 !important;
+	top: 100% !important;
+}
+.numbercounter-top-enter {
+	opacity: 0;
+	top: -1000% !important;
 }
 .numbercounter-enter-to {
 	opacity: 1;
@@ -76,7 +92,11 @@ export default Vue.extend({
 }
 .numbercounter-leave-to {
 	opacity: 0;
-	top: 0 !important;
+	top: 100% !important;
+}
+.numbercounter-top-leave-to {
+	opacity: 0;
+	top: -1000% !important;
 }
 .numbercounter {
 	position: relative;
