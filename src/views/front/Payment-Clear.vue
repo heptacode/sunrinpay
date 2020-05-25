@@ -21,6 +21,7 @@ export default Vue.extend({});
 
 <style lang="scss" scoped>
 .paymentclear {
+	color: white;
 	padding: 50px;
 
 	display: flex;

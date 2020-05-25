@@ -2,9 +2,7 @@
 	<div class="simplemode">
 		<div class="simplemode__content">
 			<p>결제하실 금액</p>
-			<h2>
-				<NumberCounter :number="25565"></NumberCounter>원
-			</h2>
+			<h2><NumberCounter :number="25565"></NumberCounter>원</h2>
 		</div>
 		<div class="simplemode__content2">
 			<p>어떤 수단을 이용하시겠어요?</p>
@@ -18,16 +16,16 @@
 
 <script lang="ts">
 import Vue from "vue";
-import PaymentButtonVue from "../components/PaymentButton.vue";
-import CashButtonVue from "../components/CashButton.vue";
-import NumberCounterVue from "../components/NumberCounter.vue";
+import PaymentButtonVue from "@/components/PaymentButton.vue";
+import CashButtonVue from "@/components/CashButton.vue";
+import NumberCounterVue from "@/components/NumberCounter.vue";
 
 export default Vue.extend({
 	components: {
 		PaymentButton: PaymentButtonVue,
 		CashButton: CashButtonVue,
-		NumberCounter: NumberCounterVue
-	}
+		NumberCounter: NumberCounterVue,
+	},
 });
 </script>
 

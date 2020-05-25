@@ -18,6 +18,7 @@ export default Vue.extend({});
 
 <style lang="scss" scoped>
 .paymenterror {
+	color: white;
 	padding: 50px;
 
 	display: flex;

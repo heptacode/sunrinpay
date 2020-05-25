@@ -1,10 +1,11 @@
 <template>
 	<div class="barcodescanner">
 		<button @click="acceptCamera">Camera</button>
+		<div>result : {{ result }}</div>
 		<v-quagga
 			:onDetected="a"
 			:readerSize="readerSize"
-			:aspectRatio="{min:1,max:2}"
+			:aspectRatio="{ min: 1, max: 2 }"
 			:readerTypes="renderTypes"
 			v-if="isOnCamera"
 		></v-quagga>
@@ -20,7 +21,7 @@ export default Vue.extend({
 		return {
 			readerSize: {
 				width: 640,
-				height: 480
+				height: 480,
 			},
 			renderTypes: [
 				"code_128_reader",
@@ -28,27 +29,32 @@ export default Vue.extend({
 				"ean_8_reader",
 				"code_39_reader",
 				"code_39_vin_reader",
-				"code_93_reader"
+				"code_93_reader",
 			],
-			isOnCamera: false
+			isOnCamera: false,
+			result: 0,
 		};
 	},
 	methods: {
 		a(data) {
 			console.log(data);
-			alert(data);
+			this.result = data.codeResult.code;
 		},
 		acceptCamera() {
 			var handleSuccess = (stream: MediaStream) => {
 				console.log("clear");
+				const mediaTracks = stream.getTracks();
+				for (let mediaTrack of mediaTracks) {
+					mediaTrack.stop();
+				}
 				this.isOnCamera = true;
 			};
 
 			navigator.mediaDevices
 				.getUserMedia({ video: true })
 				.then(handleSuccess);
-		}
-	}
+		},
+	},
 });
 </script>
 

@@ -1,11 +1,11 @@
 import Vue from "vue";
 import VueRouter, { RouteConfig } from "vue-router";
 import Home from "@/views/Home.vue";
-import SimpleMode from "@/views/SimpleMode.vue";
-import DetailsMode from "@/views/DetailsMode.vue";
-import Payment from "@/views/Payment.vue";
-import PaymentClear from "@/views/Payment-Clear.vue";
-import PaymentError from "@/views/Payment-Error.vue";
+import SimpleMode from "@/views/front/SimpleMode.vue";
+import DetailsMode from "@/views/front/DetailsMode.vue";
+import Payment from "@/views/front/Payment.vue";
+import PaymentClear from "@/views/front/Payment-Clear.vue";
+import PaymentError from "@/views/front/Payment-Error.vue";
 
 Vue.use(VueRouter);
 
