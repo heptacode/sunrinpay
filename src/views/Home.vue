@@ -1,6 +1,6 @@
 <template>
 	<div class="home">
-		<div>
+		<!-- <div>
 			<h2>Routers</h2>
 			<router-link to="simplemode">simplemode</router-link>
 			<br />
@@ -16,6 +16,10 @@
 		<div style="margin-top:50px;">
 			<h2>Number Counter</h2>
 			<NumberCounter :number="Number(n)" style="width:100%; font-size:2em;" direction="bottom"></NumberCounter>
+		</div> -->
+		<div style="margin-top:50px;">
+			<h2>Barcode Scanner</h2>
+			<BarcodeScanner></BarcodeScanner>
 		</div>
 	</div>
 </template>
@@ -23,6 +27,7 @@
 <script lang="ts">
 import Vue from "vue";
 import NumberCounterVue from "../components/NumberCounter.vue";
+import BarcodeScannerVue from "../components/BarcodeScanner.vue";
 export default Vue.extend({
 	data() {
 		return {
@@ -30,7 +35,8 @@ export default Vue.extend({
 		};
 	},
 	components: {
-		NumberCounter: NumberCounterVue
+		NumberCounter: NumberCounterVue,
+		BarcodeScanner: BarcodeScannerVue
 	},
 	mounted() {
 		setInterval(() => {
@@ -42,9 +48,5 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .home {
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
 }
 </style>
