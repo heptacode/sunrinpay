@@ -1,18 +1,22 @@
 <template>
 	<div class="home">
-		<h1>Developer page</h1>
-		<router-link to="simplemode">simplemode</router-link>
-		<br />
-		<router-link to="detailsmode">detailsmode</router-link>
-		<br />
-		<router-link to="payment">payment</router-link>
-		<br />
-		<router-link to="payment-clear">payment-clear</router-link>
-		<br />
-		<router-link to="payment-error">payment-error</router-link>
-		<br />
-		<NumberCounter :number="Number(n)" style="width:100%;" direction="bottom"></NumberCounter>
-		<input type="number" v-model="n" />
+		<div>
+			<h2>Routers</h2>
+			<router-link to="simplemode">simplemode</router-link>
+			<br />
+			<router-link to="detailsmode">detailsmode</router-link>
+			<br />
+			<router-link to="payment">payment</router-link>
+			<br />
+			<router-link to="payment-clear">payment-clear</router-link>
+			<br />
+			<router-link to="payment-error">payment-error</router-link>
+			<br />
+		</div>
+		<div style="margin-top:50px;">
+			<h2>Number Counter</h2>
+			<NumberCounter :number="Number(n)" style="width:100%; font-size:2em;" direction="bottom"></NumberCounter>
+		</div>
 	</div>
 </template>
 
@@ -27,8 +31,20 @@ export default Vue.extend({
 	},
 	components: {
 		NumberCounter: NumberCounterVue
+	},
+	mounted() {
+		setInterval(() => {
+			this.n = Math.floor(Math.random() * 65535);
+		}, 1000);
 	}
 });
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.home {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+</style>

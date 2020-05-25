@@ -156,7 +156,7 @@ export default Vue.extend({
 			}
 			p.payment__content__expirationtime {
 				flex: 0;
-				display: inline-block;
+				justify-content: center;
 			}
 		}
 
