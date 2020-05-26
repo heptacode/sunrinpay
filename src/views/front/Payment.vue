@@ -32,11 +32,11 @@ import NumberCounterVue from "@/components/NumberCounter.vue";
 export default Vue.extend({
 	components: {
 		QRcode: QRcodeVue,
-		NumberCounter: NumberCounterVue,
+		NumberCounter: NumberCounterVue
 	},
 	data() {
 		return {
-			time: 180,
+			time: 180
 		};
 	},
 	mounted() {
@@ -50,14 +50,15 @@ export default Vue.extend({
 		},
 		getMinute(): number {
 			return Math.floor(this.time / 60);
-		},
-	},
+		}
+	}
 });
 </script>
 
 <style lang="scss" scoped>
 .payment {
 	color: white;
+	background-color: $primary-color;
 
 	display: flex;
 	justify-content: center;

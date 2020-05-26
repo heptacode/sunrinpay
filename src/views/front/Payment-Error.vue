@@ -4,8 +4,8 @@
 		<div class="paymenterror__content">
 			<h2>결제 요청이 만료되었습니다.</h2>
 			<p>
-				시간이 초과되어 결제 요청이 만료되었습니다.<br />
-				결제를 다시 요청해주세요.
+				시간이 초과되어 결제 요청이 만료되었습니다.
+				<br />결제를 다시 요청해주세요.
 			</p>
 		</div>
 	</div>
@@ -19,6 +19,7 @@ export default Vue.extend({});
 <style lang="scss" scoped>
 .paymenterror {
 	color: white;
+	background-color: $primary-color;
 	padding: 50px;
 
 	display: flex;

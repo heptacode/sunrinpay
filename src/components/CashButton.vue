@@ -22,22 +22,10 @@ export default Vue.extend({});
 	.cashbtn__title {
 		font-weight: bold;
 		word-break: keep-all;
-		color: white;
 	}
 	.cashbtn__content {
 		font-size: 0.6em;
 		word-break: keep-all;
-		color: white;
-	}
-}
-@media (prefers-color-scheme: dark) {
-	.cashbtn {
-		.cashbtn__title {
-			color: black;
-		}
-		.cashbtn__content {
-			color: black;
-		}
 	}
 }
 </style>

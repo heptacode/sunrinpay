@@ -3,13 +3,14 @@
 		<i class="material-icons paymentclear__icon">check_circle_outline</i>
 		<div class="paymentclear__content">
 			<h2>결제가 완료되었습니다!</h2>
-			<p>25,655원이 결제되었습니다.<br />이용해주셔서 감사합니다</p>
+			<p>
+				25,655원이 결제되었습니다.
+				<br />이용해주셔서 감사합니다
+			</p>
 		</div>
 		<div class="paymentclear__action">
 			<i class="material-icons">receipt</i>
-			<p>
-				영수증 인쇄
-			</p>
+			<p>영수증 인쇄</p>
 		</div>
 	</div>
 </template>
@@ -22,6 +23,8 @@ export default Vue.extend({});
 <style lang="scss" scoped>
 .paymentclear {
 	color: white;
+	background-color: $primary-color;
+
 	padding: 50px;
 
 	display: flex;
@@ -72,7 +75,12 @@ export default Vue.extend({});
 }
 @media all and (max-aspect-ratio: 3/4) {
 	.paymentclear {
+		justify-content: center;
+		.paymentclear__icon {
+			margin-bottom: 20px;
+		}
 		.paymentclear__content {
+			margin-bottom: 30px;
 			font-size: 0.6em;
 		}
 	}
