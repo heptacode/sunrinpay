@@ -12,6 +12,7 @@
 			<br />
 			<router-link :to="{name:'payment-error'}">payment-error</router-link>
 			<br />
+			<br />
 			<router-link :to="{name:'simple-payment'}">simple-payment</router-link>
 			<br />
 			<router-link :to="{name:'details-payment'}">details-payment</router-link>
@@ -51,5 +52,7 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .home {
+	padding: 40px;
+	overflow: scroll;
 }
 </style>

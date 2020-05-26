@@ -53,7 +53,8 @@ export default Vue.extend({
 
 			navigator.mediaDevices
 				.getUserMedia({ video: true })
-				.then(handleSuccess);
+				.then(handleSuccess)
+				.catch(err => console.log(err));
 		}
 	}
 });
@@ -61,5 +62,6 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .barcodescanner {
+    border: 1px solid white;
 }
 </style>

@@ -155,8 +155,6 @@ export default Vue.extend({
 			}
 		}
 	}
-	.detailsuserpayment__paymentselected {
-	}
 	.detailsuserpayment__ok {
 		border-radius: 8px;
 		padding: 10px;
