@@ -21,7 +21,7 @@ export default Vue.extend({
 		return {
 			readerSize: {
 				width: 640,
-				height: 480,
+				height: 480
 			},
 			renderTypes: [
 				"code_128_reader",
@@ -29,10 +29,10 @@ export default Vue.extend({
 				"ean_8_reader",
 				"code_39_reader",
 				"code_39_vin_reader",
-				"code_93_reader",
+				"code_93_reader"
 			],
 			isOnCamera: false,
-			result: 0,
+			result: 0
 		};
 	},
 	methods: {
@@ -41,6 +41,7 @@ export default Vue.extend({
 			this.result = data.codeResult.code;
 		},
 		acceptCamera() {
+			console.log("ACCEPT");
 			var handleSuccess = (stream: MediaStream) => {
 				console.log("clear");
 				const mediaTracks = stream.getTracks();
@@ -53,8 +54,8 @@ export default Vue.extend({
 			navigator.mediaDevices
 				.getUserMedia({ video: true })
 				.then(handleSuccess);
-		},
-	},
+		}
+	}
 });
 </script>
 

@@ -1,0 +1,142 @@
+<template>
+	<div class="detailsuserpayment">
+		<div class="detailsuserpayment__list">
+			<h2>상품 목록</h2>
+			<ul>
+				<li class="detailsuserpayment__list__item" v-for="idx in 3" :key="idx">
+					<p class="name">(빙그레)메로나메론맛</p>
+					<p class="count">×1</p>
+					<p class="price">14,700원</p>
+				</li>
+				<button class="detailsuserpayment__list__allbtn">
+					<i class="material-icons">expand_more</i>
+					모두보기
+				</button>
+			</ul>
+		</div>
+		<div class="detailsuserpayment__price">
+			<h2>결제 금액</h2>
+			<p class="detailsuserpayment__price__item">
+				<span>총액</span>
+				<span>1,000원</span>
+			</p>
+			<p class="detailsuserpayment__price__item">
+				<span>할인 금액</span>
+				<span>-400원</span>
+			</p>
+			<p class="detailsuserpayment__price__item total">
+				<span>결제하실 금액</span>
+				<span>600원</span>
+			</p>
+		</div>
+		<div class="detailsuserpayment__paymentselected">
+			<h2>결제 수단 선택</h2>
+			<PaymentSelected v-model="paymentResult"></PaymentSelected>
+		</div>
+		<button class="detailsuserpayment__ok">결제하기</button>
+	</div>
+</template>
+
+<script lang="ts">
+import Vue from "vue";
+import PaymentSelectedVue from "../../components/PaymentSelected.vue";
+
+export default Vue.extend({
+	data() {
+		return {
+			paymentResult: "sunrinpay"
+		};
+	},
+	components: {
+		PaymentSelected: PaymentSelectedVue
+	}
+});
+</script>
+
+<style lang="scss" scoped>
+.detailsuserpayment {
+	padding: 25px;
+	padding-bottom: 125px;
+
+	overflow-y: auto;
+
+	display: flex;
+	flex-direction: column;
+
+	h2 {
+		font-size: $small-size;
+		opacity: 0.6;
+		margin-bottom: 15px;
+	}
+	p {
+		font-size: $small-up-size;
+	}
+
+	.detailsuserpayment__list {
+		margin-bottom: 45px;
+		.detailsuserpayment__list__item {
+			display: flex;
+			justify-content: space-between;
+
+			border-bottom: 1px solid $select-color;
+
+			padding: 10px 0;
+			&:last-child {
+				margin-bottom: 0;
+			}
+
+			.name {
+				flex: 5;
+				overflow: hidden;
+				white-space: nowrap;
+				text-overflow: ellipsis;
+			}
+			.count {
+				flex: 1;
+			}
+			.price {
+				flex: 4;
+				text-align: right;
+			}
+		}
+		.detailsuserpayment__list__allbtn {
+			color: $text-color;
+			border-radius: 0;
+			background: none;
+			border-bottom: 1px solid $select-color;
+
+			width: 100%;
+		}
+	}
+	.detailsuserpayment__price {
+		margin-bottom: 45px;
+		.detailsuserpayment__price__item {
+			display: flex;
+			justify-content: space-between;
+			margin-bottom: 10px;
+			&:last-child {
+				margin-bottom: 0;
+			}
+
+			&.total {
+				color: $primary-color;
+				font-weight: bold;
+			}
+		}
+	}
+	.detailsuserpayment__paymentselected {
+	}
+	.detailsuserpayment__ok {
+		border-radius: 8px;
+		padding: 10px;
+
+		font-size: $small-size;
+		font-weight: bold;
+
+		position: fixed;
+		left: 25px;
+		bottom: 25px;
+		width: calc(100% - 50px);
+	}
+}
+</style>

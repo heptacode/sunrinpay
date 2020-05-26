@@ -24,6 +24,7 @@ html {
 	font-size: 24px;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
+	overflow: hidden;
 }
 body {
 	width: 100%;
@@ -42,6 +43,7 @@ body {
 // 스크롤바
 ::-webkit-scrollbar {
 	width: 5px;
+	height: 5px;
 }
 ::-webkit-scrollbar-thumb:window-inactive,
 ::-webkit-scrollbar-thumb {
@@ -55,6 +57,9 @@ body {
 
 // 버튼
 button {
+	cursor: pointer;
+	-webkit-tap-highlight-color: rgba(128, 128, 128, 0.1);
+
 	background-color: $primary-color;
 	color: white;
 
@@ -63,8 +68,33 @@ button {
 	outline: none;
 
 	padding: 10px;
+
+	&:hover {
+		filter: brightness(1.1);
+	}
+	&:active {
+		filter: brightness(0.9);
+	}
 }
 
 ul {
 	list-style: none;
+}
+
+input[type="radio"] {
+	display: none;
+	~ span {
+		display: inline-block;
+		width: 35px;
+		height: 35px;
+
+		border-radius: 100%;
+
+		background-color: white;
+
+		border: 2px solid $disable-color;
+	}
+	&:checked ~ span {
+		border: 5px solid $primary-color;
+	}
 }
