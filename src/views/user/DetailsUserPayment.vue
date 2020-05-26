@@ -2,17 +2,17 @@
 	<div class="detailsuserpayment">
 		<div class="detailsuserpayment__list">
 			<h2>상품 목록</h2>
-			<ul>
-				<li class="detailsuserpayment__list__item" v-for="idx in 3" :key="idx">
+			<ul class="detailsuserpayment__list__ul" ref="list">
+				<li class="detailsuserpayment__list__item" v-for="idx in itemCount" :key="idx">
 					<p class="name">(빙그레)메로나메론맛</p>
 					<p class="count">×1</p>
 					<p class="price">14,700원</p>
 				</li>
-				<button class="detailsuserpayment__list__allbtn">
-					<i class="material-icons">expand_more</i>
-					모두보기
-				</button>
 			</ul>
+			<button class="detailsuserpayment__list__allbtn" @click="showAll">
+				<i class="material-icons">expand_more</i>
+				모두보기
+			</button>
 		</div>
 		<div class="detailsuserpayment__price">
 			<h2>결제 금액</h2>
@@ -40,20 +40,48 @@
 <script lang="ts">
 import Vue from "vue";
 import PaymentSelectedVue from "../../components/PaymentSelected.vue";
+import smoothReflow from "vue-smooth-reflow";
 
 export default Vue.extend({
+	mixins: [smoothReflow],
 	data() {
 		return {
-			paymentResult: "sunrinpay"
+			paymentResult: "sunrinpay",
+			itemCount: 3
 		};
 	},
 	components: {
 		PaymentSelected: PaymentSelectedVue
+	},
+	mounted() {
+		this.$smoothReflow!({
+			el: this.$refs.list as HTMLDivElement,
+			property: ["height"]
+		});
+	},
+	methods: {
+		showAll() {
+			if (this.itemCount == 3) this.itemCount = 10;
+			else this.itemCount = 3;
+		}
 	}
 });
 </script>
 
 <style lang="scss" scoped>
+.list-animation-enter-active,
+.list-animation-leave-active {
+	transition: 0.5s;
+}
+.list-animation-enter,
+.list-animation-leave-to {
+	opacity: 0;
+}
+.list-animation-enter-to,
+.list-animation-leave {
+	opacity: 1;
+}
+
 .detailsuserpayment {
 	padding: 25px;
 	padding-bottom: 125px;
@@ -74,6 +102,9 @@ export default Vue.extend({
 
 	.detailsuserpayment__list {
 		margin-bottom: 45px;
+		.detailsuserpayment__list__ul {
+			position: relative;
+		}
 		.detailsuserpayment__list__item {
 			display: flex;
 			justify-content: space-between;
