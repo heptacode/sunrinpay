@@ -1,7 +1,6 @@
 <template>
 	<div class="barcodescanner scanner">
-		<button @click="acceptCamera">Camera</button>
-		<div>result : {{ result }}</div>
+		<!-- <button class="barcodescanner__camerabtn" @click="acceptCamera">Camera</button> -->
 		<div ref="screen" class="barcodescanner__screen">
 			<video />
 			<canvas class="drawingBuffer" />
@@ -25,7 +24,11 @@ export default Vue.extend({
 				name: "Live",
 				type: "LiveStream",
 				target: this.$refs.screen,
-				constraints: { facingMode: "environment" }
+				constraints: {
+					width: 1024,
+					height: 1024,
+					facingMode: "environment"
+				}
 			},
 			decoder: {
 				readers: [
@@ -37,7 +40,7 @@ export default Vue.extend({
 					"code_93_reader"
 				]
 			},
-			locate: false, // 가로 인식
+			// locate: false, // 가로 인식
 			numOfWorkers: navigator.hardwareConcurrency,
 			frequency: 100
 		};
@@ -123,13 +126,25 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .barcodescanner {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	background-color: black;
+
+	.barcodescanner__camerabtn {
+		position: absolute;
+	}
 	.barcodescanner__screen {
-		position: relative;
+		position: absolute;
+		width: 100%;
+		height: 100%;
 		video,
 		canvas {
 			position: absolute;
 			top: 0;
 			left: 0;
+			width: 100% !important;
+			height: 100% !important;
 		}
 	}
 }

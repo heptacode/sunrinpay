@@ -28,25 +28,19 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from "vue";
-export default Vue.extend({
-	model: {
-		prop: "result"
-	},
-	props: {
-		result: { type: String as PropType<string> }
-	},
-	data() {
-		return {
-			selectResult: "sunrinpay"
-		};
-	},
-	watch: {
-		selectResult(value: string) {
-			this.$emit("input", value);
-		}
+import { Vue, Component, Prop, Watch, Model } from "vue-property-decorator";
+
+@Component
+export default class PaymentSelected extends Vue {
+	@Model("change", { type: String }) readonly result;
+
+	selectResult: string = "sunrinpay";
+
+	@Watch("selectResult")
+	onChangeSelectResult(value: string) {
+		this.$emit("change", value);
 	}
-});
+}
 </script>
 
 <style lang="scss" scoped>

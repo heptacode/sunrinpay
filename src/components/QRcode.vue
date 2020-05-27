@@ -3,44 +3,41 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from "vue";
-import QRCode from "qrcode";
-export default Vue.extend({
-	props: {
-		data: { type: String as PropType<string>, default: "" },
-	},
+import QRCode, { QRCodeToDataURLOptions } from "qrcode";
+import { Vue, Component, Prop, Watch } from "vue-property-decorator";
+
+@Component
+export default class QRcode extends Vue {
+	@Prop() readonly data: string | undefined;
+
+	qrdata: string = "";
+	options: QRCodeToDataURLOptions = {
+		errorCorrectionLevel: "H",
+		margin: 0,
+		scale: 15,
+		type: "image/png",
+		color: {
+			dark: "#FFFFFF",
+			light: "#00000000"
+		}
+	};
+
 	created() {
 		this.QRgenerate();
-	},
-	data() {
-		return {
-			qrdata: "" as string,
-			options: {
-				errorCorrectionLevel: "H",
-				margin: 0,
-				scale: 15,
-				type: "image/png",
-				quality: 1,
-				color: {
-					dark: "#FFFFFF",
-					light: "#00000000",
-				},
-			} as QRCode.QRCodeOptions,
-		};
-	},
-	watch: {
-		data(value) {
-			this.QRgenerate();
-		},
-	},
-	methods: {
-		QRgenerate(): void {
+	}
+
+	@Watch("data")
+	onChangeData() {
+		this.QRgenerate();
+	}
+
+	QRgenerate(): void {
+		if (this.data)
 			QRCode.toDataURL(this.data, this.options, (err, url) => {
 				this.qrdata = url;
 			});
-		},
-	},
-});
+	}
+}
 </script>
 
 <style lang="scss" scoped>

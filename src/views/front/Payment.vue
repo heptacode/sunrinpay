@@ -26,33 +26,36 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
 import QRcodeVue from "@/components/QRcode.vue";
 import NumberCounterVue from "@/components/NumberCounter.vue";
-export default Vue.extend({
+
+import { Vue, Component } from "vue-property-decorator";
+
+@Component({
 	components: {
 		QRcode: QRcodeVue,
 		NumberCounter: NumberCounterVue
 	},
 	data() {
-		return {
-			time: 180
-		};
-	},
+		return {};
+	}
+})
+export default class Payment extends Vue {
+	time: number = 180;
+
 	mounted() {
 		setInterval(() => {
 			this.time--;
 		}, 1000);
-	},
-	computed: {
-		getSecond(): number {
-			return this.time % 60;
-		},
-		getMinute(): number {
-			return Math.floor(this.time / 60);
-		}
 	}
-});
+
+	get getSecond(): number {
+		return this.time % 60;
+	}
+	get getMinute(): number {
+		return Math.floor(this.time / 60);
+	}
+}
 </script>
 
 <style lang="scss" scoped>

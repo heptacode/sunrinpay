@@ -40,27 +40,26 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
 import NumberCounterVue from "../components/NumberCounter.vue";
 import BarcodeScannerVue from "../components/BarcodeScanner.vue";
 import ViewPagerVue from "../components/ViewPager.vue";
-export default Vue.extend({
-	data() {
-		return {
-			n: 25565
-		};
-	},
+
+import { Vue, Component } from "vue-property-decorator";
+@Component({
 	components: {
 		NumberCounter: NumberCounterVue,
 		BarcodeScanner: BarcodeScannerVue,
 		ViewPager: ViewPagerVue
-	},
+	}
+})
+export default class Home extends Vue {
+	n: number = 25565;
 	mounted() {
 		setInterval(() => {
 			this.n = Math.floor(Math.random() * 65535);
 		}, 1000);
 	}
-});
+}
 </script>
 
 <style lang="scss" scoped>

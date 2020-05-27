@@ -20,36 +20,32 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from "vue";
-export default Vue.extend({
-	props: {
-		number: { type: Number as PropType<number>, default: 0 },
-		direction: { type: String as PropType<string>, default: "top" }
-	},
-	data() {
-		return {
-			isStarted: false
-		};
-	},
+import { Vue, Component, Prop } from "vue-property-decorator";
+
+@Component
+export default class PaymentButton extends Vue {
+	@Prop({ default: 0 }) number: number | undefined;
+	@Prop({ default: "top" }) direction: string | undefined;
+
+	isStarted: boolean = false;
+
 	mounted() {
 		setTimeout(() => {
 			this.isStarted = true;
 		}, 100);
-	},
-	methods: {
-		getIndex(n: string, idx: number): string {
-			if (n == ",") return n + idx;
-			let reg = this.getNumberString.substring(0, idx + 1).match(/,/gi);
-			return (idx - (reg ? reg!.length : 0)).toString();
-		}
-	},
-	computed: {
-		getActiveClass() {
-			return this.direction == "top"
-				? "numbercounter-top"
-				: "numbercounter";
-		},
-		getNumberString(): string {
+	}
+
+	getIndex(n: string, idx: number): string {
+		if (n == ",") return n + idx;
+		let reg = this.getNumberString.substring(0, idx + 1).match(/,/gi);
+		return (idx - (reg ? reg!.length : 0)).toString();
+	}
+
+	get getActiveClass() {
+		return this.direction == "top" ? "numbercounter-top" : "numbercounter";
+	}
+	get getNumberString(): string {
+		if (this.number) {
 			let numberFormatter = new Intl.NumberFormat();
 			if (this.isStarted) return numberFormatter.format(this.number);
 			else {
@@ -60,9 +56,11 @@ export default Vue.extend({
 					.format(Number(zeroString))
 					.replace(/1/gi, "0");
 			}
+		} else {
+			return "0";
 		}
 	}
-});
+}
 </script>
 
 <style lang="scss" scoped>

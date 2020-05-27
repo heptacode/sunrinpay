@@ -15,21 +15,20 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
 import PaymentSelectedVue from "../../components/PaymentSelected.vue";
 import NumberCounterVue from "../../components/NumberCounter.vue";
 
-export default Vue.extend({
-	data() {
-		return {
-			paymentResult: "sunrinpay"
-		};
-	},
+import { Vue, Component } from "vue-property-decorator";
+
+@Component({
 	components: {
 		PaymentSelected: PaymentSelectedVue,
 		NumberCounter: NumberCounterVue
 	}
-});
+})
+export default class SimpleUserPayment extends Vue {
+	paymentResult: string = "sunrinpay";
+}
 </script>
 
 <style lang="scss" scoped>

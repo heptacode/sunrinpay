@@ -6,17 +6,19 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-export default Vue.extend({});
+import { Vue, Component } from "vue-property-decorator";
+
+@Component
+export default class PaymentButton extends Vue {}
 </script>
 
 <style lang="scss" scoped>
 .paymentbtn {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+
 	font-size: $normal-size;
 	.paymentbtn__title {
 		font-weight: bold;

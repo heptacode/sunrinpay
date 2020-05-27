@@ -38,67 +38,62 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from "vue";
-export default Vue.extend({
-	props: {
-		tab: { type: Array as PropType<string[]>, default: ["TAB"] }
-	},
-	data() {
-		return {
-			selectedIdx: 0,
-			isMoveStarted: false,
-			mouseStartPostiion: 0,
-			mouseEndPosition: 0,
-			movePosition: 0
-		};
-	},
-	methods: {
-		selectIdx(idx): void {
-			this.selectedIdx = idx;
-		},
-		moveStart(e: TouchEvent | MouseEvent) {
+import { Vue, Component, Prop } from "vue-property-decorator";
+@Component
+export default class PaymentClear extends Vue {
+	@Prop({ default: ["TAB"] }) readonly tab: string[] | undefined;
+
+	selectedIdx: number = 0;
+	isMoveStarted: boolean = false;
+	mouseStartPostiion: number = 0;
+	mouseEndPosition: number = 0;
+	movePosition: number = 0;
+
+	selectIdx(idx): void {
+		this.selectedIdx = idx;
+	}
+	moveStart(e: TouchEvent | MouseEvent) {
+		let x = 0;
+		if (e instanceof TouchEvent) x = e.touches[0].clientX;
+		else x = e.x;
+		this.mouseStartPostiion = x;
+		this.mouseEndPosition = x;
+		this.isMoveStarted = true;
+	}
+	moveUpdate(e: TouchEvent | MouseEvent) {
+		if (this.isMoveStarted) {
 			let x = 0;
 			if (e instanceof TouchEvent) x = e.touches[0].clientX;
 			else x = e.x;
-			this.mouseStartPostiion = x;
+
+			this.movePosition = this.mouseStartPostiion - x;
 			this.mouseEndPosition = x;
-			this.isMoveStarted = true;
-		},
-		moveUpdate(e: TouchEvent | MouseEvent) {
-			if (this.isMoveStarted) {
-				let x = 0;
-				if (e instanceof TouchEvent) x = e.touches[0].clientX;
-				else x = e.x;
-
-				this.movePosition = this.mouseStartPostiion - x;
-				this.mouseEndPosition = x;
-			}
-		},
-		moveForceStop() {
-			if (this.isMoveStarted) {
-				this.mouseStartPostiion = 0;
-				this.mouseEndPosition = 0;
-				this.movePosition = 0;
-				this.isMoveStarted = false;
-			}
-		},
-		moveStop(e: TouchEvent | MouseEvent) {
-			if (this.isMoveStarted) {
-				let gap = 0;
-				if (e instanceof TouchEvent) {
-					gap = this.mouseStartPostiion - this.mouseEndPosition;
-				} else {
-					gap = this.mouseStartPostiion - e.x;
-				}
-				if (gap > 100 && this.tab.length - 1 > this.selectedIdx)
-					this.selectedIdx++;
-				if (gap < -100 && 0 < this.selectedIdx) this.selectedIdx--;
-
-				this.moveForceStop();
-			}
 		}
 	}
-});
+	moveForceStop() {
+		if (this.isMoveStarted) {
+			this.mouseStartPostiion = 0;
+			this.mouseEndPosition = 0;
+			this.movePosition = 0;
+			this.isMoveStarted = false;
+		}
+	}
+	moveStop(e: TouchEvent | MouseEvent) {
+		if (this.isMoveStarted) {
+			let gap = 0;
+			if (e instanceof TouchEvent) {
+				gap = this.mouseStartPostiion - this.mouseEndPosition;
+			} else {
+				gap = this.mouseStartPostiion - e.x;
+			}
+			if (gap > 100 && this.tab!.length - 1 > this.selectedIdx)
+				this.selectedIdx++;
+			if (gap < -100 && 0 < this.selectedIdx) this.selectedIdx--;
+
+			this.moveForceStop();
+		}
+	}
+}
 </script>
 
 <style lang="scss" scoped>
@@ -106,7 +101,6 @@ export default Vue.extend({
 	width: 100%;
 	height: 100%;
 	overflow: hidden;
-	background-color: grey;
 
 	display: flex;
 	flex-direction: column;
@@ -121,6 +115,10 @@ export default Vue.extend({
 		display: flex;
 		align-items: center;
 		background-color: $primary-color;
+
+		box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
+
+		z-index: 100;
 		.viewpager__tabhost__item {
 			flex: 1;
 

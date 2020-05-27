@@ -38,34 +38,32 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
 import PaymentSelectedVue from "../../components/PaymentSelected.vue";
 import smoothReflow from "vue-smooth-reflow";
 
-export default Vue.extend({
+import { Vue, Component } from "vue-property-decorator";
+@Component({
 	mixins: [smoothReflow],
-	data() {
-		return {
-			paymentResult: "sunrinpay",
-			itemCount: 3
-		};
-	},
 	components: {
 		PaymentSelected: PaymentSelectedVue
-	},
+	}
+})
+export default class DetailsUserPayment extends Vue {
+	itemCount: number = 3;
+	paymentResult: string = "sunrinpay";
+
 	mounted() {
 		this.$smoothReflow!({
 			el: this.$refs.list as HTMLDivElement,
 			property: ["height"]
 		});
-	},
-	methods: {
-		showAll() {
-			if (this.itemCount == 3) this.itemCount = 10;
-			else this.itemCount = 3;
-		}
 	}
-});
+
+	showAll() {
+		if (this.itemCount == 3) this.itemCount = 10;
+		else this.itemCount = 3;
+	}
+}
 </script>
 
 <style lang="scss" scoped>
