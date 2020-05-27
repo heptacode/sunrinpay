@@ -3,15 +3,21 @@
 		<ul class="viewpager__tabhost">
 			<li
 				class="viewpager__tabhost__item"
-				:class="{'selected': idx == selectedIdx}"
-				v-for="(tab,idx) in tab"
+				:class="{ selected: idx == selectedIdx }"
+				v-for="(tab, idx) in tab"
 				@click="selectIdx(idx)"
 				:key="tab"
-			>{{tab}}</li>
+			>
+				{{ tab }}
+			</li>
 			<div
 				class="viewpager__tabhost__bar"
-				:class="{'no-transition': isMoveStarted}"
-				:style="{'width':`${100/tab.length}%`,'left':`calc(${100/tab.length*selectedIdx}% + ${movePosition/tab.length}px)`}"
+				:class="{ 'no-transition': isMoveStarted }"
+				:style="{
+					width: `${100 / tab.length}%`,
+					left: `calc(${(100 / tab.length) *
+						selectedIdx}% + ${movePosition / tab.length}px)`,
+				}"
 			></div>
 		</ul>
 		<div
@@ -26,10 +32,17 @@
 		>
 			<ul
 				class="viewpager__fragments"
-				:class="{'no-transition': isMoveStarted}"
-				:style="{'width':`${tab.length*100}%`,'left':`calc(-${selectedIdx*100}% - ${movePosition}px)`}"
+				:class="{ 'no-transition': isMoveStarted }"
+				:style="{
+					width: `${tab.length * 100}%`,
+					left: `calc(-${selectedIdx * 100}% - ${movePosition}px)`,
+				}"
 			>
-				<li class="viewpager__fragments__content" v-for="(tab,idx) in tab" :key="tab">
+				<li
+					class="viewpager__fragments__content"
+					v-for="(tab, idx) in tab"
+					:key="tab"
+				>
 					<slot :name="`tab${idx}`"></slot>
 				</li>
 			</ul>
@@ -194,6 +207,8 @@ export default class PaymentClear extends Vue {
 		height: 100%;
 		display: flex;
 		.viewpager__fragments__content {
+			position: relative;
+
 			flex: 1;
 			display: inline-block;
 			width: 100%;

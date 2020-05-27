@@ -19,13 +19,13 @@ export default class PaymentButton extends Vue {}
 	justify-content: center;
 	align-items: center;
 
-	font-size: $normal-size;
 	.paymentbtn__title {
+		font-size: $normal-size;
 		font-weight: bold;
 		word-break: keep-all;
 	}
 	.paymentbtn__content {
-		font-size: 0.6em;
+		font-size: $small-up-size;
 		word-break: keep-all;
 	}
 }

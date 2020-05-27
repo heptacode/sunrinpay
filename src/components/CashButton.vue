@@ -20,13 +20,13 @@ export default class CashButton extends Vue {}
 	align-items: center;
 
 	background-color: $disable-color;
-	font-size: $normal-size;
 	.cashbtn__title {
+		font-size: $normal-size;
 		font-weight: bold;
 		word-break: keep-all;
 	}
 	.cashbtn__content {
-		font-size: 0.6em;
+		font-size: $small-up-size;
 		word-break: keep-all;
 	}
 }
