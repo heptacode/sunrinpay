@@ -45,8 +45,10 @@ export default class PaymentClear extends Vue {
 
 	selectedIdx: number = 0;
 	isMoveStarted: boolean = false;
-	mouseStartPostiion: number = 0;
-	mouseEndPosition: number = 0;
+	mouseStartPostiionX: number = 0;
+	mouseStartPostiionY: number = 0;
+	mouseEndPositionX: number = 0;
+	mouseEndPositionY: number = 0;
 	movePosition: number = 0;
 
 	selectIdx(idx): void {
@@ -54,41 +56,70 @@ export default class PaymentClear extends Vue {
 	}
 	moveStart(e: TouchEvent | MouseEvent) {
 		let x = 0;
-		if (e instanceof TouchEvent) x = e.touches[0].clientX;
-		else x = e.x;
-		this.mouseStartPostiion = x;
-		this.mouseEndPosition = x;
+		let y = 0;
+		if (e instanceof TouchEvent) {
+			x = e.touches[0].clientX;
+			y = e.touches[0].clientY;
+		} else {
+			x = e.x;
+			y = e.y;
+		}
+		this.mouseStartPostiionX = x;
+		this.mouseStartPostiionY = y;
+		this.mouseEndPositionX = x;
+		this.mouseEndPositionY = y;
 		this.isMoveStarted = true;
 	}
 	moveUpdate(e: TouchEvent | MouseEvent) {
 		if (this.isMoveStarted) {
 			let x = 0;
-			if (e instanceof TouchEvent) x = e.touches[0].clientX;
-			else x = e.x;
-
-			this.movePosition = this.mouseStartPostiion - x;
-			this.mouseEndPosition = x;
+			let y = 0;
+			if (e instanceof TouchEvent) {
+				x = e.touches[0].clientX;
+				y = e.touches[0].clientY;
+			} else {
+				x = e.x;
+				y = e.y;
+			}
+			if (
+				(Math.abs(this.mouseStartPostiionY - y) < 100 &&
+					Math.abs(this.mouseStartPostiionX - x) > 50) ||
+				e instanceof MouseEvent
+			)
+				this.movePosition = this.mouseStartPostiionX - x;
+			else this.movePosition = 0;
+			this.mouseEndPositionX = x;
+			this.mouseEndPositionY = y;
 		}
 	}
 	moveForceStop() {
 		if (this.isMoveStarted) {
-			this.mouseStartPostiion = 0;
-			this.mouseEndPosition = 0;
+			this.mouseStartPostiionX = 0;
+			this.mouseStartPostiionY = 0;
+			this.mouseEndPositionX = 0;
 			this.movePosition = 0;
 			this.isMoveStarted = false;
 		}
 	}
 	moveStop(e: TouchEvent | MouseEvent) {
 		if (this.isMoveStarted) {
-			let gap = 0;
+			let gapX = 0;
+			let gapY = 0;
 			if (e instanceof TouchEvent) {
-				gap = this.mouseStartPostiion - this.mouseEndPosition;
+				gapX = this.mouseStartPostiionX - this.mouseEndPositionX;
+				gapY = this.mouseStartPostiionY - this.mouseEndPositionY;
 			} else {
-				gap = this.mouseStartPostiion - e.x;
+				gapX = this.mouseStartPostiionX - e.x;
+				// gapY = this.mouseStartPostiionY - e.y;
 			}
-			if (gap > 100 && this.tab!.length - 1 > this.selectedIdx)
+			if (
+				gapX > 100 &&
+				gapY < 100 &&
+				this.tab!.length - 1 > this.selectedIdx
+			)
 				this.selectedIdx++;
-			if (gap < -100 && 0 < this.selectedIdx) this.selectedIdx--;
+			if (gapX < -100 && gapY < 100 && 0 < this.selectedIdx)
+				this.selectedIdx--;
 
 			this.moveForceStop();
 		}

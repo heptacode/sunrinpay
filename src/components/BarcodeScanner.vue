@@ -44,16 +44,18 @@ export default Vue.extend({
 			numOfWorkers: navigator.hardwareConcurrency,
 			frequency: 100
 		};
-		Quagga.init(config, err => {
-			if (err) {
-				console.log(err);
-				return;
-			}
-			console.log("Initialization finished. Ready to start");
-			Quagga.start();
-		});
-		Quagga.onDetected(this.onDetected);
-		Quagga.onProcessed(this.onProcessed);
+
+		// TODO: On Off 구현
+		// Quagga.init(config, err => {
+		// 	if (err) {
+		// 		console.log(err);
+		// 		return;
+		// 	}
+		// 	console.log("Initialization finished. Ready to start");
+		// 	Quagga.start();
+		// });
+		// Quagga.onDetected(this.onDetected);
+		// Quagga.onProcessed(this.onProcessed);
 	},
 	methods: {
 		onDetected(data) {
