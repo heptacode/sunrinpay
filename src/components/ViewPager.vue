@@ -61,6 +61,7 @@ export default Vue.extend({
 			if (e instanceof TouchEvent) x = e.touches[0].clientX;
 			else x = e.x;
 			this.mouseStartPostiion = x;
+			this.mouseEndPosition = x;
 			this.isMoveStarted = true;
 		},
 		moveUpdate(e: TouchEvent | MouseEvent) {
@@ -91,7 +92,7 @@ export default Vue.extend({
 				}
 				if (gap > 100 && this.tab.length - 1 > this.selectedIdx)
 					this.selectedIdx++;
-				if (gap < 100 && 0 < this.selectedIdx) this.selectedIdx--;
+				if (gap < -100 && 0 < this.selectedIdx) this.selectedIdx--;
 
 				this.moveForceStop();
 			}
