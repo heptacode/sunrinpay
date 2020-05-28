@@ -11,7 +11,7 @@
 					<div class="pos__viewpager__search" ref="searchList">
 						<ul v-for="fl in getFilterList" :key="fl.consonant" :ref="`searchItem_${fl.consonant}`">
 							<h2>{{ fl.consonant }}</h2>
-							<li class="pos__viewpager__search__item" v-for="item in fl.list" :key="item.name">
+							<li class="pos__viewpager__search__item" v-for="(item,idx) in fl.list" :key="item.name+idx">
 								<div>
 									<h3>{{ item.name }}</h3>
 									<p>재고 {{ item.count }}</p>
@@ -60,13 +60,14 @@
 import ViewPagerVue from "../../components/ViewPager.vue";
 import BarcodeScannerVue from "../../components/BarcodeScanner.vue";
 
+import randomWords from "random-words";
+
 import { Vue, Component } from "vue-property-decorator";
 
 interface FilterConsonantItem {
 	consonant: string;
 	list: any[];
 }
-
 @Component({
 	components: {
 		ViewPager: ViewPagerVue,
@@ -74,36 +75,9 @@ interface FilterConsonantItem {
 	}
 })
 export default class PoS extends Vue {
-	list: any[] = [
-		{
-			name: "가나다",
-			count: 55
-		},
-		{
-			name: "가오리",
-			count: 44
-		},
-		{
-			name: "가나",
-			count: 33
-		},
-		{
-			name: "라마바",
-			count: 22
-		},
-		{
-			name: "사아자",
-			count: 11
-		},
-		{
-			name: "abc",
-			count: 5
-		},
-		{
-			name: "def",
-			count: 2
-		}
-	];
+	list: any[] = randomWords(100).map(word => {
+		return { name: word, count: Math.floor(Math.random() * 100) };
+	});
 	currentConsonant: string = "";
 
 	created() {}
@@ -171,7 +145,8 @@ export default class PoS extends Vue {
 		let el: HTMLDivElement = this.$refs.search_tip as HTMLDivElement;
 		let height = el.clientHeight - 40;
 
-		let y = e.touches[0].clientY + 20;
+		let y = e.touches[0].clientY - el.getBoundingClientRect().y;
+		console.log();
 
 		let idx = Math.floor(y / (height / this.getConsonantList.length)) - 1;
 
