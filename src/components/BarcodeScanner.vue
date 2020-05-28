@@ -1,24 +1,33 @@
 <template>
 	<div class="barcodescanner scanner">
-		<!-- <button class="barcodescanner__camerabtn" @click="acceptCamera">Camera</button> -->
 		<div ref="screen" class="barcodescanner__screen">
 			<video />
 			<canvas class="drawingBuffer" />
 		</div>
+		<button class="barcodescanner__startbtn" @click="start">Start</button>
+		<button class="barcodescanner__stopbtn" @click="stop">Stop</button>
 	</div>
 </template>
 
 <script lang="ts">
-import Vue from "vue";
 import Quagga from "quagga";
 
-export default Vue.extend({
-	data() {
-		return {
-			result: 0
-		};
-	},
-	mounted() {
+import { Vue, Component, Watch } from "vue-property-decorator";
+
+@Component
+export default class BarcodeScanner extends Vue {
+	result: string = "";
+	tmpDetectedList: string[] = [];
+	tmpDetectedTimer: number = 0;
+
+	@Watch("result")
+	onChangeResult() {
+	}
+
+	start() {
+		Quagga.onDetected(this.onDetected);
+		Quagga.onProcessed(this.onProcessed);
+
 		let config = {
 			inputStream: {
 				name: "Live",
@@ -40,9 +49,9 @@ export default Vue.extend({
 					"code_93_reader"
 				]
 			},
-			// locate: false, // 가로 인식
+			locate: false, // 가로 인식
 			numOfWorkers: navigator.hardwareConcurrency,
-			frequency: 100
+			frequency: 10
 		};
 
 		Quagga.init(config, err => {
@@ -53,76 +62,84 @@ export default Vue.extend({
 			console.log("Initialization finished. Ready to start");
 			Quagga.start();
 		});
-		Quagga.onDetected(this.onDetected);
-		Quagga.onProcessed(this.onProcessed);
-	},
-	methods: {
-		onDetected(data) {
-			this.result = data.codeResult.code;
-		},
-		onProcessed(result) {
-			let drawingCtx = Quagga.canvas.ctx.overlay;
-			let drawingCanvas = Quagga.canvas.dom.overlay;
-			if (result) {
-				if (result.boxes) {
-					drawingCtx.clearRect(
-						0,
-						0,
-						parseInt(drawingCanvas.getAttribute("width")),
-						parseInt(drawingCanvas.getAttribute("height"))
-					);
-					result.boxes
-						.filter(function(box) {
-							return box !== result.box;
-						})
-						.forEach(function(box) {
-							Quagga.ImageDebug.drawPath(
-								box,
-								{ x: 0, y: 1 },
-								drawingCtx,
-								{
-									color: "green",
-									lineWidth: 2
-								}
-							);
-						});
+	}
+	stop() {
+		Quagga.stop();
+	}
+	onDetected(data) {
+		this.tmpDetectedList.push(data.codeResult.code);
+		if (!this.tmpDetectedTimer) {
+			let tmpCountList = {};
+			this.tmpDetectedTimer = window.setTimeout(() => {
+				if (this.tmpDetectedList.length > 2) {
+					this.tmpDetectedList.forEach(item => {
+						if (tmpCountList[item]) tmpCountList[item]++;
+						else tmpCountList[item] = 1;
+					});
+					let max = "";
+					Object.keys(tmpCountList).forEach(key => {
+						if (tmpCountList[key] > (tmpCountList[max] || 0))
+							max = key;
+					});
+					this.result = max;
+				} else {
+					this.result = "";
 				}
-				if (result.box) {
-					Quagga.ImageDebug.drawPath(
-						result.box,
-						{ x: 0, y: 1 },
-						drawingCtx,
-						{
-							color: "#00F",
-							lineWidth: 2
-						}
-					);
-				}
-				if (result.codeResult && result.codeResult.code) {
-					Quagga.ImageDebug.drawPath(
-						result.line,
-						{ x: "x", y: "y" },
-						drawingCtx,
-						{ color: "red", lineWidth: 3 }
-					);
-				}
-			}
-		},
-		acceptCamera() {
-			var handleSuccess = (stream: MediaStream) => {
-				const mediaTracks = stream.getTracks();
-				for (let mediaTrack of mediaTracks) {
-					mediaTrack.stop();
-				}
-			};
-
-			navigator.mediaDevices
-				.getUserMedia({ video: true })
-				.then(handleSuccess)
-				.catch(err => console.log(err));
+				console.log(this.result);
+				this.tmpDetectedList = [];
+				this.tmpDetectedTimer = 0;
+			}, 1000);
 		}
 	}
-});
+	onProcessed(result) {
+		let drawingCtx = Quagga.canvas.ctx.overlay;
+		let drawingCanvas = Quagga.canvas.dom.overlay;
+		if (result) {
+			if (result.boxes) {
+				drawingCtx.clearRect(
+					0,
+					0,
+					parseInt(drawingCanvas.getAttribute("width")),
+					parseInt(drawingCanvas.getAttribute("height"))
+				);
+				result.boxes
+					.filter(function(box) {
+						return box !== result.box;
+					})
+					.forEach(function(box) {
+						Quagga.ImageDebug.drawPath(
+							box,
+							{ x: 0, y: 1 },
+							drawingCtx,
+							{
+								color: "green",
+								lineWidth: 2
+							}
+						);
+					});
+			}
+			if (result.box) {
+				Quagga.ImageDebug.drawPath(
+					result.box,
+					{ x: 0, y: 1 },
+					drawingCtx,
+					{
+						color: "#00F",
+						lineWidth: 2
+					}
+				);
+			}
+			if (result.codeResult && result.codeResult.code) {
+				Quagga.ImageDebug.drawPath(
+					result.line,
+					{ x: "x", y: "y" },
+					drawingCtx,
+					{ color: "red", lineWidth: 3 }
+				);
+			}
+		}
+	}
+}
 </script>
 
 <style lang="scss" scoped>
@@ -132,8 +149,17 @@ export default Vue.extend({
 	height: 100%;
 	background-color: black;
 
-	.barcodescanner__camerabtn {
+	.barcodescanner__startbtn {
 		position: absolute;
+		top: 10px;
+		right: 10px;
+		z-index: 50;
+	}
+	.barcodescanner__stopbtn {
+		position: absolute;
+		top: 10px;
+		left: 10px;
+		z-index: 50;
 	}
 	.barcodescanner__screen {
 		position: absolute;
