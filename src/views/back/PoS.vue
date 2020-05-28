@@ -4,20 +4,25 @@
 			<ViewPager :tab="['바코드 읽기', '상품 선택하여 계산', '상품 수동 입력']">
 				<template v-slot:tab0>
 					<div class="pos__viewpager__barcodescanner">
-						<BarcodeScanner></BarcodeScanner>
+						<BarcodeScanner :onDetected="onDetected"></BarcodeScanner>
 					</div>
 				</template>
 				<template v-slot:tab1>
 					<div class="pos__viewpager__search" ref="searchList">
 						<ul v-for="fl in getFilterList" :key="fl.consonant" :ref="`searchItem_${fl.consonant}`">
 							<h2>{{ fl.consonant }}</h2>
-							<li class="pos__viewpager__search__item" v-for="(item,idx) in fl.list" :key="item.name+idx">
+							<li
+								class="pos__viewpager__search__item"
+								v-for="(item,idx) in fl.list"
+								:key="item.name+idx"
+								@click="appendSelectedItem(item)"
+							>
 								<div>
 									<h3>{{ item.name }}</h3>
 									<p>재고 {{ item.count }}</p>
 								</div>
 								<div>
-									<h4>5,700원</h4>
+									<h4>{{item.money}}원</h4>
 								</div>
 							</li>
 						</ul>
@@ -41,11 +46,11 @@
 		</div>
 		<div class="pos__content">
 			<ul class="pos__content__list">
-				<li class="pos__content__list__item" v-for="idx in 20" :key="idx">
-					<p class="name">(빙그레)메로나메론맛</p>
-					<p class="count">×1</p>
-					<p class="price">14,700원</p>
-					<i class="delete material-icons">delete_forever</i>
+				<li class="pos__content__list__item" v-for="item in selectedList" :key="item.name">
+					<p class="name">{{item.name}}</p>
+					<p class="count">×{{item.count}}</p>
+					<p class="price">{{item.money}}</p>
+					<i class="delete material-icons" @click="removeSelectItem(item)">delete_forever</i>
 				</li>
 			</ul>
 			<button class="pos__content__okbtn">
@@ -66,7 +71,13 @@ import { Vue, Component } from "vue-property-decorator";
 
 interface FilterConsonantItem {
 	consonant: string;
-	list: any[];
+	list: PoSItem[];
+}
+interface PoSItem {
+	name: string;
+	barcode?: string;
+	count: number;
+	money: number;
 }
 @Component({
 	components: {
@@ -75,12 +86,34 @@ interface FilterConsonantItem {
 	}
 })
 export default class PoS extends Vue {
-	list: any[] = randomWords(100).map(word => {
-		return { name: word, count: Math.floor(Math.random() * 100) };
+	// 테스트 데이터 (상품 목록)
+	list: PoSItem[] = randomWords(100).map(word => {
+		return {
+			name: word,
+			count: Math.floor(Math.random() * 100),
+			money: Math.floor(Math.random() * 10000)
+		};
 	});
+	// 선택된 목록
+	selectedList: PoSItem[] = [];
+	// 현 스크롤 위치 (터치 전용)
 	currentConsonant: string = "";
 
-	created() {}
+	created() {
+		// 테스트 데이터
+		this.list.push({
+			name: "마스크",
+			count: 5,
+			money: 1500,
+			barcode: "8809453880519"
+		});
+		this.list.push({
+			name: "박종훈 학생증",
+			count: 4,
+			money: 500,
+			barcode: "S2180146"
+		});
+	}
 
 	get getFilterList(): FilterConsonantItem[] {
 		let result: FilterConsonantItem[] = [];
@@ -153,6 +186,25 @@ export default class PoS extends Vue {
 			this.currentConsonant = this.getConsonantList[idx];
 			this.moveScroll(this.getConsonantList[idx]);
 		}
+	}
+	appendSelectedItem(item: PoSItem) {
+		let idx = this.selectedList.findIndex(i => i.name == item.name);
+		if (idx == -1) {
+			let copyObject = Object.assign({}, item);
+			copyObject.count = 1;
+			this.selectedList.push(copyObject);
+		} else this.selectedList[idx].count++;
+	}
+	removeSelectItem(item: PoSItem) {
+		this.selectedList.splice(
+			this.selectedList.findIndex(i => i.name == item.name),
+			1
+		);
+	}
+	onDetected(result: string) {
+		console.log(result);
+		let idx = this.list.findIndex(item => item.barcode == result);
+		if (idx != -1) this.appendSelectedItem(this.list[idx]);
 	}
 }
 </script>

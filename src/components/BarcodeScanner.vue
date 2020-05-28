@@ -12,7 +12,7 @@
 <script lang="ts">
 import Quagga from "quagga";
 
-import { Vue, Component, Watch } from "vue-property-decorator";
+import { Vue, Component, Watch, Prop } from "vue-property-decorator";
 
 @Component
 export default class BarcodeScanner extends Vue {
@@ -20,12 +20,13 @@ export default class BarcodeScanner extends Vue {
 	tmpDetectedList: string[] = [];
 	tmpDetectedTimer: number = 0;
 
+	@Prop({ default: () => {} }) onDetected: Function | undefined;
+
 	@Watch("result")
-	onChangeResult() {
-	}
+	onChangeResult() {}
 
 	start() {
-		Quagga.onDetected(this.onDetected);
+		Quagga.onDetected(this.onDet);
 		Quagga.onProcessed(this.onProcessed);
 
 		let config = {
@@ -66,7 +67,7 @@ export default class BarcodeScanner extends Vue {
 	stop() {
 		Quagga.stop();
 	}
-	onDetected(data) {
+	onDet(data) {
 		this.tmpDetectedList.push(data.codeResult.code);
 		if (!this.tmpDetectedTimer) {
 			let tmpCountList = {};
@@ -85,7 +86,7 @@ export default class BarcodeScanner extends Vue {
 				} else {
 					this.result = "";
 				}
-				console.log(this.result);
+				if (this.onDetected) this.onDetected(this.result);
 				this.tmpDetectedList = [];
 				this.tmpDetectedTimer = 0;
 			}, 1000);
@@ -95,41 +96,13 @@ export default class BarcodeScanner extends Vue {
 		let drawingCtx = Quagga.canvas.ctx.overlay;
 		let drawingCanvas = Quagga.canvas.dom.overlay;
 		if (result) {
-			if (result.boxes) {
+			if (result.codeResult && result.codeResult.code) {
 				drawingCtx.clearRect(
 					0,
 					0,
 					parseInt(drawingCanvas.getAttribute("width")),
 					parseInt(drawingCanvas.getAttribute("height"))
 				);
-				result.boxes
-					.filter(function(box) {
-						return box !== result.box;
-					})
-					.forEach(function(box) {
-						Quagga.ImageDebug.drawPath(
-							box,
-							{ x: 0, y: 1 },
-							drawingCtx,
-							{
-								color: "green",
-								lineWidth: 2
-							}
-						);
-					});
-			}
-			if (result.box) {
-				Quagga.ImageDebug.drawPath(
-					result.box,
-					{ x: 0, y: 1 },
-					drawingCtx,
-					{
-						color: "#00F",
-						lineWidth: 2
-					}
-				);
-			}
-			if (result.codeResult && result.codeResult.code) {
 				Quagga.ImageDebug.drawPath(
 					result.line,
 					{ x: "x", y: "y" },
