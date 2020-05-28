@@ -1,9 +1,7 @@
 <template>
 	<div class="pos">
 		<div class="pos__viewpager">
-			<ViewPager
-				:tab="['바코드 읽기', '상품 선택하여 계산', '상품 수동 입력']"
-			>
+			<ViewPager :tab="['바코드 읽기', '상품 선택하여 계산', '상품 수동 입력']">
 				<template v-slot:tab0>
 					<div class="pos__viewpager__barcodescanner">
 						<BarcodeScanner></BarcodeScanner>
@@ -11,17 +9,9 @@
 				</template>
 				<template v-slot:tab1>
 					<div class="pos__viewpager__search" ref="searchList">
-						<ul
-							v-for="fl in getFilterList"
-							:key="fl.consonant"
-							:ref="`searchItem_${fl.consonant}`"
-						>
+						<ul v-for="fl in getFilterList" :key="fl.consonant" :ref="`searchItem_${fl.consonant}`">
 							<h2>{{ fl.consonant }}</h2>
-							<li
-								class="pos__viewpager__search__item"
-								v-for="item in fl.list"
-								:key="item.name"
-							>
+							<li class="pos__viewpager__search__item" v-for="item in fl.list" :key="item.name">
 								<div>
 									<h3>{{ item.name }}</h3>
 									<p>재고 {{ item.count }}</p>
@@ -37,8 +27,7 @@
 							v-for="consonant in getConsonantList"
 							:key="consonant"
 							@click="moveScroll(consonant)"
-							>{{ consonant }}</span
-						>
+						>{{ consonant }}</span>
 					</div>
 				</template>
 				<template v-slot:tab2>상품 수동 입력</template>
@@ -46,11 +35,7 @@
 		</div>
 		<div class="pos__content">
 			<ul class="pos__content__list">
-				<li
-					class="pos__content__list__item"
-					v-for="idx in 20"
-					:key="idx"
-				>
+				<li class="pos__content__list__item" v-for="idx in 20" :key="idx">
 					<p class="name">(빙그레)메로나메론맛</p>
 					<p class="count">×1</p>
 					<p class="price">14,700원</p>
@@ -79,63 +64,63 @@ interface FilterConsonantItem {
 @Component({
 	components: {
 		ViewPager: ViewPagerVue,
-		BarcodeScanner: BarcodeScannerVue,
-	},
+		BarcodeScanner: BarcodeScannerVue
+	}
 })
 export default class PoS extends Vue {
 	list: any[] = [
 		{
 			name: "가나다",
-			count: 55,
+			count: 55
 		},
 		{
 			name: "가오리",
-			count: 44,
+			count: 44
 		},
 		{
 			name: "가나",
-			count: 33,
+			count: 33
 		},
 		{
 			name: "라마바",
-			count: 22,
+			count: 22
 		},
 		{
 			name: "사아자",
-			count: 11,
+			count: 11
 		},
 		{
 			name: "abc",
-			count: 5,
+			count: 5
 		},
 		{
 			name: "def",
-			count: 2,
-		},
+			count: 2
+		}
 	];
 
-	created() {
-		console.log(this.getFilterList);
-	}
+	created() {}
 
 	get getFilterList(): FilterConsonantItem[] {
 		let result: FilterConsonantItem[] = [];
-		this.list.forEach((item) => {
+		this.list.forEach(item => {
 			let consonant = this.getConsonant(item.name);
-			let idx = result.findIndex((item) => item.consonant == consonant);
+			let idx = result.findIndex(item => item.consonant == consonant);
 			if (idx == -1) {
 				result.push({
 					consonant: consonant,
-					list: [item],
+					list: [item]
 				});
 			} else {
 				result[idx].list.push(item);
 			}
 		});
-		return result;
+		return result.sort((a, b) =>
+			a.consonant < b.consonant ? -1 : a.consonant > b.consonant ? 1 : 0
+		);
 	}
 	get getConsonantList(): string[] {
-		return this.getFilterList.map((item) => item.consonant);
+		return this.getFilterList.map(item => item.consonant);
 	}
 
 	getConsonant(word: string): string {
@@ -158,7 +143,7 @@ export default class PoS extends Vue {
 			"ㅋ",
 			"ㅌ",
 			"ㅍ",
-			"ㅎ",
+			"ㅎ"
 		];
 		let uni: number = word.charCodeAt(0) - 44032;
 		let fn: number = Math.floor(uni / 588);
