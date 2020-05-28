@@ -146,7 +146,6 @@ export default class PoS extends Vue {
 		let height = el.clientHeight - 40;
 
 		let y = e.touches[0].clientY - el.getBoundingClientRect().y;
-		console.log();
 
 		let idx = Math.floor(y / (height / this.getConsonantList.length)) - 1;
 
