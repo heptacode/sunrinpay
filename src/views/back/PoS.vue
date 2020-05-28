@@ -22,13 +22,19 @@
 							</li>
 						</ul>
 					</div>
-					<div class="pos__viewpager__search__tip">
+					<div
+						class="pos__viewpager__search__tip"
+						ref="search_tip"
+						@touchmove="touchSearchTip"
+						@touchend="currentConsonant = ''"
+					>
 						<span
 							v-for="consonant in getConsonantList"
 							:key="consonant"
 							@click="moveScroll(consonant)"
 						>{{ consonant }}</span>
 					</div>
+					<div class="pos__viewpager__search__tiptext" v-if="currentConsonant">{{currentConsonant}}</div>
 				</template>
 				<template v-slot:tab2>상품 수동 입력</template>
 			</ViewPager>
@@ -98,6 +104,7 @@ export default class PoS extends Vue {
 			count: 2
 		}
 	];
+	currentConsonant: string = "";
 
 	created() {}
 
@@ -119,6 +126,7 @@ export default class PoS extends Vue {
 			a.consonant < b.consonant ? -1 : a.consonant > b.consonant ? 1 : 0
 		);
 	}
+
 	get getConsonantList(): string[] {
 		return this.getFilterList.map(item => item.consonant);
 	}
@@ -159,6 +167,19 @@ export default class PoS extends Vue {
 			searchList.scrollTo(0, el.offsetTop);
 		}
 	}
+	touchSearchTip(e: TouchEvent) {
+		let el: HTMLDivElement = this.$refs.search_tip as HTMLDivElement;
+		let height = el.clientHeight - 40;
+
+		let y = e.touches[0].clientY + 20;
+
+		let idx = Math.floor(y / (height / this.getConsonantList.length)) - 1;
+
+		if (idx >= 0 && idx < this.getConsonantList.length) {
+			this.currentConsonant = this.getConsonantList[idx];
+			this.moveScroll(this.getConsonantList[idx]);
+		}
+	}
 }
 </script>
 
@@ -190,7 +211,7 @@ export default class PoS extends Vue {
 			padding: 30px 50px;
 
 			overflow-y: auto;
-			scroll-behavior: smooth;
+			/* scroll-behavior: smooth; */
 			&::-webkit-scrollbar {
 				display: none;
 			}
@@ -242,7 +263,10 @@ export default class PoS extends Vue {
 			align-items: center;
 			flex-direction: column;
 
+			z-index: 50;
+
 			span {
+				width: 100%;
 				font-size: 0.7em;
 				flex: 1;
 
@@ -250,6 +274,25 @@ export default class PoS extends Vue {
 				justify-content: center;
 				align-items: center;
 			}
+		}
+		.pos__viewpager__search__tiptext {
+			position: absolute;
+			left: 50%;
+			top: 50%;
+
+			display: flex;
+			justify-content: center;
+			align-items: center;
+
+			width: 1.5em;
+			height: 1.5em;
+
+			transform: translateX(-50%) translateY(-50%);
+			background-color: rgba(0, 0, 0, 0.15);
+
+			font-size: $large-size;
+
+			z-index: 50;
 		}
 	}
 	.pos__content {
