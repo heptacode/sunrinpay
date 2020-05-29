@@ -22,9 +22,6 @@ export default class BarcodeScanner extends Vue {
 
 	@Prop({ default: () => {} }) onDetected: Function | undefined;
 
-	@Watch("result")
-	onChangeResult() {}
-
 	start() {
 		Quagga.onDetected(this.onDet);
 		Quagga.onProcessed(this.onProcessed);

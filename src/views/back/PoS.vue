@@ -48,7 +48,11 @@
 			<ul class="pos__content__list">
 				<li class="pos__content__list__item" v-for="item in selectedList" :key="item.name">
 					<p class="name">{{item.name}}</p>
-					<p class="count">×{{item.count}}</p>
+					<div class="count">
+						<button class="count__action count__action__minous" @click="minousItemCount(item)">-</button>
+						<p>×{{item.count}}</p>
+						<button class="count__action count__action__plus" @click="plusItemCount(item)">+</button>
+					</div>
 					<p class="price">{{item.money.numberFormat()}}</p>
 					<i class="delete material-icons" @click="removeSelectItem(item)">delete_forever</i>
 				</li>
@@ -206,6 +210,14 @@ export default class PoS extends Vue {
 		let idx = this.list.findIndex(item => item.barcode == result);
 		if (idx != -1) this.appendSelectedItem(this.list[idx]);
 	}
+
+	plusItemCount(item: PoSItem) {
+		item.count++;
+	}
+	minousItemCount(item: PoSItem) {
+		item.count--;
+		if (item.count <= 0) this.removeSelectItem(item);
+	}
 }
 </script>
 
@@ -216,6 +228,7 @@ export default class PoS extends Vue {
 	flex-direction: row;
 	.pos__viewpager {
 		flex: 1 1 50%;
+		color: white;
 
 		.pos__viewpager__barcodescanner {
 			display: flex;
@@ -350,12 +363,37 @@ export default class PoS extends Vue {
 				}
 				.count {
 					flex: 1;
+
+					display: flex;
+					justify-content: center;
+					align-items: center;
+
+					.count__action {
+						display: flex;
+						justify-content: center;
+						align-items: center;
+						background-color: rgba(88, 88, 88, 0.25);
+					}
+					.count__action__plus {
+						width: 50px;
+						height: 50px;
+
+						margin-left: 20px;
+					}
+					.count__action__minous {
+						width: 50px;
+						height: 50px;
+
+						margin-right: 20px;
+					}
 				}
 				.price {
 					flex: 3;
 					text-align: right;
 				}
 				.delete {
+					cursor: pointer;
+
 					display: flex;
 					justify-content: center;
 					align-items: center;
