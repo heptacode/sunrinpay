@@ -22,7 +22,7 @@
 									<p>재고 {{ item.count }}</p>
 								</div>
 								<div>
-									<h4>{{item.money}}원</h4>
+									<h4>{{item.money.numberFormat()}}원</h4>
 								</div>
 							</li>
 						</ul>
@@ -49,7 +49,7 @@
 				<li class="pos__content__list__item" v-for="item in selectedList" :key="item.name">
 					<p class="name">{{item.name}}</p>
 					<p class="count">×{{item.count}}</p>
-					<p class="price">{{item.money}}</p>
+					<p class="price">{{item.money.numberFormat()}}</p>
 					<i class="delete material-icons" @click="removeSelectItem(item)">delete_forever</i>
 				</li>
 			</ul>
