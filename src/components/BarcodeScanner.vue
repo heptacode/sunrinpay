@@ -65,7 +65,8 @@ export default class BarcodeScanner extends Vue {
 		Quagga.stop();
 	}
 	onDet(data) {
-		this.tmpDetectedList.push(data.codeResult.code);
+		if (data.codeResult.code)
+			this.tmpDetectedList.push(data.codeResult.code);
 		if (!this.tmpDetectedTimer) {
 			let tmpCountList = {};
 			this.tmpDetectedTimer = window.setTimeout(() => {
@@ -86,7 +87,7 @@ export default class BarcodeScanner extends Vue {
 				if (this.onDetected) this.onDetected(this.result);
 				this.tmpDetectedList = [];
 				this.tmpDetectedTimer = 0;
-			}, 1000);
+			}, 500);
 		}
 	}
 	onProcessed(result) {

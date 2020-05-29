@@ -206,9 +206,12 @@ export default class PoS extends Vue {
 		);
 	}
 	onDetected(result: string) {
-		console.log(result);
 		let idx = this.list.findIndex(item => item.barcode == result);
-		if (idx != -1) this.appendSelectedItem(this.list[idx]);
+		if (idx != -1) {
+			let beep = new Audio(require("@/assets/beep.mp3"));
+			beep.play();
+			this.appendSelectedItem(this.list[idx]);
+		}
 	}
 
 	plusItemCount(item: PoSItem) {
