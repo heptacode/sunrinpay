@@ -1,5 +1,5 @@
 module.exports = {
-	publicPath: process.env.NODE_ENV === "production" ? "/Frontend/" : "/",
+	// publicPath: process.env.NODE_ENV === "production" ? "/Frontend/" : "/",
 	outputDir: "docs",
 	css: {
 		loaderOptions: {
