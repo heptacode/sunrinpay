@@ -4,11 +4,13 @@
 	"private": true,
 	"scripts": {
 		"serve": "vue-cli-service serve",
-		"build": "vue-cli-service build"
+		"build": "vue-cli-service build",
+		"deploy": "vue-cli-service build && firebase deploy"
 	},
 	"dependencies": {
 		"core-js": "^3.6.4",
 		"firebase": "^7.14.5",
+		"firebaseui": "^4.5.0",
 		"qrcode": "^1.4.4",
 		"quagga": "^0.12.1",
 		"random-words": "^1.1.1",
