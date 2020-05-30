@@ -77,10 +77,13 @@ button {
 	}
 }
 
+// 리스트 기본 css 제거
 ul {
 	list-style: none;
 }
 
+
+// radio 버튼 커스텀
 input[type="radio"] {
 	display: none;
 	~ span {
