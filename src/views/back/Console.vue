@@ -21,7 +21,9 @@
 				<h2>지난 7일간 매출</h2>
 				<p>표시 범위 변경</p>
 			</div>
-			<SalesChart class="console__content__chart"></SalesChart>
+			<div class="console__content__chart">
+				<SalesChart style="width:100%; height:90%;" v-if="isMounted"></SalesChart>
+			</div>
 			<div class="console__content__top3">
 				<h2>오늘 판매 순위</h2>
 				<ul class="console__content__top3__list">
@@ -31,13 +33,13 @@
 						<div class="price">4,200원</div>
 						<div class="sales">5,740</div>
 					</li>
-                    <li class="console__content__top3__list__item">
+					<li class="console__content__top3__list__item">
 						<div class="score">2</div>
 						<div class="name">커피콜라맛우유</div>
 						<div class="price">4,200원</div>
 						<div class="sales">5,740</div>
 					</li>
-                    <li class="console__content__top3__list__item">
+					<li class="console__content__top3__list__item">
 						<div class="score">3</div>
 						<div class="name">커피콜라맛우유</div>
 						<div class="price">4,200원</div>
@@ -58,7 +60,14 @@ import SalesChart from "../../components/SalesChart.vue";
 		SalesChart: SalesChart
 	}
 })
-export default class Console extends Vue {}
+export default class Console extends Vue {
+	isMounted = false;
+	mounted() {
+		setTimeout(() => {
+			this.isMounted = true;
+		}, 1000);
+	}
+}
 </script>
 
 <style lang="scss">
@@ -89,6 +98,7 @@ export default class Console extends Vue {}
 			}
 			p {
 				font-size: $small-size;
+				text-align: right;
 			}
 		}
 		.console__content__actions {
@@ -104,6 +114,9 @@ export default class Console extends Vue {}
 		}
 		.console__content__chart {
 			flex: 1;
+			display: flex;
+			justify-content: center;
+			align-items: center;
 		}
 		.console__content__top3 {
 			h2 {
@@ -113,8 +126,10 @@ export default class Console extends Vue {}
 			}
 			.console__content__top3__list {
 				.console__content__top3__list__item {
-                    display: flex;
-                    font-size: $small-normal-size;
+					padding: 10px 0;
+
+					display: flex;
+					font-size: $small-normal-size;
 					.score {
 						flex: 1;
 					}
