@@ -18,9 +18,9 @@ declare global {
 Number.prototype.numberFormat = function(this: number): string {
 	return new Intl.NumberFormat().format(this);
 };
-Number(19).numberFormat();
+
 new Vue({
 	router,
 	store,
-	render: h => h(App),
+	render: (h) => h(App),
 }).$mount("#app");
