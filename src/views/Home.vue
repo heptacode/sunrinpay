@@ -4,6 +4,8 @@
 			<h2>Routers</h2>
 			<router-link :to="{name:'pos'}">pos</router-link>
 			<br />
+			<router-link :to="{name:'console'}">console</router-link>
+			<br />
 			<br />
 			<router-link :to="{name:'simplemode'}">simplemode</router-link>
 			<br />
@@ -19,6 +21,8 @@
 			<router-link :to="{name:'simple-payment'}">simple-payment</router-link>
 			<br />
 			<router-link :to="{name:'details-payment'}">details-payment</router-link>
+			<br />
+			<router-link :to="{name:'main'}">main</router-link>
 		</div>
 		<div style="margin-top:50px;">
 			<h2>Number Counter</h2>
@@ -33,6 +37,10 @@
 			</ViewPager>
 		</div>
 		<div style="margin-top:50px;">
+			<h2>Sales Chart</h2>
+			<SalesChart style="height:500px;"></SalesChart>
+		</div>
+		<div style="margin-top:50px;">
 			<h2>Barcode Scanner</h2>
 			<BarcodeScanner></BarcodeScanner>
 		</div>
@@ -45,11 +53,13 @@ import BarcodeScannerVue from "../components/BarcodeScanner.vue";
 import ViewPagerVue from "../components/ViewPager.vue";
 
 import { Vue, Component } from "vue-property-decorator";
+import SalesChartVue from "../components/SalesChart.vue";
 @Component({
 	components: {
 		NumberCounter: NumberCounterVue,
 		BarcodeScanner: BarcodeScannerVue,
-		ViewPager: ViewPagerVue
+		ViewPager: ViewPagerVue,
+		SalesChart: SalesChartVue
 	}
 })
 export default class Home extends Vue {

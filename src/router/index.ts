@@ -17,6 +17,7 @@ import DetailsUserPayment from "@/views/user/DetailsUserPayment.vue";
 import Main from "@/views/user/Main.vue";
 
 import PoS from "@/views/back/PoS.vue";
+import Console from "@/views/back/Console.vue";
 
 Vue.use(VueRouter);
 
@@ -37,6 +38,11 @@ const routes: Array<RouteConfig> = [
 		path: "/back/pos",
 		name: "pos",
 		component: PoS,
+	},
+	{
+		path: "/back/console",
+		name: "console",
+		component: Console,
 	},
 
 	{
