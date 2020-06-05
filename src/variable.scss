@@ -1,4 +1,4 @@
-$primary-color: #36afff;
+$primary-color: #538fff;
 
 $background-color: white;
 $disable-color: #585858;
@@ -14,7 +14,7 @@ $small-normal-size: 1.5em;
 $small-up-size: 1.2em;
 $small-size: 1.1em;
 
-// dark mode
+// Dark Mode
 @media (prefers-color-scheme: dark) {
 	$background-color: #373737 !global;
 	$disable-color: #aeaeae !global;
