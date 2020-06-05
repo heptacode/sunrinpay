@@ -14,7 +14,10 @@ import PaymentError from "@/views/front/Payment-Error.vue";
 
 import SimpleUserPayment from "@/views/user/SimpleUserPayment.vue";
 import DetailsUserPayment from "@/views/user/DetailsUserPayment.vue";
+import Main from "@/views/user/Main.vue";
+
 import PoS from "@/views/back/PoS.vue";
+import Console from "@/views/back/Console.vue";
 
 Vue.use(VueRouter);
 
@@ -35,6 +38,11 @@ const routes: Array<RouteConfig> = [
 		path: "/back/pos",
 		name: "pos",
 		component: PoS,
+	},
+	{
+		path: "/back/console",
+		name: "console",
+		component: Console,
 	},
 
 	{
@@ -62,7 +70,11 @@ const routes: Array<RouteConfig> = [
 		name: "payment-error",
 		component: PaymentError,
 	},
-
+	{
+		path: "/user/main",
+		name: "main",
+		component: Main,
+	},
 	{
 		path: "/user/simple-payment",
 		name: "simple-payment",
