@@ -57,8 +57,8 @@ import { Vue, Component } from "vue-property-decorator";
 import SalesChart from "../../components/SalesChart.vue";
 @Component({
 	components: {
-		SalesChart: SalesChart
-	}
+		SalesChart: SalesChart,
+	},
 })
 export default class Console extends Vue {
 	isMounted = false;
@@ -83,7 +83,7 @@ export default class Console extends Vue {
 
 		border-radius: 24px;
 		box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
-		background-color: #333333;
+		background-color: $content-color;
 
 		.console__content__head {
 			display: flex;
