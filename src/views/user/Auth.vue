@@ -10,11 +10,7 @@ import * as firebaseui from "firebaseui";
 
 import { Vue, Component } from "vue-property-decorator";
 
-import credentials from "@/../credentials";
-
-firebase.initializeApp(credentials.firebaseConfig);
-firebase.analytics();
-firebase.auth().languageCode = "ko";
+import { db } from "@/DB";
 
 const ui = new firebaseui.auth.AuthUI(firebase.auth());
 
@@ -25,7 +21,7 @@ const uiConfig = {
 			// Return type determines whether we continue the redirect automatically
 			// or whether we leave that to developer to handle.
 			return true;
-		}
+		},
 	},
 	// signInFlow: "popup",
 	signInSuccessUrl: "/",
@@ -33,28 +29,29 @@ const uiConfig = {
 		firebase.auth.EmailAuthProvider.PROVIDER_ID,
 		{
 			provider: firebase.auth.PhoneAuthProvider.PROVIDER_ID,
-			defaultCountry: "KR"
+			defaultCountry: "KR",
 		},
 		firebase.auth.GoogleAuthProvider.PROVIDER_ID,
 		firebase.auth.FacebookAuthProvider.PROVIDER_ID,
 		firebase.auth.TwitterAuthProvider.PROVIDER_ID,
 		firebase.auth.GithubAuthProvider.PROVIDER_ID,
 		"apple.com",
-		"microsoft.com"
-	]
+		"microsoft.com",
+	],
 	// Terms of service url.
 	// tosUrl: "<your-tos-url>",
 	// Privacy policy url.
 	// privacyPolicyUrl: "<your-privacy-policy-url>",
 };
 
-ui.start("#firebaseui-auth-container", uiConfig);
 @Component
 export default class Auth extends Vue {
 	mounted() {
+		ui.start("#firebaseui-auth-container", uiConfig);
 		firebase.auth().onAuthStateChanged(user => {
 			console.log(user);
 		});
+		this.$store.dispatch("bindTodos", db.collection("all"));
 	}
 }
 </script>
