@@ -8,38 +8,7 @@
 					</div>
 				</template>
 				<template v-slot:tab1>
-					<div class="pos__viewpager__search" ref="searchList">
-						<ul v-for="fl in getFilterList" :key="fl.consonant" :ref="`searchItem_${fl.consonant}`">
-							<h2>{{ fl.consonant }}</h2>
-							<li
-								class="pos__viewpager__search__item"
-								v-for="(item,idx) in fl.list"
-								:key="item.name+idx"
-								@click="appendSelectedItem(item)"
-							>
-								<div>
-									<h3>{{ item.name }}</h3>
-									<p>재고 {{ item.count }}</p>
-								</div>
-								<div>
-									<h4>{{item.money.numberFormat()}}원</h4>
-								</div>
-							</li>
-						</ul>
-					</div>
-					<div
-						class="pos__viewpager__search__tip"
-						ref="search_tip"
-						@touchmove="touchSearchTip"
-						@touchend="currentConsonant = ''"
-					>
-						<span
-							v-for="consonant in getConsonantList"
-							:key="consonant"
-							@click="moveScroll(consonant)"
-						>{{ consonant }}</span>
-					</div>
-					<div class="pos__viewpager__search__tiptext" v-if="currentConsonant">{{currentConsonant}}</div>
+					<StockList :data="list" @add-item="appendSelectedItem"></StockList>
 				</template>
 				<template v-slot:tab2>상품 수동 입력</template>
 			</ViewPager>
@@ -72,34 +41,27 @@ import BarcodeScannerVue from "../../components/BarcodeScanner.vue";
 import randomWords from "random-words";
 
 import { Vue, Component } from "vue-property-decorator";
+import StockListVue from "../../components/StockList.vue";
+import { StockItem } from "../../schema";
 
-interface FilterConsonantItem {
-	consonant: string;
-	list: PoSItem[];
-}
-interface PoSItem {
-	name: string;
-	barcode?: string;
-	count: number;
-	money: number;
-}
 @Component({
 	components: {
 		ViewPager: ViewPagerVue,
-		BarcodeScanner: BarcodeScannerVue
+		BarcodeScanner: BarcodeScannerVue,
+		StockList: StockListVue
 	}
 })
 export default class PoS extends Vue {
 	// 테스트 데이터 (상품 목록)
-	list: PoSItem[] = randomWords(100).map(word => {
+	list: StockItem[] = randomWords(100).map(word => {
 		return {
 			name: word,
 			count: Math.floor(Math.random() * 100),
-			money: Math.floor(Math.random() * 10000)
+			price: Math.floor(Math.random() * 10000)
 		};
 	});
 	// 선택된 목록
-	selectedList: PoSItem[] = [];
+	selectedList: StockItem[] = [];
 	// 현 스크롤 위치 (터치 전용)
 	currentConsonant: string = "";
 
@@ -108,90 +70,18 @@ export default class PoS extends Vue {
 		this.list.push({
 			name: "마스크",
 			count: 5,
-			money: 1500,
+			price: 1500,
 			barcode: "8809453880519"
 		});
 		this.list.push({
 			name: "박종훈 학생증",
 			count: 4,
-			money: 500,
+			price: 500,
 			barcode: "S2180146"
 		});
 	}
 
-	get getFilterList(): FilterConsonantItem[] {
-		let result: FilterConsonantItem[] = [];
-		this.list.forEach(item => {
-			let consonant = this.getConsonant(item.name);
-			let idx = result.findIndex(item => item.consonant == consonant);
-			if (idx == -1) {
-				result.push({
-					consonant: consonant,
-					list: [item]
-				});
-			} else {
-				result[idx].list.push(item);
-			}
-		});
-		return result.sort((a, b) =>
-			a.consonant < b.consonant ? -1 : a.consonant > b.consonant ? 1 : 0
-		);
-	}
-
-	get getConsonantList(): string[] {
-		return this.getFilterList.map(item => item.consonant);
-	}
-
-	getConsonant(word: string): string {
-		const f: string[] = [
-			"ㄱ",
-			"ㄲ",
-			"ㄴ",
-			"ㄷ",
-			"ㄸ",
-			"ㄹ",
-			"ㅁ",
-			"ㅂ",
-			"ㅃ",
-			"ㅅ",
-			"ㅆ",
-			"ㅇ",
-			"ㅈ",
-			"ㅉ",
-			"ㅊ",
-			"ㅋ",
-			"ㅌ",
-			"ㅍ",
-			"ㅎ"
-		];
-		let uni: number = word.charCodeAt(0) - 44032;
-		let fn: number = Math.floor(uni / 588);
-		return f[fn] || word[0].toUpperCase();
-	}
-
-	moveScroll(consonant: string) {
-		let searchList: HTMLElement = this.$refs.searchList as HTMLElement;
-		let el: HTMLElement = this.$refs[
-			`searchItem_${consonant}`
-		][0] as HTMLElement;
-		if (searchList && el) {
-			searchList.scrollTo(0, el.offsetTop);
-		}
-	}
-	touchSearchTip(e: TouchEvent) {
-		let el: HTMLDivElement = this.$refs.search_tip as HTMLDivElement;
-		let height = el.clientHeight - 40;
-
-		let y = e.touches[0].clientY - el.getBoundingClientRect().y;
-
-		let idx = Math.floor(y / (height / this.getConsonantList.length)) - 1;
-
-		if (idx >= 0 && idx < this.getConsonantList.length) {
-			this.currentConsonant = this.getConsonantList[idx];
-			this.moveScroll(this.getConsonantList[idx]);
-		}
-	}
-	appendSelectedItem(item: PoSItem) {
+	appendSelectedItem(item: StockItem) {
 		let idx = this.selectedList.findIndex(i => i.name == item.name);
 		if (idx == -1) {
 			let copyObject = Object.assign({}, item);
@@ -199,7 +89,7 @@ export default class PoS extends Vue {
 			this.selectedList.push(copyObject);
 		} else this.selectedList[idx].count++;
 	}
-	removeSelectItem(item: PoSItem) {
+	removeSelectItem(item: StockItem) {
 		this.selectedList.splice(
 			this.selectedList.findIndex(i => i.name == item.name),
 			1
@@ -214,10 +104,10 @@ export default class PoS extends Vue {
 		}
 	}
 
-	plusItemCount(item: PoSItem) {
+	plusItemCount(item: StockItem) {
 		item.count++;
 	}
-	minousItemCount(item: PoSItem) {
+	minousItemCount(item: StockItem) {
 		item.count--;
 		if (item.count <= 0) this.removeSelectItem(item);
 	}
@@ -241,100 +131,6 @@ export default class PoS extends Vue {
 			width: 100%;
 			height: 100%;
 			overflow: hidden;
-		}
-		.pos__viewpager__search {
-			position: relative;
-
-			background-color: $primary-color;
-
-			width: 100%;
-			height: 100%;
-
-			padding: 30px 50px;
-
-			overflow-y: auto;
-			/* scroll-behavior: smooth; */
-			&::-webkit-scrollbar {
-				display: none;
-			}
-			h2 {
-				margin: 20px 0;
-
-				&:first-child {
-					margin-top: 0;
-				}
-			}
-			h2,
-			h3 {
-				font-size: $small-normal-size;
-			}
-			h4 {
-				font-size: $small-up-size;
-			}
-
-			.pos__viewpager__search__item {
-				display: flex;
-				justify-content: space-between;
-				align-items: center;
-
-				padding: 15px 30px;
-
-				border-radius: 24px;
-				box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
-
-				background-color: white;
-				color: black;
-
-				margin-bottom: 20px;
-			}
-		}
-		.pos__viewpager__search__tip {
-			position: absolute;
-			top: 20px;
-			left: 20px;
-
-			padding: 20px 0;
-
-			width: 20px;
-			height: calc(100% - 40px);
-
-			border-radius: 16px;
-			background-color: rgba(0, 0, 0, 0.15);
-
-			display: flex;
-			align-items: center;
-			flex-direction: column;
-
-			z-index: 50;
-
-			span {
-				width: 100%;
-				font-size: 0.7em;
-				flex: 1;
-
-				display: flex;
-				justify-content: center;
-				align-items: center;
-			}
-		}
-		.pos__viewpager__search__tiptext {
-			position: absolute;
-			left: 50%;
-			top: 50%;
-
-			display: flex;
-			justify-content: center;
-			align-items: center;
-
-			width: 1.5em;
-			height: 1.5em;
-
-			transform: translateX(-50%) translateY(-50%);
-			background-color: rgba(0, 0, 0, 0.15);
-
-			font-size: $large-size;
-
-			z-index: 50;
 		}
 	}
 	.pos__content {
