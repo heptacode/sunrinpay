@@ -3,7 +3,7 @@
 		<div class="simplemode__content">
 			<p>결제하실 금액</p>
 			<h2>
-				<NumberCounter :number="25565"></NumberCounter>원
+				<NumberCounter text="25565" :isNumberFormat="true" defaultChar="0"></NumberCounter>원
 			</h2>
 		</div>
 		<div class="simplemode__content2">
@@ -19,7 +19,7 @@
 <script lang="ts">
 import PaymentButtonVue from "@/components/PaymentButton.vue";
 import CashButtonVue from "@/components/CashButton.vue";
-import NumberCounterVue from "@/components/NumberCounter.vue";
+import NumberCounterVue from "vue-roller";
 
 import { Vue, Component } from "vue-property-decorator";
 

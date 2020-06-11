@@ -8,8 +8,8 @@
 				<br />결제를 진행해주세요.
 			</p>
 			<p class="payment__content__expirationtime">
-				<NumberCounter :number="getMinute"></NumberCounter>:
-				<NumberCounter :number="getSecond"></NumberCounter>
+				<NumberCounter :text="getMinute" defaultChar="0"></NumberCounter>:
+				<NumberCounter :text="getSecond" defaultChar="0"></NumberCounter>
 			</p>
 		</div>
 		<div class="payment__actions">
@@ -27,7 +27,7 @@
 
 <script lang="ts">
 import QRcodeVue from "@/components/QRcode.vue";
-import NumberCounterVue from "@/components/NumberCounter.vue";
+import NumberCounterVue from "vue-roller";
 
 import { Vue, Component } from "vue-property-decorator";
 

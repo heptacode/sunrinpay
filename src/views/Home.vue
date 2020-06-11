@@ -29,7 +29,13 @@
 		</div>
 		<div style="margin-top:50px;">
 			<h2>Number Counter</h2>
-			<NumberCounter :number="Number(n)" style="width:100%; font-size:2em;" direction="bottom"></NumberCounter>
+			<NumberCounter
+				:text="n"
+				:isNumberFormat="true"
+				defaultChar="0"
+				style="width:100%; font-size:2em;"
+				direction="bottom"
+			></NumberCounter>
 		</div>
 		<div style="margin-top:50px; width:400px;height:400px;">
 			<h2>View Pager</h2>
@@ -51,7 +57,7 @@
 </template>
 
 <script lang="ts">
-import NumberCounterVue from "../components/NumberCounter.vue";
+import NumberCounterVue from "vue-roller";
 import BarcodeScannerVue from "../components/BarcodeScanner.vue";
 import ViewPagerVue from "../components/ViewPager.vue";
 
@@ -62,14 +68,14 @@ import SalesChartVue from "../components/SalesChart.vue";
 		NumberCounter: NumberCounterVue,
 		BarcodeScanner: BarcodeScannerVue,
 		ViewPager: ViewPagerVue,
-		SalesChart: SalesChartVue,
-	},
+		SalesChart: SalesChartVue
+	}
 })
 export default class Home extends Vue {
-	n: number = 25565;
+	n: string = "25565";
 	mounted() {
 		setInterval(() => {
-			this.n = Math.floor(Math.random() * 65535);
+			this.n = Math.floor(Math.random() * 65535).toString();
 		}, 1000);
 	}
 }

@@ -26,10 +26,7 @@
 					<i class="delete material-icons" @click="removeSelectItem(item)">delete_forever</i>
 				</li>
 			</ul>
-			<button class="pos__content__okbtn">
-				<h2>계산 완료</h2>
-				<p>고객에게 결제를 요청합니다.</p>
-			</button>
+			<PaymentRequireButton></PaymentRequireButton>
 		</div>
 	</div>
 </template>
@@ -43,12 +40,14 @@ import randomWords from "random-words";
 import { Vue, Component } from "vue-property-decorator";
 import StockListVue from "../../components/StockList.vue";
 import { StockItem } from "../../schema";
+import PaymentRequireButtonVue from "../../components/PaymentRequireButton.vue";
 
 @Component({
 	components: {
 		ViewPager: ViewPagerVue,
 		BarcodeScanner: BarcodeScannerVue,
-		StockList: StockListVue
+		StockList: StockListVue,
+		PaymentRequireButton: PaymentRequireButtonVue
 	}
 })
 export default class PoS extends Vue {
@@ -202,22 +201,6 @@ export default class PoS extends Vue {
 
 					margin-left: 20px;
 				}
-			}
-		}
-		.pos__content__okbtn {
-			border-radius: 24px;
-			box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
-			background-color: #ffffff;
-			color: #246088;
-
-			h2 {
-				font-size: $normal-size;
-				font-weight: bold;
-				word-break: keep-all;
-			}
-			p {
-				font-size: $small-up-size;
-				word-break: keep-all;
 			}
 		}
 	}
