@@ -2,6 +2,7 @@
 	<div>
 		<div id="firebaseui-auth-container"></div>
 		<button @click="test"></button>
+		<input type="text" v-model="t_input" />
 	</div>
 </template>
 
@@ -20,12 +21,13 @@ import { db } from "@/DB";
 })
 export default class Auth extends Vue {
 	documents: any[] = [];
+	uid: string = "";
 
 	mounted() {
 		const ui = new firebaseui.auth.AuthUI(firebase.auth());
 		const uiConfig = {
 			callbacks: {
-				signInSuccessWithAuthResult: function(authResult, redirectUrl) {
+				signInSuccessWithAuthResult: (authResult, redirectUrl) => {
 					// User successfully signed in.
 					// Return type determines whether we continue the redirect automatically
 					// or whether we leave that to developer to handle.
@@ -33,7 +35,7 @@ export default class Auth extends Vue {
 				},
 			},
 			// signInFlow: "popup",
-			signInSuccessUrl: "/",
+			signInSuccessUrl: "/auth",
 			signInOptions: [
 				{
 					provider: firebase.auth.EmailAuthProvider.PROVIDER_ID,
@@ -59,7 +61,23 @@ export default class Auth extends Vue {
 		ui.start("#firebaseui-auth-container", uiConfig);
 
 		firebase.auth().onAuthStateChanged(user => {
-			console.log(user);
+			if (user) {
+				console.log("LOGIN : " + user);
+				// name = user.displayName;
+				// email = user.email;
+				// photoUrl = user.photoURL;
+				// emailVerified = user.emailVerified;
+				this.uid = user.uid;
+				db.collection("accounts")
+					.doc(this.uid)
+					.set(user)
+					.then(() => {
+						console.log("user updated!");
+					});
+				console.log("TOKEN : " + user.getIdToken());
+			} else {
+				console.log("LOGOUT : " + user);
+			}
 		});
 		console.log("docs : " + this.documents);
 	}
