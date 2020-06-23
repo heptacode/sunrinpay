@@ -1,8 +1,8 @@
 <template>
 	<div>
 		<div id="firebaseui-auth-container"></div>
-		<button @click="test"></button>
-		<input type="text" v-model="t_input" />
+		<button @click="test">test</button>
+		<button @click="signOut">Sign out</button>
 	</div>
 </template>
 
@@ -16,12 +16,13 @@ import { db } from "@/DB";
 
 @Component({
 	firestore: {
-		documents: db.collection("all"),
+		documents: db.collection("accounts"),
 	},
 })
 export default class Auth extends Vue {
 	documents: any[] = [];
 	uid: string = "";
+	idToken: string = "";
 
 	mounted() {
 		const ui = new firebaseui.auth.AuthUI(firebase.auth());
@@ -34,7 +35,6 @@ export default class Auth extends Vue {
 					return true;
 				},
 			},
-			// signInFlow: "popup",
 			signInSuccessUrl: "/auth",
 			signInOptions: [
 				{
@@ -55,31 +55,47 @@ export default class Auth extends Vue {
 			// Terms of service url.
 			// tosUrl: "<your-tos-url>",
 			// Privacy policy url.
-			// privacyPolicyUrl: "<your-privacy-policy-url>",
+			privacyPolicyUrl: "https://sunrinpay.web.app/privacy",
 		};
 
 		ui.start("#firebaseui-auth-container", uiConfig);
 
 		firebase.auth().onAuthStateChanged(user => {
 			if (user) {
-				console.log("LOGIN : " + user);
+				console.log("LOGIN : %O", user);
 				// name = user.displayName;
 				// email = user.email;
 				// photoUrl = user.photoURL;
 				// emailVerified = user.emailVerified;
 				this.uid = user.uid;
+				user.getIdToken().then(idToken => console.log("TOKEN : " + idToken));
+
+				console.log("uid : " + this.uid);
+				let userData = {
+					displayName: user.displayName,
+					email: user.email,
+					emailVerified: user.emailVerified,
+					photoURL: user.photoURL,
+					isAnonymous: user.isAnonymous,
+					uid: user.uid,
+					providerData: user.providerData,
+				};
 				db.collection("accounts")
-					.doc(this.uid)
-					.set(user)
-					.then(() => {
-						console.log("user updated!");
-					});
-				console.log("TOKEN : " + user.getIdToken());
+					.doc(user.uid)
+					.set(userData)
+					.then(() => console.log("User updated!"))
+					.catch(err => console.log("Error : " + err));
 			} else {
-				console.log("LOGOUT : " + user);
+				console.log("Not Signed in");
 			}
 		});
-		console.log("docs : " + this.documents);
+	}
+	signOut() {
+		firebase
+			.auth()
+			.signOut()
+			.then(() => console.log("Sign out successful."))
+			.catch(err => console.log("Error : " + err));
 	}
 	test() {
 		console.log("docs : " + JSON.stringify(this.documents));
