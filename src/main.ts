@@ -7,6 +7,8 @@ import * as firebase from "firebase/app";
 import { firestorePlugin } from "vuefire";
 import VueAnalytics from "vue-analytics";
 
+import "@iconify/iconify";
+
 Vue.config.productionTip = false;
 
 Vue.use(firestorePlugin);

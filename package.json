@@ -9,6 +9,7 @@
 		"deploy-hosting": "vue-cli-service build && firebase deploy --only hosting"
 	},
 	"dependencies": {
+		"@iconify/iconify": "^1.0.6",
 		"chart.js": "^2.9.3",
 		"core-js": "^3.6.4",
 		"firebase": "^7.15.0",
