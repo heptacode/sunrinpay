@@ -1,6 +1,9 @@
 <template>
 	<div>
-		<div :class="{ inactive: ifAuth }" id="firebaseui-auth-container"></div>
+		<div id="firebaseui-auth-container" :class="{ inactive: ifAuth }"></div>
+		<div id="loader" :class="{ inactive: ifAuth }">
+			<i class="iconify mdi-loading" data-icon="mdi-loading"></i>
+		</div>
 		<div v-if="ifAuth">
 			<img :src="photoURL" width="32px" height="32px" style="border-radius: 50%" />
 			<h1>{{ displayName }}</h1>
@@ -22,6 +25,7 @@ import { db } from "@/DB";
 
 @Component({})
 export default class Auth extends Vue {
+	// mdiLoading: string = mdiLoading;
 	ifAuth: boolean = false;
 	uid: string = "";
 
@@ -40,6 +44,11 @@ export default class Auth extends Vue {
 					//
 					return true;
 				},
+				uiShown: () => {
+					// The widget is rendered.
+					// Hide the loader.
+					document.getElementById("loader")!.style.display = "none";
+				},
 			},
 			signInSuccessUrl: "/auth",
 			signInOptions: [
@@ -49,6 +58,10 @@ export default class Auth extends Vue {
 				},
 				{
 					provider: firebase.auth.PhoneAuthProvider.PROVIDER_ID,
+					recaptchaParameters: {
+						size: "invisible",
+						badge: "bottomright",
+					},
 					defaultCountry: "KR",
 				},
 				{
@@ -122,5 +135,18 @@ export default class Auth extends Vue {
 @import url("https://www.gstatic.com/firebasejs/ui/4.5.0/firebase-ui-auth.css");
 .inactive {
 	display: none;
+}
+
+.mdi-loading {
+	font-size: 40px;
+	animation: rotate 0.6s linear infinite;
+}
+@keyframes rotate {
+	from {
+		transform: rotate(0deg);
+	}
+	to {
+		transform: rotate(360deg);
+	}
 }
 </style>
