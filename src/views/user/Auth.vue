@@ -7,7 +7,6 @@
 			<h3>
 				{{ email }} <span>{{ emailVerified ? "인증됨" : "미인증" }}</span>
 			</h3>
-			{{ isAnonymous }}
 			<button @click="signOut">Sign out</button>
 		</div>
 	</div>
@@ -30,7 +29,6 @@ export default class Auth extends Vue {
 	email: string = "";
 	emailVerified: boolean = false;
 	photoURL: string = "";
-	isAnonymous: boolean = false;
 
 	idToken: string = "";
 
@@ -53,16 +51,21 @@ export default class Auth extends Vue {
 					provider: firebase.auth.PhoneAuthProvider.PROVIDER_ID,
 					defaultCountry: "KR",
 				},
-				firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+				{
+					provider: firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+					clientId: "604565159530-tf5rvkljdec8n0o83lj2hjba53831q6i.apps.googleusercontent.com",
+				},
 				firebase.auth.FacebookAuthProvider.PROVIDER_ID,
 				firebase.auth.TwitterAuthProvider.PROVIDER_ID,
 				firebase.auth.GithubAuthProvider.PROVIDER_ID,
 				"apple.com",
 				"microsoft.com",
 			],
+			credentialHelper: firebaseui.auth.CredentialHelper.GOOGLE_YOLO,
 			tosUrl: "https://sunrinpay.web.app/privacy",
 			privacyPolicyUrl: "https://sunrinpay.web.app/privacy",
 		};
+		ui.disableAutoSignIn();
 
 		firebase.auth().onAuthStateChanged(user => {
 			if (user) {
@@ -73,7 +76,6 @@ export default class Auth extends Vue {
 				this.email = user.email!;
 				this.emailVerified = user.emailVerified;
 				this.photoURL = user.photoURL!;
-				this.isAnonymous = user.isAnonymous;
 
 				console.log("LOGIN");
 
@@ -84,7 +86,6 @@ export default class Auth extends Vue {
 						email: user.email,
 						emailVerified: user.emailVerified,
 						photoURL: user.photoURL,
-						isAnonymous: user.isAnonymous,
 						uid: user.uid,
 						providerData: user.providerData,
 						idToken: this.idToken,
@@ -108,7 +109,7 @@ export default class Auth extends Vue {
 			.signOut()
 			.then(() => {
 				this.ifAuth = false;
-				this.emailVerified = this.isAnonymous = false;
+				this.emailVerified = false;
 				this.uid = this.displayName = this.email = this.photoURL = this.idToken = "";
 				console.log("Sign out successful.");
 			})
