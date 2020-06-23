@@ -10,7 +10,7 @@
 				</li>
 			</ul>
 			<button class="detailsuserpayment__list__allbtn" @click="showAll">
-				<i class="material-icons">expand_more</i>
+				<i class="iconify" data-icon="mdi-chevron-down"></i>
 				모두보기
 			</button>
 		</div>
@@ -45,8 +45,8 @@ import { Vue, Component } from "vue-property-decorator";
 @Component({
 	mixins: [smoothReflow],
 	components: {
-		PaymentSelected: PaymentSelectedVue
-	}
+		PaymentSelected: PaymentSelectedVue,
+	},
 })
 export default class DetailsUserPayment extends Vue {
 	itemCount: number = 3;
@@ -55,7 +55,7 @@ export default class DetailsUserPayment extends Vue {
 	mounted() {
 		this.$smoothReflow!({
 			el: this.$refs.list as HTMLDivElement,
-			property: ["height"]
+			property: ["height"],
 		});
 	}
 

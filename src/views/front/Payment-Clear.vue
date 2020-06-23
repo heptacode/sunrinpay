@@ -1,6 +1,6 @@
 <template>
 	<div class="paymentclear">
-		<i class="material-icons paymentclear__icon">check_circle_outline</i>
+		<i class="iconify paymentclear__icon" data-icon="mdi-check-circle-outline"></i>
 		<div class="paymentclear__content">
 			<h2>결제가 완료되었습니다!</h2>
 			<p>
@@ -9,7 +9,7 @@
 			</p>
 		</div>
 		<div class="paymentclear__action">
-			<i class="material-icons">receipt</i>
+			<i class="iconify" data-icon="mdi-receipt"></i>
 			<p>영수증 인쇄</p>
 		</div>
 	</div>

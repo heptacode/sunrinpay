@@ -1,6 +1,7 @@
 <template>
 	<div class="paymenterror">
-		<i class="material-icons paymenterror__icon">error_outline</i>
+		<i class="iconify paymenterror__icon" data-icon="mdi-alert-circle-outline"></i>
+
 		<div class="paymenterror__content">
 			<h2>결제 요청이 만료되었습니다.</h2>
 			<p>

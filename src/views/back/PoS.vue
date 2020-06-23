@@ -23,7 +23,7 @@
 						<button class="count__action count__action__plus" @click="plusItemCount(item)">+</button>
 					</div>
 					<p class="price">{{ item.money.numberFormat() }}</p>
-					<i class="delete material-icons" @click="removeSelectItem(item)">delete_forever</i>
+					<i class="iconify delete" data-icon="mdi-delete-forever" @click="removeSelectItem(item)"></i>
 				</li>
 			</ul>
 			<PaymentRequireButton></PaymentRequireButton>

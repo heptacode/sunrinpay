@@ -14,11 +14,11 @@
 		</div>
 		<div class="payment__actions">
 			<div class="payment__actions__btn">
-				<i class="material-icons">close</i>
+				<i class="iconify" data-icon="mdi-close"></i>
 				<p>취소하기</p>
 			</div>
 			<div class="payment__actions__btn">
-				<i class="material-icons">hourglass_full</i>
+				<i class="iconify" data-icon="mdi-timer-sand-full"></i>
 				<p>시간 연장</p>
 			</div>
 		</div>
@@ -34,11 +34,11 @@ import { Vue, Component } from "vue-property-decorator";
 @Component({
 	components: {
 		QRcode: QRcodeVue,
-		NumberCounter: NumberCounterVue
+		NumberCounter: NumberCounterVue,
 	},
 	data() {
 		return {};
-	}
+	},
 })
 export default class Payment extends Vue {
 	time: number = 180;
