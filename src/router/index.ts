@@ -6,6 +6,7 @@ import Home from "@/views/Home.vue";
 
 import Auth from "@/views/user/Auth.vue";
 
+import PrivacyPolicy from "@/views/front/PrivacyPolicy.vue";
 import SimpleMode from "@/views/front/SimpleMode.vue";
 import DetailsMode from "@/views/front/DetailsMode.vue";
 import Payment from "@/views/front/Payment.vue";
@@ -33,6 +34,11 @@ const routes: Array<RouteConfig> = [
 		path: "/auth",
 		name: "auth",
 		component: Auth,
+	},
+	{
+		path: "/privacy",
+		name: "privacypolicy",
+		component: PrivacyPolicy,
 	},
 
 	{
