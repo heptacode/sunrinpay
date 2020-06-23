@@ -16,13 +16,13 @@
 		<div class="pos__content">
 			<ul class="pos__content__list">
 				<li class="pos__content__list__item" v-for="item in selectedList" :key="item.name">
-					<p class="name">{{item.name}}</p>
+					<p class="name">{{ item.name }}</p>
 					<div class="count">
 						<button class="count__action count__action__minous" @click="minousItemCount(item)">-</button>
-						<p>×{{item.count}}</p>
+						<p>×{{ item.count }}</p>
 						<button class="count__action count__action__plus" @click="plusItemCount(item)">+</button>
 					</div>
-					<p class="price">{{item.money.numberFormat()}}</p>
+					<p class="price">{{ item.money.numberFormat() }}</p>
 					<i class="delete material-icons" @click="removeSelectItem(item)">delete_forever</i>
 				</li>
 			</ul>
@@ -37,26 +37,33 @@ import BarcodeScannerVue from "../../components/BarcodeScanner.vue";
 
 import randomWords from "random-words";
 
-import { Vue, Component } from "vue-property-decorator";
+import { Vue, Component, Watch } from "vue-property-decorator";
 import StockListVue from "../../components/StockList.vue";
 import { StockItem } from "../../schema";
 import PaymentRequireButtonVue from "../../components/PaymentRequireButton.vue";
+
+import { db } from "@/DB";
 
 @Component({
 	components: {
 		ViewPager: ViewPagerVue,
 		BarcodeScanner: BarcodeScannerVue,
 		StockList: StockListVue,
-		PaymentRequireButton: PaymentRequireButtonVue
-	}
+		PaymentRequireButton: PaymentRequireButtonVue,
+	},
+	firestore: {
+		stock: db.collection("stock"),
+	},
 })
 export default class PoS extends Vue {
+	stock: any[] = [];
+
 	// 테스트 데이터 (상품 목록)
 	list: StockItem[] = randomWords(100).map(word => {
 		return {
 			name: word,
 			count: Math.floor(Math.random() * 100),
-			price: Math.floor(Math.random() * 10000)
+			price: Math.floor(Math.random() * 10000),
 		};
 	});
 	// 선택된 목록
@@ -66,18 +73,23 @@ export default class PoS extends Vue {
 
 	created() {
 		// 테스트 데이터
-		this.list.push({
-			name: "마스크",
-			count: 5,
-			price: 1500,
-			barcode: "8809453880519"
-		});
-		this.list.push({
-			name: "박종훈 학생증",
-			count: 4,
-			price: 500,
-			barcode: "S2180146"
-		});
+		// this.list.push({
+		// 	name: "마스크",
+		// 	count: 5,
+		// 	price: 1500,
+		// 	barcode: "8809453880519",
+		// });
+		// this.list.push({
+		// 	name: "박종훈 학생증",
+		// 	count: 4,
+		// 	price: 500,
+		// 	barcode: "S2180146",
+		// });
+	}
+
+	@Watch("stock")
+	onStockChanged(next: any[], prev: any[]) {
+		console.log(JSON.stringify(this.stock));
 	}
 
 	appendSelectedItem(item: StockItem) {
