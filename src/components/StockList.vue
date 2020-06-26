@@ -11,10 +11,10 @@
 				>
 					<div>
 						<h3>{{ item.name }}</h3>
-						<p>재고 {{ item.count }}</p>
+						<p>재고 {{ item.quantity }}</p>
 					</div>
 					<div>
-						<h4>{{item.money.numberFormat()}}원</h4>
+						<h4>{{Number(item.price).numberFormat()}}원</h4>
 					</div>
 				</li>
 			</ul>

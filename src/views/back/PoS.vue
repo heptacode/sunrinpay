@@ -19,10 +19,10 @@
 					<p class="name">{{ item.name }}</p>
 					<div class="count">
 						<button class="count__action count__action__minous" @click="minousItemCount(item)">-</button>
-						<p>×{{ item.count }}</p>
+						<p>×{{ item.quantity }}</p>
 						<button class="count__action count__action__plus" @click="plusItemCount(item)">+</button>
 					</div>
-					<p class="price">{{ item.money.numberFormat() }}</p>
+					<p class="price">{{ item.price.numberFormat() }}</p>
 					<i class="iconify delete" data-icon="mdi-delete-forever" @click="removeSelectItem(item)"></i>
 				</li>
 			</ul>
@@ -49,23 +49,15 @@ import { db } from "@/DB";
 		ViewPager: ViewPagerVue,
 		BarcodeScanner: BarcodeScannerVue,
 		StockList: StockListVue,
-		PaymentRequireButton: PaymentRequireButtonVue,
+		PaymentRequireButton: PaymentRequireButtonVue
 	},
 	firestore: {
-		stock: db.collection("stock"),
-	},
+		list: db.collection("stock")
+	}
 })
 export default class PoS extends Vue {
-	stock: any[] = [];
-
 	// 테스트 데이터 (상품 목록)
-	list: StockItem[] = randomWords(100).map(word => {
-		return {
-			name: word,
-			count: Math.floor(Math.random() * 100),
-			price: Math.floor(Math.random() * 10000),
-		};
-	});
+	list: StockItem[] = [];
 	// 선택된 목록
 	selectedList: StockItem[] = [];
 	// 현 스크롤 위치 (터치 전용)
@@ -87,18 +79,17 @@ export default class PoS extends Vue {
 		// });
 	}
 
-	@Watch("stock")
-	onStockChanged(next: any[], prev: any[]) {
-		console.log(JSON.stringify(this.stock));
-	}
+	// @Watch("stock")
+	// onStockChanged(next: any[], prev: any[]) {
+	// }
 
 	appendSelectedItem(item: StockItem) {
 		let idx = this.selectedList.findIndex(i => i.name == item.name);
 		if (idx == -1) {
 			let copyObject = Object.assign({}, item);
-			copyObject.count = 1;
+			copyObject.quantity = 1;
 			this.selectedList.push(copyObject);
-		} else this.selectedList[idx].count++;
+		} else this.selectedList[idx].quantity++;
 	}
 	removeSelectItem(item: StockItem) {
 		this.selectedList.splice(
@@ -116,11 +107,11 @@ export default class PoS extends Vue {
 	}
 
 	plusItemCount(item: StockItem) {
-		item.count++;
+		item.quantity++;
 	}
 	minousItemCount(item: StockItem) {
-		item.count--;
-		if (item.count <= 0) this.removeSelectItem(item);
+		item.quantity--;
+		if (item.quantity <= 0) this.removeSelectItem(item);
 	}
 }
 </script>
