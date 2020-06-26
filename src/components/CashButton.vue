@@ -1,5 +1,5 @@
 <template>
-	<button class="cashbtn">
+	<button class="cashbtn" v-on="$listeners">
 		<h2 class="cashbtn__title">현금 결제</h2>
 		<p class="cashbtn__content">현금영수증 발급</p>
 	</button>

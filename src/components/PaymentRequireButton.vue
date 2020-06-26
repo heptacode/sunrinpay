@@ -1,5 +1,5 @@
 <template>
-	<button class="pos__content__okbtn" v-on="$listener">
+	<button class="pos__content__okbtn" v-on="$listeners">
 		<h2>계산 완료</h2>
 		<p>고객에게 결제를 요청합니다.</p>
 	</button>

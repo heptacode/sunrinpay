@@ -17,8 +17,7 @@ import { Vue, Component, Watch, Prop } from "vue-property-decorator";
 @Component
 export default class BarcodeScanner extends Vue {
 	result: string = "";
-	tmpDetectedList: string[] = [];
-	tmpDetectedTimer: number = 0;
+	resultResetTimer: Number = 0;
 
 	@Prop({ default: () => {} }) onDetected: Function | undefined;
 
@@ -65,29 +64,16 @@ export default class BarcodeScanner extends Vue {
 		Quagga.stop();
 	}
 	onDet(data) {
-		if (data.codeResult.code)
-			this.tmpDetectedList.push(data.codeResult.code);
-		if (!this.tmpDetectedTimer) {
-			let tmpCountList = {};
-			this.tmpDetectedTimer = window.setTimeout(() => {
-				if (this.tmpDetectedList.length > 2) {
-					this.tmpDetectedList.forEach(item => {
-						if (tmpCountList[item]) tmpCountList[item]++;
-						else tmpCountList[item] = 1;
-					});
-					let max = "";
-					Object.keys(tmpCountList).forEach(key => {
-						if (tmpCountList[key] > (tmpCountList[max] || 0))
-							max = key;
-					});
-					this.result = max;
-				} else {
+		let barcode = data.codeResult.code;
+		if (barcode != this.result && barcode) {
+			if (this.onDetected) this.onDetected(barcode);
+			this.result = barcode;
+			if (!this.resultResetTimer) {
+				setTimeout(() => {
 					this.result = "";
-				}
-				if (this.onDetected) this.onDetected(this.result);
-				this.tmpDetectedList = [];
-				this.tmpDetectedTimer = 0;
-			}, 500);
+					this.resultResetTimer = 0;
+				}, 1000);
+			}
 		}
 	}
 	onProcessed(result) {

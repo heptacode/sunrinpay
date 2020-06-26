@@ -40,6 +40,8 @@ import { Vue, Component, Prop } from "vue-property-decorator";
 import { PropType } from "vue";
 import { StockItem } from "../schema";
 
+// TODO: 상품 검색, 태그
+
 interface FilterConsonantItem {
 	consonant: string;
 	list: StockItem[];
@@ -105,7 +107,7 @@ export default class StockList extends Vue {
 
 		let y = e.touches[0].clientY - el.getBoundingClientRect().y;
 
-		let idx = Math.floor(y / (height / this.getConsonantList.length)) - 1;
+		let idx = Math.floor(y / (height / this.getConsonantList.length));
 
 		if (idx >= 0 && idx < this.getConsonantList.length) {
 			this.currentConsonant = this.getConsonantList[idx];
@@ -131,6 +133,8 @@ export default class StockList extends Vue {
 .stocklist {
 	width: 100%;
 	height: 100%;
+
+	position: relative;
 
 	background-color: $primary-color;
 

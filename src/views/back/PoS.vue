@@ -22,7 +22,7 @@
 						<p>×{{ item.quantity }}</p>
 						<button class="count__action count__action__plus" @click="plusItemCount(item)">+</button>
 					</div>
-					<p class="price">{{ item.price.numberFormat() }}</p>
+					<p class="price">{{ Number(item.price).numberFormat() }}</p>
 					<i class="iconify delete" data-icon="mdi-delete-forever" @click="removeSelectItem(item)"></i>
 				</li>
 			</ul>

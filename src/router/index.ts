@@ -20,6 +20,7 @@ import Main from "@/views/user/Main.vue";
 import PoS from "@/views/back/PoS.vue";
 import SimplePoS from "@/views/back/SimplePoS.vue";
 import Console from "@/views/back/Console.vue";
+import StockManagement from "@/views/back/StockManagement.vue";
 
 Vue.use(VueRouter);
 
@@ -56,6 +57,11 @@ const routes: Array<RouteConfig> = [
 		path: "/back/console",
 		name: "console",
 		component: Console,
+	},
+	{
+		path: "/back/stock-management",
+		name: "StockManagement",
+		component: StockManagement,
 	},
 
 	{
