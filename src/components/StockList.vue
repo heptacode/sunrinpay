@@ -1,5 +1,9 @@
 <template>
 	<div class="stocklist">
+		<div class="stocklist__search">
+			<i class="iconify stocklist__search__icon" data-icon="mdi-search"></i>
+			<input type="search" class="stocklist__search__input" placeholder="검색" v-model="searchString" />
+		</div>
 		<div class="stocklist__list" ref="searchList">
 			<ul v-for="fl in getFilterList" :key="fl.consonant" :ref="`searchItem_${fl.consonant}`">
 				<h2>{{ fl.consonant }}</h2>
@@ -18,20 +22,20 @@
 					</div>
 				</li>
 			</ul>
+			<div
+				class="stocklist__tip"
+				ref="search_tip"
+				@touchmove="touchSearchTip"
+				@touchend="currentConsonant = ''"
+			>
+				<span
+					v-for="consonant in getConsonantList"
+					:key="consonant"
+					@click="moveScroll(consonant)"
+				>{{ consonant }}</span>
+			</div>
+			<div class="stocklist__tiptext" v-if="currentConsonant">{{currentConsonant}}</div>
 		</div>
-		<div
-			class="stocklist__tip"
-			ref="search_tip"
-			@touchmove="touchSearchTip"
-			@touchend="currentConsonant = ''"
-		>
-			<span
-				v-for="consonant in getConsonantList"
-				:key="consonant"
-				@click="moveScroll(consonant)"
-			>{{ consonant }}</span>
-		</div>
-		<div class="stocklist__tiptext" v-if="currentConsonant">{{currentConsonant}}</div>
 	</div>
 </template>
 
@@ -49,12 +53,15 @@ interface FilterConsonantItem {
 @Component
 export default class StockList extends Vue {
 	currentConsonant: string = "";
+	searchString: string = "";
 	@Prop({ type: Array as PropType<StockItem[]> }) data:
 		| StockItem[]
 		| undefined;
 	get getFilterList(): FilterConsonantItem[] {
 		let result: FilterConsonantItem[] = [];
-		this.data!.forEach(item => {
+		this.data!.filter(item => {
+			return item.name.indexOf(this.searchString) != -1;
+		}).forEach(item => {
 			let consonant = this.getConsonant(item.name);
 			let idx = result.findIndex(item => item.consonant == consonant);
 			if (idx == -1) {
@@ -137,6 +144,29 @@ export default class StockList extends Vue {
 	position: relative;
 
 	background-color: $primary-color;
+
+	.stocklist__search {
+		display: flex;
+		align-items: center;
+
+		padding: 10px 20px;
+
+		background-color: rgba(42, 117, 255, 0.55);
+
+		.stocklist__search__icon {
+			font-size: 3em;
+			padding: 10px;
+		}
+		.stocklist__search__input {
+			flex: 1;
+			background: none;
+			border: none;
+			outline: none;
+			color: white;
+
+			font-size: $small-up-size;
+		}
+	}
 
 	.stocklist__list {
 		width: 100%;
