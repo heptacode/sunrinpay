@@ -1,7 +1,7 @@
 import Vue from "vue";
 import Vuex from "vuex";
 
-import { db, log } from "@/DB";
+import { db, log, transaction } from "@/DB";
 import firebase from "firebase";
 
 const event = require("vue-analytics").event;
@@ -23,7 +23,7 @@ export default new Vuex.Store({
 				// 결제 가능
 				await doc
 					.update({ balance: newBalance })
-					.then(() => {})
+					.then(() => transaction({ price: data.price }))
 					.catch(err => log("error", `결제 후 잔고 업데이트 실패 : ${err}`));
 				return newBalance;
 			} else {
