@@ -21,11 +21,12 @@ import * as firebaseui from "firebaseui";
 
 import { Vue, Component } from "vue-property-decorator";
 
-import { db } from "@/DB";
+import { db, log } from "@/DB";
+
+firebase.auth().languageCode = "ko";
 
 @Component({})
 export default class Auth extends Vue {
-	// mdiLoading: string = mdiLoading;
 	ifAuth: boolean = false;
 	uid: string = "";
 
@@ -80,7 +81,7 @@ export default class Auth extends Vue {
 		};
 		ui.disableAutoSignIn();
 
-		firebase.auth().onAuthStateChanged(user => {
+		firebase.auth().onAuthStateChanged(async user => {
 			if (user) {
 				this.ifAuth = true;
 				this.uid = user.uid;
@@ -92,24 +93,57 @@ export default class Auth extends Vue {
 
 				console.log("LOGIN");
 
-				(async () => {
-					await user.getIdToken().then(idToken => (this.idToken = idToken));
-					let userData = {
-						displayName: user.displayName,
-						email: user.email,
-						emailVerified: user.emailVerified,
-						photoURL: user.photoURL,
-						uid: user.uid,
-						providerData: user.providerData,
-						idToken: this.idToken,
-					};
+				await user.getIdToken().then(idToken => (this.idToken = idToken));
+				// 사용자 문서 존재 여부 확인
+				let docExists = await db
+					.collection("accounts")
+					.doc(user.uid)
+					.get()
+					.then(doc => {
+						return doc.exists;
+					});
+				if (docExists) {
+					// 기존 사용자
 					await db
 						.collection("accounts")
 						.doc(user.uid)
-						.set(userData)
+						.update({
+							displayName: user.displayName,
+							email: user.email,
+							emailVerified: user.emailVerified,
+							photoURL: user.photoURL,
+							providerData: user.providerData,
+							idToken: this.idToken,
+							lastLogin: firebase.firestore.FieldValue.serverTimestamp(),
+						})
 						.then(() => console.log("User updated!"))
-						.catch(err => console.log("Error : " + err));
-				})();
+						.catch(err => {
+							log("error", "기존 사용자 문서 업데이트 실패");
+							console.log("Error : " + err);
+						});
+				} else {
+					// 신규 사용자
+					await db
+						.collection("accounts")
+						.doc(user.uid)
+						.set({
+							displayName: user.displayName,
+							email: user.email,
+							emailVerified: user.emailVerified,
+							photoURL: user.photoURL,
+							uid: user.uid,
+							providerData: user.providerData,
+							idToken: this.idToken,
+							joinedOn: firebase.firestore.FieldValue.serverTimestamp(),
+							lastLogin: firebase.firestore.FieldValue.serverTimestamp(),
+							balance: 0,
+						})
+						.then(() => console.log("User added!"))
+						.catch(err => {
+							log("error", "신규 사용자 문서 추가 실패");
+							console.log("Error : " + err);
+						});
+				}
 			} else {
 				ui.start("#firebaseui-auth-container", uiConfig);
 				console.log("Not Signed in");
