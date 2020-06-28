@@ -15,6 +15,14 @@ export const db = firebase
 	})
 	.firestore();
 
+export function transaction(_data: object): void {
+	db.collection("transactions").add({
+		timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+		uid: firebase.auth().currentUser?.uid,
+		data: _data,
+	});
+}
+
 export function log(_type: string, _message: string): void {
 	db.collection("logs")
 		.add({
@@ -31,6 +39,7 @@ export function log(_type: string, _message: string): void {
 			c0_type: _type,
 			c1_message: _message,
 		})
+		.then(() => console.log(_message))
 		.catch(() => console.log("Unexpected Error While Logging"));
 }
 

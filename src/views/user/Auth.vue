@@ -117,10 +117,7 @@ export default class Auth extends Vue {
 							lastLogin: firebase.firestore.FieldValue.serverTimestamp(),
 						})
 						.then(() => console.log("User updated!"))
-						.catch(err => {
-							log("error", "기존 사용자 문서 업데이트 실패");
-							console.log("Error : " + err);
-						});
+						.catch(err => log("error", `기존 사용자 문서 업데이트 실패 : ${err}`));
 				} else {
 					// 신규 사용자
 					await db
@@ -139,16 +136,20 @@ export default class Auth extends Vue {
 							balance: 0,
 						})
 						.then(() => console.log("User added!"))
-						.catch(err => {
-							log("error", "신규 사용자 문서 추가 실패");
-							console.log("Error : " + err);
-						});
+						.catch(err => log("error", `신규 사용자 문서 추가 실패 : ${err}`));
 				}
 			} else {
 				ui.start("#firebaseui-auth-container", uiConfig);
 				console.log("Not Signed in");
 			}
 		});
+
+		this.$store.dispatch("bindRef");
+		setTimeout(() => {
+			this.$store.dispatch("PAY", { price: 10 });
+			// this.$store.commit("test");
+		}, 2000);
+		// this.$store.dispatch("PAY", { price: 10 });
 	}
 	signOut() {
 		firebase
@@ -160,7 +161,7 @@ export default class Auth extends Vue {
 				this.uid = this.displayName = this.email = this.photoURL = this.idToken = "";
 				console.log("Sign out successful.");
 			})
-			.catch(err => console.log("Error : " + err));
+			.catch(err => log("error", `로그아웃 실패 : ${err}`));
 	}
 }
 </script>
