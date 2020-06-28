@@ -1,53 +1,36 @@
 import Vue from "vue";
 import Vuex from "vuex";
 
-import { vuexfireMutations, firestoreAction } from "vuexfire";
-import { db } from "@/DB";
-import { database } from "firebase";
+import { db, log } from "@/DB";
+import firebase from "firebase";
 
 const event = require("vue-analytics").event;
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
-	state: {
-		accounts: [],
-	},
-	mutations: { ...vuexfireMutations },
+	state: {},
+	mutations: {},
 	// mutations: {
 	// event("mutation", "setUserToken", "userToken", state.userToken);
 	// },
 	actions: {
-		bindTodos: firestoreAction(async ({ bindFirestoreRef }) => {
-			return await bindFirestoreRef("accounts", db.collection("accounts"));
-		}),
-		unbindCountDocument: firestoreAction(({ unbindFirestoreRef }) => {
-			unbindFirestoreRef("accounts");
-		}),
 		async PAY({ commit, state }, data) {
-			let snapshot = await db
-				.collection("accounts")
-				.where("idToken", "==", data.idToken)
-				.get();
-			snapshot.forEach(document => {
-				let newBalance = document.data().balance - data.price;
-				if (newBalance >= 0) {
-					// 결제 가능
-					db.collection("accounts")
-						.doc(document.id)
-						.update({ balance: newBalance })
-						.catch(() => {
-							// 결제 실패
-							console.log("오류가 발생했습니다.");
-							return false;
-						});
-					return newBalance;
-				} else {
-					// 결제 불가
-					return `잔액이 ${newBalance * -1}원 부족합니다.`;
-				}
-			});
-			return;
+			const doc = db.collection("accounts").doc(firebase.auth().currentUser!.uid);
+			const snapshot = await doc.get();
+			const newBalance = snapshot.data()!.balance - data.price;
+			if (newBalance >= 0) {
+				// 결제 가능
+				await doc
+					.update({ balance: newBalance })
+					.then(() => {})
+					.catch(err => log("error", `결제 후 잔고 업데이트 실패 : ${err}`));
+				return newBalance;
+			} else {
+				// 결제 불가
+				log("info", `잔액 부족 : ${newBalance * -1}원`);
+				return `잔액이 ${newBalance * -1}원 부족합니다.`;
+			}
 		},
 	},
 	modules: {},
