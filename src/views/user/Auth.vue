@@ -144,6 +144,7 @@ export default class Auth extends Vue {
 			}
 		});
 
+		// TODO : 테스트 중
 		this.$store.dispatch("bindRef");
 		setTimeout(() => {
 			this.$store.dispatch("PAY", { price: 10 });
