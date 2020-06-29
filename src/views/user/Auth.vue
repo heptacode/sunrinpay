@@ -16,7 +16,8 @@
 </template>
 
 <script lang="ts">
-import * as firebase from "firebase";
+import firebase from "firebase/app";
+import "firebase/auth";
 import * as firebaseui from "firebaseui";
 
 import { Vue, Component } from "vue-property-decorator";
@@ -143,14 +144,6 @@ export default class Auth extends Vue {
 				console.log("Not Signed in");
 			}
 		});
-
-		// TODO : 테스트 중
-		this.$store.dispatch("bindRef");
-		setTimeout(() => {
-			this.$store.dispatch("PAY", { price: 10 });
-			// this.$store.commit("test");
-		}, 2000);
-		// this.$store.dispatch("PAY", { price: 10 });
 	}
 	signOut() {
 		firebase

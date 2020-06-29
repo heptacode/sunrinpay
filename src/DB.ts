@@ -17,9 +17,14 @@ export const db = firebase
 
 export function transaction(_data: object): void {
 	db.collection("transactions").add({
-		timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-		uid: firebase.auth().currentUser?.uid,
-		data: _data,
+		a0_timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+		a1_year: new Date().getFullYear(),
+		a2_month: new Date().getMonth() + 1,
+		a3_date: new Date().getDate(),
+		a4_hour: new Date().getHours(),
+		a5_minute: new Date().getMinutes(),
+		b0_uid: firebase.auth().currentUser?.uid,
+		c0_data: _data,
 	});
 }
 

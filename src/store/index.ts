@@ -1,8 +1,10 @@
 import Vue from "vue";
 import Vuex from "vuex";
 
+import firebase from "firebase/app";
+import "firebase/analytics";
+
 import { db, log, transaction } from "@/DB";
-import firebase from "firebase";
 
 const event = require("vue-analytics").event;
 
