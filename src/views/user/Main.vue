@@ -1,7 +1,7 @@
 <template>
 	<div class="main">
 		<h2 class="main__title">테스트님, 환영합니다</h2>
-		<div class="main__account" :class="{'isRotate':isRotate}">
+		<div class="main__account" :class="{'isRotate':isRotate,'isRotateReverse':!isRotate}">
 			<p class="main__account__info" v-if="!isDelayRotate">
 				내지갑
 				<br />1-181-0240
@@ -121,9 +121,12 @@ export default class Main extends Vue {
 			justify-content: space-around;
 		}
 
-		&.isRotate,
-		&.isRotateDisable {
+		&.isRotate {
 			animation: rotate 1s linear;
+		}
+
+		&.isRotateReverse {
+			animation: rotateReverse 1s linear;
 		}
 
 		@keyframes rotate {
@@ -132,6 +135,18 @@ export default class Main extends Vue {
 			}
 			50% {
 				transform: rotateY(90deg);
+			}
+			100% {
+				transform: rotateY(0);
+			}
+		}
+		@keyframes rotateReverse {
+			0% {
+				background-color: red !important;
+				transform: rotateY(0);
+			}
+			50% {
+				transform: rotateY(-90deg);
 			}
 			100% {
 				transform: rotateY(0);
