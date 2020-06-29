@@ -174,6 +174,7 @@ export default class PoS extends Vue {
 						justify-content: center;
 						align-items: center;
 						background-color: rgba(88, 88, 88, 0.25);
+						border-radius: 50%;
 					}
 					.count__action__plus {
 						width: 50px;
