@@ -1,18 +1,19 @@
 <template>
 	<div class="home">
 		<div>
-			<div v-if="ifAuth">
-				<img :src="photoURL" width="32px" height="32px" style="border-radius: 50%" />
-				<h1>{{ displayName }}</h1>
-				<h3>
-					{{ email }} <span>{{ emailVerified ? "인증됨" : "미인증" }}</span>
-				</h3>
-				<button @click="signOut">Sign out</button>
+			<!-- 로그인 UI -->
+			<div id="loader" :class="{ inactive: ifAuth }">
+				<i class="iconify mdi-loading" data-icon="mdi-loading"></i>
 			</div>
-			<div v-else>
-				<Auth></Auth>
-				<button @click="callUI">로그인</button>
-				<!-- <button @click="$router.push({ name: 'auth' })">로그인</button> -->
+			<div id="firebaseui-auth-container" :class="{ inactive: ifAuth }"></div>
+
+			<div v-if="ifAuth">
+				<img :src="userInformation.photoURL" width="32px" height="32px" style="border-radius: 50%" />
+				<h1>{{ userInformation.displayName }}</h1>
+				<h6>
+					{{ userInformation.email }} <span>{{ userInformation.emailVerified ? "인증됨" : "미인증" }}</span>
+				</h6>
+				<button @click="signOut">Sign out</button>
 			</div>
 
 			<br />
@@ -64,7 +65,6 @@
 </template>
 
 <script lang="ts">
-import AuthVue from "../components/Auth.vue";
 import NumberCounterVue from "vue-roller";
 import BarcodeScannerVue from "../components/BarcodeScanner.vue";
 import ViewPagerVue from "../components/ViewPager.vue";
@@ -74,13 +74,14 @@ import SalesChartVue from "../components/SalesChart.vue";
 
 import firebase from "firebase/app";
 import "firebase/auth";
+import * as firebaseui from "firebaseui";
+firebase.auth().languageCode = "ko";
 
 import { db, log } from "@/DB";
-import { signOut } from "@/Auth";
+import { signIn, signOut } from "@/Auth";
 
 @Component({
 	components: {
-		Auth: AuthVue,
 		NumberCounter: NumberCounterVue,
 		BarcodeScanner: BarcodeScannerVue,
 		ViewPager: ViewPagerVue,
@@ -88,20 +89,96 @@ import { signOut } from "@/Auth";
 	},
 })
 export default class Home extends Vue {
-	ifAuth: boolean = firebase.auth().currentUser! ? true : false;
+	ifAuth: boolean = false;
+	userInformation: Object = {};
 
 	n: string = "25565";
 	mounted() {
+		const ui = new firebaseui.auth.AuthUI(firebase.auth());
+		const uiConfig = {
+			callbacks: {
+				signInSuccessWithAuthResult: (authResult, redirectUrl) => {
+					//
+					return true;
+				},
+				uiShown: () => {
+					// The widget is rendered.
+					// Hide the loader.
+					document.getElementById("loader")!.style.display = "none";
+				},
+			},
+			signInSuccessUrl: "/",
+			signInOptions: [
+				{
+					provider: firebase.auth.EmailAuthProvider.PROVIDER_ID,
+					requireDisplayName: false,
+				},
+				{
+					provider: firebase.auth.PhoneAuthProvider.PROVIDER_ID,
+					recaptchaParameters: {
+						size: "invisible",
+						badge: "bottomright",
+					},
+					defaultCountry: "KR",
+				},
+				{
+					provider: firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+					clientId: "604565159530-tf5rvkljdec8n0o83lj2hjba53831q6i.apps.googleusercontent.com",
+				},
+				firebase.auth.FacebookAuthProvider.PROVIDER_ID,
+				firebase.auth.TwitterAuthProvider.PROVIDER_ID,
+				firebase.auth.GithubAuthProvider.PROVIDER_ID,
+				"apple.com",
+				"microsoft.com",
+			],
+			credentialHelper: firebaseui.auth.CredentialHelper.GOOGLE_YOLO,
+			tosUrl: "https://sunrinpay.web.app/privacy",
+			privacyPolicyUrl: "https://sunrinpay.web.app/privacy",
+		};
+		ui.disableAutoSignIn();
+
+		firebase.auth().onAuthStateChanged(async user => {
+			if (user) {
+				await signIn(user);
+				this.userInformation = user;
+				this.ifAuth = true;
+			} else {
+				await ui.start("#firebaseui-auth-container", uiConfig);
+				console.log("Not Signed in");
+				this.ifAuth = false;
+			}
+		});
+
 		setInterval(() => {
 			this.n = Math.floor(Math.random() * 65535).toString();
 		}, 1000);
+	}
+	async signOut() {
+		await signOut();
 	}
 }
 </script>
 
 <style lang="scss" scoped>
+@import url("https://www.gstatic.com/firebasejs/ui/4.5.0/firebase-ui-auth.css");
 .home {
 	padding: 40px;
 	overflow: scroll;
+}
+.inactive {
+	display: none;
+}
+
+.mdi-loading {
+	font-size: 40px;
+	animation: rotate 0.6s linear infinite;
+}
+@keyframes rotate {
+	from {
+		transform: rotate(0deg);
+	}
+	to {
+		transform: rotate(360deg);
+	}
 }
 </style>

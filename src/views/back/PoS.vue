@@ -100,7 +100,7 @@ export default class PoS extends Vue {
 	onDetected(result: string) {
 		let idx = this.list.findIndex(item => item.barcode == result);
 		if (idx != -1) {
-			let beep = new Audio(require("@/assets/beep.mp3"));
+			let beep = new Audio("https://firebasestorage.googleapis.com/v0/b/sunrinpay.appspot.com/o/beep.mp3?alt=media&token=935710df-2dce-4af9-bd4c-bcbfc425533d");
 			beep.play();
 			this.appendSelectedItem(this.list[idx]);
 		}
