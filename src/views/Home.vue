@@ -1,6 +1,13 @@
 <template>
 	<div class="home">
 		<div>
+			<img
+				class="main-logo"
+				src="https://firebasestorage.googleapis.com/v0/b/sunrinpay.appspot.com/o/Logo%20Dark.svg?alt=media&token=efbdb91a-392e-40ce-85a9-479614eb2fb8"
+				alt="SunrinPay Logo"
+				width="80%"
+				draggable="false"
+			/>
 			<!-- 로그인 UI -->
 			<div id="loader" :class="{ inactive: ifAuth }">
 				<i class="iconify mdi-loading" data-icon="mdi-loading"></i>
@@ -94,7 +101,8 @@ export default class Home extends Vue {
 
 	n: string = "25565";
 	mounted() {
-		const ui = new firebaseui.auth.AuthUI(firebase.auth());
+		// const ui = new firebaseui.auth.AuthUI(firebase.auth());
+		const ui = firebaseui.auth.AuthUI.getInstance() || new firebaseui.auth.AuthUI(firebase.auth());
 		const uiConfig = {
 			callbacks: {
 				signInSuccessWithAuthResult: (authResult, redirectUrl) => {
@@ -165,10 +173,19 @@ export default class Home extends Vue {
 	padding: 40px;
 	overflow: scroll;
 }
+
+.main-logo {
+	display: block;
+	margin: auto;
+}
+
 .inactive {
 	display: none;
 }
 
+#loader {
+	text-align: center;
+}
 .mdi-loading {
 	font-size: 40px;
 	animation: rotate 0.6s linear infinite;
