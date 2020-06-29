@@ -3,7 +3,7 @@ import "firebase/auth";
 
 import { db, log } from "@/DB";
 
-export async function signIn(user: any) {
+export async function signIn(user: any): Promise<void> {
 	console.log("LOGIN");
 
 	let idToken = await user.getIdToken();
@@ -53,7 +53,7 @@ export async function signIn(user: any) {
 	}
 }
 
-export async function signOut() {
+export async function signOut(): Promise<void> {
 	firebase
 		.auth()
 		.signOut()
