@@ -26,10 +26,6 @@ import { Vue, Component } from "vue-property-decorator";
 })
 export default class SimpleUserPayment extends Vue {
 	paymentResult: string = "sunrinpay";
-
-	pay() {
-		this.$store.dispatch("PAY", { price: 10 });
-	}
 }
 </script>
 

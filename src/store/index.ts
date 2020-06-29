@@ -14,8 +14,9 @@ export default new Vuex.Store({
 	state: {},
 	mutations: {},
 	actions: {
+		async CHECKOUT({ commit, state }, data) {},
 		async PAY({ commit, state }, data) {
-			event("action", "PAY", "pay", data);
+			event("action", "CHECKOUT", "checkout", data);
 			const doc = db.collection("accounts").doc(firebase.auth().currentUser!.uid);
 			const snapshot = await doc.get();
 			const newBalance = snapshot.data()!.balance - data.price;
