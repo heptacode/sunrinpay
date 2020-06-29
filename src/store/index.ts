@@ -14,8 +14,10 @@ export default new Vuex.Store({
 	state: {},
 	mutations: {},
 	actions: {
-		async CHECKOUT({ commit, state }, data) {},
-		async PAY({ commit, state }, data) {
+		async CREATE_ORDER({ commit, state }, data) {
+			event("action", "CREATE_ORDER", "createOrder", data);
+		},
+		async CHECKOUT({ commit, state }, data) {
 			event("action", "CHECKOUT", "checkout", data);
 			const doc = db.collection("accounts").doc(firebase.auth().currentUser!.uid);
 			const snapshot = await doc.get();
