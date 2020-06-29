@@ -1,7 +1,20 @@
 <template>
 	<div class="home">
 		<div>
-			<button @click="$router.push({ name: 'auth' })">로그인</button>
+			<div v-if="ifAuth">
+				<img :src="photoURL" width="32px" height="32px" style="border-radius: 50%" />
+				<h1>{{ displayName }}</h1>
+				<h3>
+					{{ email }} <span>{{ emailVerified ? "인증됨" : "미인증" }}</span>
+				</h3>
+				<button @click="signOut">Sign out</button>
+			</div>
+			<div v-else>
+				<Auth></Auth>
+				<button @click="callUI">로그인</button>
+				<!-- <button @click="$router.push({ name: 'auth' })">로그인</button> -->
+			</div>
+
 			<br />
 			<br />
 			<h2>Routers</h2>
@@ -29,13 +42,7 @@
 		</div>
 		<div style="margin-top:50px;">
 			<h2>Number Counter</h2>
-			<NumberCounter
-				:text="n"
-				:isNumberFormat="true"
-				defaultChar="0"
-				style="width:100%; font-size:2em;"
-				direction="bottom"
-			></NumberCounter>
+			<NumberCounter :text="n" :isNumberFormat="true" defaultChar="0" style="width:100%; font-size:2em;" direction="bottom"></NumberCounter>
 		</div>
 		<div style="margin-top:50px; width:400px;height:400px;">
 			<h2>View Pager</h2>
@@ -57,21 +64,32 @@
 </template>
 
 <script lang="ts">
+import AuthVue from "../components/Auth.vue";
 import NumberCounterVue from "vue-roller";
 import BarcodeScannerVue from "../components/BarcodeScanner.vue";
 import ViewPagerVue from "../components/ViewPager.vue";
 
 import { Vue, Component } from "vue-property-decorator";
 import SalesChartVue from "../components/SalesChart.vue";
+
+import firebase from "firebase/app";
+import "firebase/auth";
+
+import { db, log } from "@/DB";
+import { signOut } from "@/Auth";
+
 @Component({
 	components: {
+		Auth: AuthVue,
 		NumberCounter: NumberCounterVue,
 		BarcodeScanner: BarcodeScannerVue,
 		ViewPager: ViewPagerVue,
-		SalesChart: SalesChartVue
-	}
+		SalesChart: SalesChartVue,
+	},
 })
 export default class Home extends Vue {
+	ifAuth: boolean = firebase.auth().currentUser! ? true : false;
+
 	n: string = "25565";
 	mounted() {
 		setInterval(() => {

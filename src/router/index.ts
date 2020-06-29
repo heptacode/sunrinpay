@@ -4,7 +4,7 @@ import VueAnalytics from "vue-analytics";
 
 import Home from "@/views/Home.vue";
 
-import Auth from "@/views/user/Auth.vue";
+// import Auth from "@/views/user/Auth.vue";
 
 import PrivacyPolicy from "@/views/front/PrivacyPolicy.vue";
 import SimpleMode from "@/views/front/SimpleMode.vue";
@@ -31,11 +31,11 @@ const routes: Array<RouteConfig> = [
 		component: Home,
 	},
 
-	{
-		path: "/auth",
-		name: "auth",
-		component: Auth,
-	},
+	// {
+	// 	path: "/auth",
+	// 	name: "auth",
+	// 	component: Auth,
+	// },
 	{
 		path: "/privacy",
 		name: "privacypolicy",
