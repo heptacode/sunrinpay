@@ -2,19 +2,20 @@
 	<div class="home">
 		<div>
 			<img
-				class="main-logo"
+				class="home__logo"
 				src="https://firebasestorage.googleapis.com/v0/b/sunrinpay.appspot.com/o/Logo%20Dark.svg?alt=media&token=efbdb91a-392e-40ce-85a9-479614eb2fb8"
 				alt="SunrinPay Logo"
 				width="200px"
 				draggable="false"
 			/>
 			<!-- 로그인 UI -->
-			<div id="loader" :class="{ inactive: ifAuth }">
-				<i class="iconify mdi-loading" data-icon="mdi-loading"></i>
+			<div id="loader" :class="{ inactive: isAuth }">
+				<i class="iconify" data-icon="mdi-loading"></i>
 			</div>
-			<div id="firebaseui-auth-container" :class="{ inactive: ifAuth }"></div>
+			<div id="firebaseui-auth-container" :class="{ inactive: isAuth }"></div>
 
-			<div v-if="ifAuth">
+			<!-- isAuth == true -->
+			<div v-if="isAuth">
 				<img :src="userInformation.photoURL" width="32px" height="32px" style="border-radius: 50%" />
 				<h1>{{ userInformation.displayName }}</h1>
 				<h6>
@@ -22,57 +23,96 @@
 					<span>{{ userInformation.emailVerified ? "인증됨" : "미인증" }}</span>
 				</h6>
 				<button @click="signOut">Sign out</button>
-			</div>
 
-			<br />
-			<h2>Customer</h2>
-			<ul>
-				<li>
-					<router-link :to="{ name: 'payment' }">payment</router-link>
-				</li>
-				<li>
-					<router-link :to="{ name: 'payment-clear' }">payment-clear</router-link>
-				</li>
-				<li>
-					<router-link :to="{ name: 'payment-error' }">payment-error</router-link>
-				</li>
-				<li>
-					<router-link :to="{ name: 'simple-payment' }">simple-payment</router-link>
-				</li>
-				<li>
-					<router-link :to="{ name: 'details-payment' }">details-payment</router-link>
-				</li>
-			</ul>
-			<br />
-			<h2>PoS</h2>
-			<ul>
-				<li>
-					<router-link :to="{ name: 'pos' }">pos</router-link>
-				</li>
-				<li>
-					<router-link :to="{ name: 'order' }">order</router-link>
-				</li>
-			</ul>
-		</div>
-		<div style="margin-top:50px;">
-			<h2>Number Counter</h2>
-			<NumberCounter :text="n" :isNumberFormat="true" defaultChar="0" style="width:100%; font-size:2em;" direction="bottom"></NumberCounter>
-		</div>
-		<div style="margin-top:50px; width:400px;height:400px;">
-			<h2>View Pager</h2>
-			<ViewPager :tab="['0', '1', '2']">
-				<template v-slot:tab0>tab0</template>
-				<template v-slot:tab1>tab1</template>
-				<template v-slot:tab2>tab2</template>
-			</ViewPager>
-		</div>
-		<div style="margin-top:50px;">
-			<h2>Sales Chart</h2>
-			<SalesChart style="height:500px;"></SalesChart>
-		</div>
-		<div style="margin-top:50px;">
-			<h2>Barcode Scanner</h2>
-			<BarcodeScanner></BarcodeScanner>
+				<h2 class="home__title">테스트님, 환영합니다</h2>
+				<div class="home__account" :class="{ isRotate: isRotate, isRotateReverse: !isRotate }">
+					<p class="home__account__info" v-if="!isDelayRotate">
+						내지갑
+						<br />1-181-0240
+					</p>
+					<p class="home__account__qr" v-else>
+						<QRcode data="test" class="qr"></QRcode>
+						<span class="content">
+							<h3>선린인터넷고등학교매점</h3>
+							<p>+821072078667</p>
+						</span>
+					</p>
+					<h3 class="home__account__money" v-if="!isDelayRotate">25,565원</h3>
+					<p class="home__account__action" @click="toggleRotate">
+						<span>송금하기</span>
+						<span>내 QR 확인하기</span>
+					</p>
+				</div>
+				<div class="home__log">
+					<h2>송금 및 결제 내역</h2>
+					<ul class="home__log__list">
+						<li class="home__log__list__item" v-for="idx in 10" :key="idx">
+							<div class="left">
+								<h3>선린 인터넷 고등학교 매점</h3>
+								<p>철근 530g 외 10개</p>
+							</div>
+							<div class="right">
+								<p class="result">
+									-1,800원
+									<br />내 지갑(*0240)
+								</p>
+							</div>
+						</li>
+					</ul>
+				</div>
+			</div>
+			<!-- /isAuth == true -->
+
+			<section v-else>
+				<h2>Customer</h2>
+				<ul>
+					<li>
+						<router-link :to="{ name: 'payment' }">payment</router-link>
+					</li>
+					<li>
+						<router-link :to="{ name: 'payment-clear' }">payment-clear</router-link>
+					</li>
+					<li>
+						<router-link :to="{ name: 'payment-error' }">payment-error</router-link>
+					</li>
+					<li>
+						<router-link :to="{ name: 'simple-payment' }">simple-payment</router-link>
+					</li>
+					<li>
+						<router-link :to="{ name: 'details-payment' }">details-payment</router-link>
+					</li>
+				</ul>
+				<br />
+				<h2>PoS</h2>
+				<ul>
+					<li>
+						<router-link :to="{ name: 'pos' }">pos</router-link>
+					</li>
+					<li>
+						<router-link :to="{ name: 'order' }">order</router-link>
+					</li>
+				</ul>
+				<div style="margin-top:50px;">
+					<h2>Number Counter</h2>
+					<NumberCounter :text="n" :isNumberFormat="true" defaultChar="0" style="width:100%; font-size:2em;" direction="bottom"></NumberCounter>
+				</div>
+				<div style="margin-top:50px; width:400px;height:400px;">
+					<h2>View Pager</h2>
+					<ViewPager :tab="['0', '1', '2']">
+						<template v-slot:tab0>tab0</template>
+						<template v-slot:tab1>tab1</template>
+						<template v-slot:tab2>tab2</template>
+					</ViewPager>
+				</div>
+				<div style="margin-top:50px;">
+					<h2>Sales Chart</h2>
+					<SalesChart style="height:500px;"></SalesChart>
+				</div>
+				<div style="margin-top:50px;">
+					<h2>Barcode Scanner</h2>
+					<BarcodeScanner></BarcodeScanner>
+				</div>
+			</section>
 		</div>
 	</div>
 </template>
@@ -84,6 +124,7 @@ import ViewPagerVue from "../components/ViewPager.vue";
 
 import { Vue, Component } from "vue-property-decorator";
 import SalesChartVue from "../components/SalesChart.vue";
+import QRcode from "../components/QRcode.vue";
 
 import firebase from "firebase/app";
 import "firebase/auth";
@@ -95,6 +136,7 @@ import { signIn, signOut } from "@/Auth";
 
 @Component({
 	components: {
+		QRcode,
 		NumberCounter: NumberCounterVue,
 		BarcodeScanner: BarcodeScannerVue,
 		ViewPager: ViewPagerVue,
@@ -102,10 +144,20 @@ import { signIn, signOut } from "@/Auth";
 	},
 })
 export default class Home extends Vue {
-	ifAuth: boolean = false;
+	isAuth: boolean = false;
 	userInformation: Object = {};
 
+	isRotate: boolean = false;
+	isDelayRotate: boolean = false;
+	toggleRotate() {
+		this.isRotate = !this.isRotate;
+		setTimeout(() => {
+			this.isDelayRotate = this.isRotate;
+		}, 500);
+	}
+
 	n: string = "25565";
+
 	mounted() {
 		// const ui = new firebaseui.auth.AuthUI(firebase.auth());
 		const ui = firebaseui.auth.AuthUI.getInstance() || new firebaseui.auth.AuthUI(firebase.auth());
@@ -155,11 +207,11 @@ export default class Home extends Vue {
 			if (user) {
 				await signIn(user);
 				this.userInformation = user;
-				this.ifAuth = true;
+				this.isAuth = true;
 			} else {
 				await ui.start("#firebaseui-auth-container", uiConfig);
 				console.log("Not Signed in");
-				this.ifAuth = false;
+				this.isAuth = false;
 			}
 		});
 
@@ -178,30 +230,153 @@ export default class Home extends Vue {
 .home {
 	padding: 40px;
 	overflow: scroll;
-}
 
-.main-logo {
-	display: block;
-	margin: auto;
-}
-
-.inactive {
-	display: none;
-}
-
-#loader {
-	text-align: center;
-}
-.mdi-loading {
-	font-size: 40px;
-	animation: rotate 0.6s linear infinite;
-}
-@keyframes rotate {
-	from {
-		transform: rotate(0deg);
+	.inactive {
+		display: none;
 	}
-	to {
-		transform: rotate(360deg);
+
+	.home__logo {
+		display: block;
+		margin: auto;
+	}
+
+	#loader {
+		text-align: center;
+		i {
+			font-size: 40px;
+			animation: rotate 0.6s linear infinite;
+		}
+	}
+	@keyframes rotate {
+		from {
+			transform: rotate(0deg);
+		}
+		to {
+			transform: rotate(360deg);
+		}
+	}
+
+	.home__title {
+		font-size: $small-normal-size;
+		margin-top: 10px;
+		margin-bottom: 30px;
+	}
+	.home__account {
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+		height: 30vh;
+
+		background-color: $primary-color;
+		border-radius: 8px;
+		box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
+
+		padding: 25px;
+
+		overflow: hidden;
+
+		.home__account__info {
+			height: 1.5em;
+			font-size: $small-size;
+		}
+		.home__account__qr {
+			flex: 1;
+			overflow: hidden;
+
+			margin-bottom: 20px;
+
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			.qr {
+				height: 80%;
+			}
+			.content {
+				margin-left: 20px;
+				h3 {
+					font-size: $small-up-size;
+				}
+			}
+		}
+		.home__account__money {
+			font-size: $normal-size;
+			text-align: center;
+		}
+		.home__account__action {
+			height: 1.5em;
+			font-size: $small-size;
+			text-align: center;
+
+			display: flex;
+			justify-content: space-around;
+		}
+
+		&.isRotate {
+			animation: rotate 1s linear;
+		}
+
+		&.isRotateReverse {
+			animation: rotateReverse 1s linear;
+		}
+
+		@keyframes rotate {
+			0% {
+				transform: rotateY(0);
+			}
+			50% {
+				transform: rotateY(90deg);
+			}
+			100% {
+				transform: rotateY(0);
+			}
+		}
+		@keyframes rotateReverse {
+			0% {
+				background-color: red !important;
+				transform: rotateY(0);
+			}
+			50% {
+				transform: rotateY(-90deg);
+			}
+			100% {
+				transform: rotateY(0);
+			}
+		}
+	}
+	.home__log {
+		h2 {
+			font-size: $small-size;
+			opacity: 0.6;
+			margin-top: 20px;
+			margin-bottom: 15px;
+		}
+		.home__log__list {
+			.home__log__list__item {
+				display: flex;
+				justify-content: space-between;
+
+				padding: 10px 0;
+
+				border-bottom: 1px solid #fcfeff;
+				.left {
+					flex: 1;
+					text-overflow: ellipsis;
+					overflow: hidden;
+					white-space: nowrap;
+					h3 {
+						font-size: $small-size;
+					}
+				}
+				.right {
+					.result {
+						display: flex;
+						justify-content: flex-end;
+						align-items: flex-end;
+						text-align: right;
+					}
+				}
+			}
+		}
 	}
 }
 </style>
