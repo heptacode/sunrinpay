@@ -9,7 +9,12 @@
 			</div>
 			<div class="simplepos__content__hr"></div>
 			<div class="simplepos__content__numpad">
-				<div v-for="idx in 9" :key="idx" class="simplepos__content__numpad__item" @click="appendTotalStr(idx)">{{ idx }}</div>
+				<div
+					v-for="idx in 9"
+					:key="idx"
+					class="simplepos__content__numpad__item"
+					@click="appendTotalStr(idx)"
+				>{{ idx }}</div>
 				<div class="simplepos__content__numpad__item"></div>
 				<div class="simplepos__content__numpad__item" @click="appendTotalStr(0)">0</div>
 				<div class="simplepos__content__numpad__item">
@@ -17,7 +22,7 @@
 				</div>
 			</div>
 		</div>
-		<PaymentRequireButton></PaymentRequireButton>
+		<PaymentRequireButton class="simplepos__paymentbtn"></PaymentRequireButton>
 	</div>
 </template>
 
@@ -29,8 +34,8 @@ import NumberCounterVue from "vue-roller";
 @Component({
 	components: {
 		PaymentRequireButton: PaymentRequireButtonVue,
-		NumberCounter: NumberCounterVue,
-	},
+		NumberCounter: NumberCounterVue
+	}
 })
 export default class SimpleOrder extends Vue {
 	totalString: string = "";
@@ -42,7 +47,10 @@ export default class SimpleOrder extends Vue {
 		this.totalString = this.totalString + str;
 	}
 	removeTotalStr() {
-		this.totalString = this.totalString.substring(0, this.totalString.length - 1);
+		this.totalString = this.totalString.substring(
+			0,
+			this.totalString.length - 1
+		);
 	}
 }
 </script>
@@ -110,6 +118,11 @@ export default class SimpleOrder extends Vue {
 				color: $gray-text-color;
 			}
 		}
+	}
+	.simplepos__paymentbtn {
+		margin-top: 30px;
+
+        width: 50vw;
 	}
 }
 </style>
