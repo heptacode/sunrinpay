@@ -18,7 +18,8 @@
 				<img :src="userInformation.photoURL" width="32px" height="32px" style="border-radius: 50%" />
 				<h1>{{ userInformation.displayName }}</h1>
 				<h6>
-					{{ userInformation.email }} <span>{{ userInformation.emailVerified ? "인증됨" : "미인증" }}</span>
+					{{ userInformation.email }}
+					<span>{{ userInformation.emailVerified ? "인증됨" : "미인증" }}</span>
 				</h6>
 				<button @click="signOut">Sign out</button>
 			</div>
@@ -58,7 +59,13 @@
 		</div>
 		<div style="margin-top:50px;">
 			<h2>Number Counter</h2>
-			<NumberCounter :text="n" :isNumberFormat="true" defaultChar="0" style="width:100%; font-size:2em;" direction="bottom"></NumberCounter>
+			<NumberCounter
+				:text="n"
+				:isNumberFormat="true"
+				defaultChar="0"
+				style="width:100%; font-size:2em;"
+				direction="bottom"
+			></NumberCounter>
 		</div>
 		<div style="margin-top:50px; width:400px;height:400px;">
 			<h2>View Pager</h2>
@@ -100,8 +107,8 @@ import { signIn, signOut } from "@/Auth";
 		NumberCounter: NumberCounterVue,
 		BarcodeScanner: BarcodeScannerVue,
 		ViewPager: ViewPagerVue,
-		SalesChart: SalesChartVue,
-	},
+		SalesChart: SalesChartVue
+	}
 })
 export default class Home extends Vue {
 	ifAuth: boolean = false;
@@ -110,7 +117,9 @@ export default class Home extends Vue {
 	n: string = "25565";
 	mounted() {
 		// const ui = new firebaseui.auth.AuthUI(firebase.auth());
-		const ui = firebaseui.auth.AuthUI.getInstance() || new firebaseui.auth.AuthUI(firebase.auth());
+		const ui =
+			firebaseui.auth.AuthUI.getInstance() ||
+			new firebaseui.auth.AuthUI(firebase.auth());
 		const uiConfig = {
 			callbacks: {
 				signInSuccessWithAuthResult: (authResult, redirectUrl) => {
@@ -121,35 +130,36 @@ export default class Home extends Vue {
 					// The widget is rendered.
 					// Hide the loader.
 					document.getElementById("loader")!.style.display = "none";
-				},
+				}
 			},
 			signInSuccessUrl: "/",
 			signInOptions: [
 				{
 					provider: firebase.auth.EmailAuthProvider.PROVIDER_ID,
-					requireDisplayName: false,
+					requireDisplayName: false
 				},
 				{
 					provider: firebase.auth.PhoneAuthProvider.PROVIDER_ID,
 					recaptchaParameters: {
 						size: "invisible",
-						badge: "bottomright",
+						badge: "bottomright"
 					},
-					defaultCountry: "KR",
+					defaultCountry: "KR"
 				},
 				{
 					provider: firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-					clientId: "604565159530-tf5rvkljdec8n0o83lj2hjba53831q6i.apps.googleusercontent.com",
+					clientId:
+						"604565159530-tf5rvkljdec8n0o83lj2hjba53831q6i.apps.googleusercontent.com"
 				},
 				firebase.auth.FacebookAuthProvider.PROVIDER_ID,
 				firebase.auth.TwitterAuthProvider.PROVIDER_ID,
 				firebase.auth.GithubAuthProvider.PROVIDER_ID,
 				"apple.com",
-				"microsoft.com",
+				"microsoft.com"
 			],
 			credentialHelper: firebaseui.auth.CredentialHelper.GOOGLE_YOLO,
 			tosUrl: "https://sunrinpay.web.app/privacy",
-			privacyPolicyUrl: "https://sunrinpay.web.app/privacy",
+			privacyPolicyUrl: "https://sunrinpay.web.app/privacy"
 		};
 		ui.disableAutoSignIn();
 

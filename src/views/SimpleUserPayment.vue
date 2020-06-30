@@ -2,7 +2,9 @@
 	<div class="simpleuserpayment">
 		<div class="simpleuserpayment__price">
 			<p>결제하실 금액</p>
-			<h2><NumberCounter text="25565" :isNumberFormat="true" defaultChar="0"></NumberCounter>원</h2>
+			<h2>
+				<NumberCounter text="25565" :isNumberFormat="true" defaultChar="0"></NumberCounter>원
+			</h2>
 		</div>
 		<div class="simpleuserpayment__paymentselected">
 			<h2>결제 수단 선택</h2>
@@ -21,8 +23,8 @@ import { Vue, Component } from "vue-property-decorator";
 @Component({
 	components: {
 		PaymentSelected: PaymentSelectedVue,
-		NumberCounter: NumberCounterVue,
-	},
+		NumberCounter: NumberCounterVue
+	}
 })
 export default class SimpleUserPayment extends Vue {
 	paymentResult: string = "sunrinpay";

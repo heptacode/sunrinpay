@@ -23,7 +23,9 @@
 						<button class="count__action count__action__plus" @click="plusItemCount(item)">+</button>
 					</div>
 					<p class="price">{{ Number(item.price).numberFormat() }}</p>
-					<span class="delete" @click="removeSelectItem(item)"><i class="iconify" data-icon="mdi-delete-forever"></i></span>
+					<span class="delete" @click="removeSelectItem(item)">
+						<i class="iconify" data-icon="mdi-delete-forever"></i>
+					</span>
 				</li>
 			</ul>
 			<PaymentRequireButton></PaymentRequireButton>
@@ -49,11 +51,11 @@ import { db } from "@/DB";
 		ViewPager: ViewPagerVue,
 		BarcodeScanner: BarcodeScannerVue,
 		StockList: StockListVue,
-		PaymentRequireButton: PaymentRequireButtonVue,
+		PaymentRequireButton: PaymentRequireButtonVue
 	},
 	firestore: {
-		list: db.collection("stock"),
-	},
+		list: db.collection("stock")
+	}
 })
 export default class Order extends Vue {
 	// 테스트 데이터 (상품 목록)
@@ -100,7 +102,9 @@ export default class Order extends Vue {
 	onDetected(result: string) {
 		let idx = this.list.findIndex(item => item.barcode == result);
 		if (idx != -1) {
-			let beep = new Audio("https://firebasestorage.googleapis.com/v0/b/sunrinpay.appspot.com/o/beep.mp3?alt=media&token=935710df-2dce-4af9-bd4c-bcbfc425533d");
+			let beep = new Audio(
+				"https://firebasestorage.googleapis.com/v0/b/sunrinpay.appspot.com/o/beep.mp3?alt=media&token=935710df-2dce-4af9-bd4c-bcbfc425533d"
+			);
 			beep.play();
 			this.appendSelectedItem(this.list[idx]);
 		}

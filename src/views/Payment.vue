@@ -34,11 +34,11 @@ import { Vue, Component } from "vue-property-decorator";
 @Component({
 	components: {
 		QRcode: QRcodeVue,
-		NumberCounter: NumberCounterVue,
+		NumberCounter: NumberCounterVue
 	},
 	data() {
 		return {};
-	},
+	}
 })
 export default class Payment extends Vue {
 	time: number = 180;

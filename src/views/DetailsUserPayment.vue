@@ -45,8 +45,8 @@ import { Vue, Component } from "vue-property-decorator";
 @Component({
 	mixins: [smoothReflow],
 	components: {
-		PaymentSelected: PaymentSelectedVue,
-	},
+		PaymentSelected: PaymentSelectedVue
+	}
 })
 export default class DetailsUserPayment extends Vue {
 	itemCount: number = 3;
@@ -55,7 +55,7 @@ export default class DetailsUserPayment extends Vue {
 	mounted() {
 		this.$smoothReflow!({
 			el: this.$refs.list as HTMLDivElement,
-			property: ["height"],
+			property: ["height"]
 		});
 	}
 

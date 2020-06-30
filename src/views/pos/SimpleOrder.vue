@@ -122,7 +122,7 @@ export default class SimpleOrder extends Vue {
 	.simplepos__paymentbtn {
 		margin-top: 30px;
 
-        width: 50vw;
+		width: 50vw;
 	}
 }
 </style>
