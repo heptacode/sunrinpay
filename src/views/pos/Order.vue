@@ -55,7 +55,7 @@ import { db } from "@/DB";
 		list: db.collection("stock"),
 	},
 })
-export default class PoS extends Vue {
+export default class Order extends Vue {
 	// 테스트 데이터 (상품 목록)
 	list: StockItem[] = [];
 	// 선택된 목록

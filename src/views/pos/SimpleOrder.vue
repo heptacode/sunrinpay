@@ -32,7 +32,7 @@ import NumberCounterVue from "vue-roller";
 		NumberCounter: NumberCounterVue,
 	},
 })
-export default class SimplePoS extends Vue {
+export default class SimpleOrder extends Vue {
 	totalString: string = "";
 
 	get getTotal() {

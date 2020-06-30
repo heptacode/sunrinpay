@@ -4,21 +4,20 @@ import VueAnalytics from "vue-analytics";
 
 import Home from "@/views/Home.vue";
 
-import PrivacyPolicy from "@/views/front/PrivacyPolicy.vue";
-import SimpleMode from "@/views/front/SimpleMode.vue";
-import DetailsMode from "@/views/front/DetailsMode.vue";
-import Payment from "@/views/front/Payment.vue";
-import PaymentClear from "@/views/front/Payment-Clear.vue";
-import PaymentError from "@/views/front/Payment-Error.vue";
+import PrivacyPolicy from "@/views/PrivacyPolicy.vue";
+import SimpleCheckout from "@/views/SimpleCheckout.vue";
+import Checkout from "@/views/Checkout.vue";
+import Payment from "@/views/Payment.vue";
+import PaymentClear from "@/views/Payment-Clear.vue";
+import PaymentError from "@/views/Payment-Error.vue";
+import SimpleUserPayment from "@/views/SimpleUserPayment.vue";
+import DetailsUserPayment from "@/views/DetailsUserPayment.vue";
+// import Main from "@/views/user/Main.vue";
 
-import SimpleUserPayment from "@/views/user/SimpleUserPayment.vue";
-import DetailsUserPayment from "@/views/user/DetailsUserPayment.vue";
-import Main from "@/views/user/Main.vue";
-
-import PoS from "@/views/back/PoS.vue";
-import SimplePoS from "@/views/back/SimplePoS.vue";
-import Console from "@/views/back/Console.vue";
-import StockManagement from "@/views/back/StockManagement.vue";
+import PoS from "@/views/pos/PoS.vue";
+import SimpleOrder from "@/views/pos/SimpleOrder.vue";
+import Order from "@/views/pos/Order.vue";
+import StockManagement from "@/views/pos/StockManagement.vue";
 
 Vue.use(VueRouter);
 
@@ -35,21 +34,21 @@ const routes: Array<RouteConfig> = [
 		component: PrivacyPolicy,
 	},
 
+	// PoS
 	{
-		path: "/back/pos",
+		path: "/pos",
 		name: "pos",
 		component: PoS,
 	},
-
 	{
-		path: "/back/simplepos",
-		name: "simplepos",
-		component: SimplePoS,
+		path: "/pos/simpleorder",
+		name: "simpleorder",
+		component: SimpleOrder,
 	},
 	{
-		path: "/back/console",
-		name: "console",
-		component: Console,
+		path: "/pos/order",
+		name: "order",
+		component: Order,
 	},
 	{
 		path: "/back/stock-management",
@@ -57,43 +56,39 @@ const routes: Array<RouteConfig> = [
 		component: StockManagement,
 	},
 
+	// Customer
 	{
-		path: "/front/simplemode",
-		name: "simplemode",
-		component: SimpleMode,
+		path: "/simplecheckout",
+		name: "simplecheckout",
+		component: SimpleCheckout,
 	},
 	{
-		path: "/front/detailsmode",
-		name: "detailsmode",
-		component: DetailsMode,
+		path: "/checkout",
+		name: "checkout",
+		component: Checkout,
 	},
 	{
-		path: "/front/payment",
+		path: "/payment",
 		name: "payment",
 		component: Payment,
 	},
 	{
-		path: "/front/payment-clear",
+		path: "/payment-clear",
 		name: "payment-clear",
 		component: PaymentClear,
 	},
 	{
-		path: "/front/payment-error",
+		path: "/payment-error",
 		name: "payment-error",
 		component: PaymentError,
 	},
 	{
-		path: "/user/main",
-		name: "main",
-		component: Main,
-	},
-	{
-		path: "/user/simple-payment",
+		path: "/simple-payment",
 		name: "simple-payment",
 		component: SimpleUserPayment,
 	},
 	{
-		path: "/user/details-payment",
+		path: "/details-payment",
 		name: "details-payment",
 		component: DetailsUserPayment,
 	},

@@ -28,7 +28,7 @@ import { Vue, Component } from "vue-property-decorator";
 		NumberCounter: NumberCounterVue,
 	},
 })
-export default class SimpleMode extends Vue {
+export default class SimpleCheckout extends Vue {
 	test() {
 		console.log("test");
 		this.$store.dispatch("bindTodos");
