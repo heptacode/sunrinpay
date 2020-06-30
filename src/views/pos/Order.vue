@@ -139,7 +139,7 @@ export default class Order extends Vue {
 	}
 
 	get getTotal() {
-		return Number(this.totalString);
+		return this.totalString;
 	}
 	appendTotalStr(str: string | number) {
 		this.totalString = this.totalString + str;
