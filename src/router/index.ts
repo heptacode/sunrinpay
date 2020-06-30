@@ -3,8 +3,9 @@ import VueRouter, { RouteConfig } from "vue-router";
 import VueAnalytics from "vue-analytics";
 
 import Home from "@/views/Home.vue";
-
 import PrivacyPolicy from "@/views/PrivacyPolicy.vue";
+
+// Customer
 import SimpleCheckout from "@/views/SimpleCheckout.vue";
 import Checkout from "@/views/Checkout.vue";
 import Payment from "@/views/Payment.vue";
@@ -14,6 +15,7 @@ import SimpleUserPayment from "@/views/SimpleUserPayment.vue";
 import DetailsUserPayment from "@/views/DetailsUserPayment.vue";
 // import Main from "@/views/user/Main.vue";
 
+// Pos
 import PoS from "@/views/pos/PoS.vue";
 import SimpleOrder from "@/views/pos/SimpleOrder.vue";
 import Order from "@/views/pos/Order.vue";
@@ -27,33 +29,10 @@ const routes: Array<RouteConfig> = [
 		name: "Home",
 		component: Home,
 	},
-
 	{
 		path: "/privacy",
 		name: "privacypolicy",
 		component: PrivacyPolicy,
-	},
-
-	// PoS
-	{
-		path: "/pos",
-		name: "pos",
-		component: PoS,
-	},
-	{
-		path: "/pos/simpleorder",
-		name: "simpleorder",
-		component: SimpleOrder,
-	},
-	{
-		path: "/pos/order",
-		name: "order",
-		component: Order,
-	},
-	{
-		path: "/back/stock-management",
-		name: "StockManagement",
-		component: StockManagement,
 	},
 
 	// Customer
@@ -91,6 +70,28 @@ const routes: Array<RouteConfig> = [
 		path: "/details-payment",
 		name: "details-payment",
 		component: DetailsUserPayment,
+	},
+
+	// PoS
+	{
+		path: "/pos",
+		name: "pos",
+		component: PoS,
+	},
+	{
+		path: "/pos/simpleorder",
+		name: "simpleorder",
+		component: SimpleOrder,
+	},
+	{
+		path: "/pos/order",
+		name: "order",
+		component: Order,
+	},
+	{
+		path: "/pos/stock-management",
+		name: "StockManagement",
+		component: StockManagement,
 	},
 ];
 

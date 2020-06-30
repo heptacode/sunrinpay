@@ -13,7 +13,7 @@
 </template>
 
 <script lang="ts">
-import PaymentSelectedVue from "../../components/PaymentSelected.vue";
+import PaymentSelectedVue from "../components/PaymentSelected.vue";
 import NumberCounterVue from "vue-roller";
 
 import { Vue, Component } from "vue-property-decorator";

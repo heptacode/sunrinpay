@@ -38,7 +38,7 @@
 </template>
 
 <script lang="ts">
-import PaymentSelectedVue from "../../components/PaymentSelected.vue";
+import PaymentSelectedVue from "../components/PaymentSelected.vue";
 import smoothReflow from "vue-smooth-reflow";
 
 import { Vue, Component } from "vue-property-decorator";

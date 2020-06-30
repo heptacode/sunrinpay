@@ -24,29 +24,37 @@
 			</div>
 
 			<br />
+			<h2>Customer</h2>
+			<ul>
+				<li>
+					<router-link :to="{ name: 'payment' }">payment</router-link>
+				</li>
+				<li>
+					<router-link :to="{ name: 'payment-clear' }">payment-clear</router-link>
+				</li>
+				<li>
+					<router-link :to="{ name: 'payment-error' }">payment-error</router-link>
+				</li>
+				<li>
+					<router-link :to="{ name: 'simple-payment' }">simple-payment</router-link>
+				</li>
+				<li>
+					<router-link :to="{ name: 'details-payment' }">details-payment</router-link>
+				</li>
+			</ul>
 			<br />
-			<h2>Routers</h2>
-			<router-link :to="{ name: 'pos' }">pos</router-link>
-			<br />
-			<router-link :to="{ name: 'console' }">console</router-link>
-			<br />
-			<br />
-			<router-link :to="{ name: 'simplemode' }">simplemode</router-link>
-			<br />
-			<router-link :to="{ name: 'detailsmode' }">detailsmode</router-link>
-			<br />
-			<router-link :to="{ name: 'payment' }">payment</router-link>
-			<br />
-			<router-link :to="{ name: 'payment-clear' }">payment-clear</router-link>
-			<br />
-			<router-link :to="{ name: 'payment-error' }">payment-error</router-link>
-			<br />
-			<br />
-			<router-link :to="{ name: 'simple-payment' }">simple-payment</router-link>
-			<br />
-			<router-link :to="{ name: 'details-payment' }">details-payment</router-link>
-			<br />
-			<router-link :to="{ name: 'main' }">main</router-link>
+			<h2>PoS</h2>
+			<ul>
+				<li>
+					<router-link :to="{ name: 'pos' }">pos</router-link>
+				</li>
+				<li>
+					<router-link :to="{ name: 'order' }">order</router-link>
+				</li>
+				<li>
+					<router-link :to="{ name: 'simpleorder' }">simpleorder</router-link>
+				</li>
+			</ul>
 		</div>
 		<div style="margin-top:50px;">
 			<h2>Number Counter</h2>

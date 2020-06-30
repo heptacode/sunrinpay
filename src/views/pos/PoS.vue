@@ -1,7 +1,7 @@
 <template>
-	<div class="console">
-		<div class="console__content">
-			<div class="console__content__head">
+	<div class="pos">
+		<div class="pos__content">
+			<div class="pos__content__head">
 				<div class="left">
 					<h2>오늘의 매출</h2>
 					<h3>3,700,000원</h3>
@@ -17,29 +17,29 @@
 					</p>
 				</div>
 			</div>
-			<div class="console__content__actions">
+			<div class="pos__content__actions">
 				<h2>지난 7일간 매출</h2>
 				<p>표시 범위 변경</p>
 			</div>
-			<div class="console__content__chart">
+			<div class="pos__content__chart">
 				<SalesChart style="width:100%; height:90%;" v-if="isMounted"></SalesChart>
 			</div>
-			<div class="console__content__top3">
+			<div class="pos__content__top3">
 				<h2>오늘 판매 순위</h2>
-				<ul class="console__content__top3__list">
-					<li class="console__content__top3__list__item">
+				<ul class="pos__content__top3__list">
+					<li class="pos__content__top3__list__item">
 						<div class="score">1</div>
 						<div class="name">커피콜라맛우유</div>
 						<div class="price">4,200원</div>
 						<div class="sales">5,740</div>
 					</li>
-					<li class="console__content__top3__list__item">
+					<li class="pos__content__top3__list__item">
 						<div class="score">2</div>
 						<div class="name">커피콜라맛우유</div>
 						<div class="price">4,200원</div>
 						<div class="sales">5,740</div>
 					</li>
-					<li class="console__content__top3__list__item">
+					<li class="pos__content__top3__list__item">
 						<div class="score">3</div>
 						<div class="name">커피콜라맛우유</div>
 						<div class="price">4,200원</div>
@@ -48,7 +48,7 @@
 				</ul>
 			</div>
 		</div>
-		<div class="console__content"></div>
+		<div class="pos__content"></div>
 	</div>
 </template>
 
@@ -60,7 +60,7 @@ import SalesChart from "../../components/SalesChart.vue";
 		SalesChart: SalesChart,
 	},
 })
-export default class Console extends Vue {
+export default class pos extends Vue {
 	isMounted = false;
 	mounted() {
 		setTimeout(() => {
@@ -71,9 +71,9 @@ export default class Console extends Vue {
 </script>
 
 <style lang="scss">
-.console {
+.pos {
 	display: flex;
-	.console__content {
+	.pos__content {
 		display: flex;
 		flex-direction: column;
 
@@ -85,7 +85,7 @@ export default class Console extends Vue {
 		box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
 		background-color: $content-color;
 
-		.console__content__head {
+		.pos__content__head {
 			display: flex;
 			justify-content: space-between;
 			margin-bottom: 30px;
@@ -101,7 +101,7 @@ export default class Console extends Vue {
 				text-align: right;
 			}
 		}
-		.console__content__actions {
+		.pos__content__actions {
 			display: flex;
 			justify-content: space-between;
 			h2 {
@@ -112,20 +112,20 @@ export default class Console extends Vue {
 				color: $primary-color;
 			}
 		}
-		.console__content__chart {
+		.pos__content__chart {
 			flex: 1;
 			display: flex;
 			justify-content: center;
 			align-items: center;
 		}
-		.console__content__top3 {
+		.pos__content__top3 {
 			h2 {
 				font-size: $small-size;
 				color: #656666;
 				margin: 20px 0;
 			}
-			.console__content__top3__list {
-				.console__content__top3__list__item {
+			.pos__content__top3__list {
+				.pos__content__top3__list__item {
 					padding: 10px 0;
 
 					display: flex;
