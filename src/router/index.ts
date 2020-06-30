@@ -17,7 +17,6 @@ import DetailsUserPayment from "@/views/DetailsUserPayment.vue";
 
 // Pos
 import PoS from "@/views/pos/PoS.vue";
-import SimpleOrder from "@/views/pos/SimpleOrder.vue";
 import Order from "@/views/pos/Order.vue";
 import StockManagement from "@/views/pos/StockManagement.vue";
 
@@ -77,11 +76,6 @@ const routes: Array<RouteConfig> = [
 		path: "/pos",
 		name: "pos",
 		component: PoS,
-	},
-	{
-		path: "/pos/simpleorder",
-		name: "simpleorder",
-		component: SimpleOrder,
 	},
 	{
 		path: "/pos/order",
