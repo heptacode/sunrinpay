@@ -20,11 +20,18 @@
 						</div>
 						<div class="order__viewpager__numpad__hr"></div>
 						<div class="order__viewpager__numpad__content">
-							<div v-for="idx in 9" :key="idx" class="order__viewpager__numpad__content__item" @click="appendTotalStr(idx)">{{ idx }}</div>
+							<div
+								v-for="idx in 9"
+								:key="idx"
+								class="order__viewpager__numpad__content__item"
+								@click="appendTotalStr(idx)"
+							>{{ idx }}</div>
 							<div class="order__viewpager__numpad__content__item"></div>
 							<div class="order__viewpager__numpad__content__item" @click="appendTotalStr(0)">0</div>
 							<div class="order__viewpager__numpad__content__item">
-								<span @click="removeTotalStr"><i class="iconify" data-icon="mdi-backspace"></i></span>
+								<span @click="removeTotalStr">
+									<i class="iconify" data-icon="mdi-backspace"></i>
+								</span>
 							</div>
 						</div>
 					</div>
@@ -72,11 +79,11 @@ import { db } from "@/DB";
 		BarcodeScanner: BarcodeScannerVue,
 		StockList: StockListVue,
 		PaymentRequireButton: PaymentRequireButtonVue,
-		NumberCounter: NumberCounterVue,
+		NumberCounter: NumberCounterVue
 	},
 	firestore: {
-		list: db.collection("stock"),
-	},
+		list: db.collection("stock")
+	}
 })
 export default class Order extends Vue {
 	// 테스트 데이터 (상품 목록)
@@ -124,7 +131,9 @@ export default class Order extends Vue {
 	onDetected(result: string) {
 		let idx = this.list.findIndex(item => item.barcode == result);
 		if (idx != -1) {
-			let beep = new Audio("https://firebasestorage.googleapis.com/v0/b/sunrinpay.appspot.com/o/beep.mp3?alt=media&token=935710df-2dce-4af9-bd4c-bcbfc425533d");
+			let beep = new Audio(
+				"https://firebasestorage.googleapis.com/v0/b/sunrinpay.appspot.com/o/beep.mp3?alt=media&token=935710df-2dce-4af9-bd4c-bcbfc425533d"
+			);
 			beep.play();
 			this.appendSelectedItem(this.list[idx]);
 		}
@@ -145,7 +154,10 @@ export default class Order extends Vue {
 		this.totalString = this.totalString + str;
 	}
 	removeTotalStr() {
-		this.totalString = this.totalString.substring(0, this.totalString.length - 1);
+		this.totalString = this.totalString.substring(
+			0,
+			this.totalString.length - 1
+		);
 	}
 }
 </script>
@@ -172,15 +184,21 @@ export default class Order extends Vue {
 		.order__viewpager__numpad {
 			padding: 50px 60px;
 			width: 100%;
-			max-width: 50%;
+			height: 100%;
 			background-color: $content-color;
-			border-radius: 24px;
 			box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
+
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
 
 			.order__viewpager__numpad__total {
 				display: flex;
 				justify-content: space-between;
 				align-items: center;
+
+                width: 100%;
 
 				padding-bottom: 20px;
 
