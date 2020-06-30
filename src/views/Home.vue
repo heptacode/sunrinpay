@@ -2,6 +2,7 @@
 	<div class="home">
 		<div>
 			<img
+				v-if="!isAuth"
 				class="home__logo"
 				src="https://firebasestorage.googleapis.com/v0/b/sunrinpay.appspot.com/o/Logo%20Dark.svg?alt=media&token=efbdb91a-392e-40ce-85a9-479614eb2fb8"
 				alt="SunrinPay Logo"
@@ -15,16 +16,20 @@
 			<div id="firebaseui-auth-container" :class="{ inactive: isAuth }"></div>
 
 			<!-- isAuth == true -->
-			<div v-if="isAuth">
-				<img :src="userInformation.photoURL" width="32px" height="32px" style="border-radius: 50%" />
-				<h1>{{ userInformation.displayName }}</h1>
-				<h6>
-					{{ userInformation.email }}
-					<span>{{ userInformation.emailVerified ? "인증됨" : "미인증" }}</span>
-				</h6>
+			<main v-if="isAuth">
 				<button @click="signOut">Sign out</button>
 
-				<h2 class="home__title">테스트님, 환영합니다</h2>
+				<div class="home__title">
+					<div>
+						<h3>{{ userInformation.displayName }}</h3>
+						<div>
+							<span class="email">{{ userInformation.email }}</span>
+							<span class="badge">{{ userInformation.emailVerified ? "인증됨" : "미인증" }}</span>
+						</div>
+					</div>
+					<img :src="userInformation.photoURL" width="32px" height="32px" />
+				</div>
+
 				<div class="home__account" :class="{ isRotate: isRotate, isRotateReverse: !isRotate }">
 					<p class="home__account__info" v-if="!isDelayRotate">
 						내지갑
@@ -60,7 +65,7 @@
 						</li>
 					</ul>
 				</div>
-			</div>
+			</main>
 			<!-- /isAuth == true -->
 
 			<section v-else>
@@ -256,123 +261,142 @@ export default class Home extends Vue {
 		}
 	}
 
-	.home__title {
-		font-size: $small-normal-size;
-		margin-top: 10px;
-		margin-bottom: 30px;
-	}
-	.home__account {
-		display: flex;
-		flex-direction: column;
-		justify-content: space-between;
-		height: 30vh;
+	main {
+		max-width: 500px;
+		.home__title {
+			margin-top: 10px;
+			margin-bottom: 30px;
+			display: flex;
+			// align-content: center;
+			justify-content: space-between;
 
-		background-color: $primary-color;
-		border-radius: 8px;
-		box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
-
-		padding: 25px;
-
-		overflow: hidden;
-
-		.home__account__info {
-			height: 1.5em;
-			font-size: $small-size;
+			span {
+				font-size: $small-normal-size;
+			}
+			img {
+				border-radius: 50%;
+				box-shadow: 0 3px 3px rgba(0, 0, 0, 0.15);
+			}
+			.email {
+				font-size: 0.8em;
+			}
+			.badge {
+				background-color: white;
+			}
 		}
-		.home__account__qr {
-			flex: 1;
+		.home__account {
+			display: flex;
+			flex-direction: column;
+			justify-content: space-between;
+			height: 30vh;
+
+			background-color: $primary-color;
+			border-radius: 8px;
+			box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
+
+			padding: 25px;
+
 			overflow: hidden;
 
-			margin-bottom: 20px;
+			.home__account__info {
+				height: 1.5em;
+				font-size: $small-size;
+			}
+			.home__account__qr {
+				flex: 1;
+				overflow: hidden;
 
-			display: flex;
-			justify-content: center;
-			align-items: center;
-			.qr {
-				height: 80%;
-			}
-			.content {
-				margin-left: 20px;
-				h3 {
-					font-size: $small-up-size;
-				}
-			}
-		}
-		.home__account__money {
-			font-size: $normal-size;
-			text-align: center;
-		}
-		.home__account__action {
-			height: 1.5em;
-			font-size: $small-size;
-			text-align: center;
+				margin-bottom: 20px;
 
-			display: flex;
-			justify-content: space-around;
-		}
-
-		&.isRotate {
-			animation: rotate 1s linear;
-		}
-
-		&.isRotateReverse {
-			animation: rotateReverse 1s linear;
-		}
-
-		@keyframes rotate {
-			0% {
-				transform: rotateY(0);
-			}
-			50% {
-				transform: rotateY(90deg);
-			}
-			100% {
-				transform: rotateY(0);
-			}
-		}
-		@keyframes rotateReverse {
-			0% {
-				background-color: red !important;
-				transform: rotateY(0);
-			}
-			50% {
-				transform: rotateY(-90deg);
-			}
-			100% {
-				transform: rotateY(0);
-			}
-		}
-	}
-	.home__log {
-		h2 {
-			font-size: $small-size;
-			opacity: 0.6;
-			margin-top: 20px;
-			margin-bottom: 15px;
-		}
-		.home__log__list {
-			.home__log__list__item {
 				display: flex;
-				justify-content: space-between;
-
-				padding: 10px 0;
-
-				border-bottom: 1px solid #fcfeff;
-				.left {
-					flex: 1;
-					text-overflow: ellipsis;
-					overflow: hidden;
-					white-space: nowrap;
+				justify-content: center;
+				align-items: center;
+				.qr {
+					height: 80%;
+				}
+				.content {
+					margin-left: 20px;
 					h3 {
-						font-size: $small-size;
+						font-size: $small-up-size;
 					}
 				}
-				.right {
-					.result {
-						display: flex;
-						justify-content: flex-end;
-						align-items: flex-end;
-						text-align: right;
+			}
+			.home__account__money {
+				font-size: $normal-size;
+				text-align: center;
+			}
+			.home__account__action {
+				height: 1.5em;
+				font-size: $small-size;
+				text-align: center;
+
+				display: flex;
+				justify-content: space-around;
+			}
+
+			&.isRotate {
+				animation: rotate 1s linear;
+			}
+
+			&.isRotateReverse {
+				animation: rotateReverse 1s linear;
+			}
+
+			@keyframes rotate {
+				0% {
+					transform: rotateY(0);
+				}
+				50% {
+					transform: rotateY(90deg);
+				}
+				100% {
+					transform: rotateY(0);
+				}
+			}
+			@keyframes rotateReverse {
+				0% {
+					background-color: red !important;
+					transform: rotateY(0);
+				}
+				50% {
+					transform: rotateY(-90deg);
+				}
+				100% {
+					transform: rotateY(0);
+				}
+			}
+		}
+		.home__log {
+			h2 {
+				font-size: $small-size;
+				opacity: 0.6;
+				margin-top: 20px;
+				margin-bottom: 15px;
+			}
+			.home__log__list {
+				.home__log__list__item {
+					display: flex;
+					justify-content: space-between;
+
+					padding: 10px 0;
+
+					border-bottom: 1px solid #fcfeff;
+					.left {
+						flex: 1;
+						text-overflow: ellipsis;
+						overflow: hidden;
+						white-space: nowrap;
+						h3 {
+							font-size: $small-size;
+						}
+					}
+					.right {
+						.result {
+							display: flex;
+							justify-content: flex-end;
+							align-items: flex-end;
+							text-align: right;
+						}
 					}
 				}
 			}
