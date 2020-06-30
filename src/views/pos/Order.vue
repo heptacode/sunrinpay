@@ -1,21 +1,39 @@
 <template>
-	<div class="pos">
-		<div class="pos__viewpager">
-			<ViewPager :tab="['바코드 읽기', '상품 선택하여 계산', '상품 수동 입력']">
+	<div class="order">
+		<div class="order__viewpager">
+			<ViewPager :tab="['바코드', '상품 목록', '직접 입력']">
 				<template v-slot:tab0>
-					<div class="pos__viewpager__barcodescanner">
+					<div class="order__viewpager__barcodescanner">
 						<BarcodeScanner :onDetected="onDetected"></BarcodeScanner>
 					</div>
 				</template>
 				<template v-slot:tab1>
 					<StockList :data="list" @add-item="appendSelectedItem"></StockList>
 				</template>
-				<template v-slot:tab2>상품 수동 입력</template>
+				<template v-slot:tab2>
+					<div class="order__viewpager__numpad">
+						<div class="order__viewpager__numpad__total">
+							<p>결제 요청 금액</p>
+							<h2>
+								<NumberCounter :text="getTotal" :isNumberFormat="true" defaultChar="0"></NumberCounter>
+							</h2>
+						</div>
+						<div class="order__viewpager__numpad__hr"></div>
+						<div class="order__viewpager__numpad__content">
+							<div v-for="idx in 9" :key="idx" class="order__viewpager__numpad__content__item" @click="appendTotalStr(idx)">{{ idx }}</div>
+							<div class="order__viewpager__numpad__content__item"></div>
+							<div class="order__viewpager__numpad__content__item" @click="appendTotalStr(0)">0</div>
+							<div class="order__viewpager__numpad__content__item">
+								<span @click="removeTotalStr"><i class="iconify" data-icon="mdi-backspace"></i></span>
+							</div>
+						</div>
+					</div>
+				</template>
 			</ViewPager>
 		</div>
-		<div class="pos__content">
-			<ul class="pos__content__list">
-				<li class="pos__content__list__item" v-for="item in selectedList" :key="item.name">
+		<div class="order__content">
+			<ul class="order__content__list">
+				<li class="order__content__list__item" v-for="item in selectedList" :key="item.name">
 					<p class="name">{{ item.name }}</p>
 					<div class="count">
 						<button class="count__action count__action__minous" @click="minousItemCount(item)">-</button>
@@ -44,6 +62,8 @@ import StockListVue from "../../components/StockList.vue";
 import { StockItem } from "../../schema";
 import PaymentRequireButtonVue from "../../components/PaymentRequireButton.vue";
 
+import NumberCounterVue from "vue-roller";
+
 import { db } from "@/DB";
 
 @Component({
@@ -51,11 +71,12 @@ import { db } from "@/DB";
 		ViewPager: ViewPagerVue,
 		BarcodeScanner: BarcodeScannerVue,
 		StockList: StockListVue,
-		PaymentRequireButton: PaymentRequireButtonVue
+		PaymentRequireButton: PaymentRequireButtonVue,
+		NumberCounter: NumberCounterVue,
 	},
 	firestore: {
-		list: db.collection("stock")
-	}
+		list: db.collection("stock"),
+	},
 })
 export default class Order extends Vue {
 	// 테스트 데이터 (상품 목록)
@@ -64,6 +85,8 @@ export default class Order extends Vue {
 	selectedList: StockItem[] = [];
 	// 현 스크롤 위치 (터치 전용)
 	currentConsonant: string = "";
+
+	totalString: string = "";
 
 	created() {
 		// 테스트 데이터
@@ -81,9 +104,8 @@ export default class Order extends Vue {
 		// });
 	}
 
-	// @Watch("stock")
-	// onStockChanged(next: any[], prev: any[]) {
-	// }
+	@Watch("list")
+	onListChanged(next: any[], prev: any[]) {}
 
 	appendSelectedItem(item: StockItem) {
 		let idx = this.selectedList.findIndex(i => i.name == item.name);
@@ -102,9 +124,7 @@ export default class Order extends Vue {
 	onDetected(result: string) {
 		let idx = this.list.findIndex(item => item.barcode == result);
 		if (idx != -1) {
-			let beep = new Audio(
-				"https://firebasestorage.googleapis.com/v0/b/sunrinpay.appspot.com/o/beep.mp3?alt=media&token=935710df-2dce-4af9-bd4c-bcbfc425533d"
-			);
+			let beep = new Audio("https://firebasestorage.googleapis.com/v0/b/sunrinpay.appspot.com/o/beep.mp3?alt=media&token=935710df-2dce-4af9-bd4c-bcbfc425533d");
 			beep.play();
 			this.appendSelectedItem(this.list[idx]);
 		}
@@ -117,19 +137,29 @@ export default class Order extends Vue {
 		item.quantity--;
 		if (item.quantity <= 0) this.removeSelectItem(item);
 	}
+
+	get getTotal() {
+		return Number(this.totalString);
+	}
+	appendTotalStr(str: string | number) {
+		this.totalString = this.totalString + str;
+	}
+	removeTotalStr() {
+		this.totalString = this.totalString.substring(0, this.totalString.length - 1);
+	}
 }
 </script>
 
 <style lang="scss" scoped>
-.pos {
+.order {
 	display: flex;
 
 	flex-direction: row;
-	.pos__viewpager {
+	.order__viewpager {
 		flex: 1 1 50%;
 		color: white;
 
-		.pos__viewpager__barcodescanner {
+		.order__viewpager__barcodescanner {
 			display: flex;
 			justify-content: center;
 			align-items: center;
@@ -138,8 +168,67 @@ export default class Order extends Vue {
 			height: 100%;
 			overflow: hidden;
 		}
+
+		.order__viewpager__numpad {
+			padding: 50px 60px;
+			width: 100%;
+			max-width: 50%;
+			background-color: $content-color;
+			border-radius: 24px;
+			box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
+
+			.order__viewpager__numpad__total {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+
+				padding-bottom: 20px;
+
+				p {
+					font-size: $normal-size;
+				}
+				h2 {
+					display: flex;
+					align-items: center;
+					font-size: $large-size;
+				}
+			}
+			.order__viewpager__numpad__hr {
+				width: 90%;
+				height: 1px;
+
+				background-color: $text-color;
+				margin: 0 auto;
+			}
+			.order__viewpager__numpad__content {
+				width: 100%;
+				max-width: 50%;
+
+				margin: 0 auto;
+				margin-top: 40px;
+
+				display: flex;
+				flex-wrap: wrap;
+
+				.order__viewpager__numpad__content__item {
+					flex: 1 33%;
+					width: 1.5em;
+					height: 1.5em;
+
+					display: flex;
+					justify-content: center;
+					align-items: center;
+
+					font-size: $large-size;
+					i {
+						font-size: 0.7em;
+						color: $gray-text-color;
+					}
+				}
+			}
+		}
 	}
-	.pos__content {
+	.order__content {
 		flex: 1 1 50%;
 
 		display: flex;
@@ -149,11 +238,11 @@ export default class Order extends Vue {
 
 		padding: 50px;
 		box-sizing: border-box !important;
-		.pos__content__list {
+		.order__content__list {
 			flex: 1;
 			overflow-y: auto;
 			margin-bottom: 50px;
-			.pos__content__list__item {
+			.order__content__list__item {
 				display: flex;
 				justify-content: space-between;
 				font-size: $small-up-size;
