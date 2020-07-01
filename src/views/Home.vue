@@ -125,7 +125,7 @@
 				</div>
 				<div style="margin-top:50px;">
 					<h2>QR Scanner</h2>
-					<QRScanner @decode="onDecode"></QRScanner>
+					<!-- <QRScanner @decode="onDecode"></QRScanner> -->
 				</div>
 			</section>
 		</div>
@@ -148,7 +148,7 @@ firebase.auth().languageCode = "ko";
 
 import { db, log } from "@/DB";
 import { signIn, signOut } from "@/Auth";
-import QRScanner from "../components/QRScanner.vue";
+import QRScanner from "../components/intent/QRScanner.vue";
 
 @Component({
 	components: {
