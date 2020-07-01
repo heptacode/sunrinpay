@@ -17,22 +17,22 @@
 
 			<!-- isAuth == true -->
 			<main v-if="isAuth">
-				<button @click="signOut">Sign out</button>
-
 				<div class="home__title">
-					<div>
-						<h3>{{ userInformation.displayName }}</h3>
-						<div>
-							<span class="email">{{ userInformation.email }}</span>
-							<span class="badge">{{ userInformation.emailVerified ? "인증됨" : "미인증" }}</span>
-						</div>
-					</div>
-					<img :src="userInformation.photoURL" width="32px" height="32px" />
+					<h3>{{ userInformation.displayName }}</h3>
+					<img :src="userInformation.photoURL" width="32px" height="32px" draggable="false" @click="isProfileOpen = !isProfileOpen" />
 				</div>
+				<div v-if="isProfileOpen" class="home__profile">
+					<div>
+						<img :src="userInformation.photoURL" width="40px" height="40px" draggable="false" />
 
-				<div class="home__account" :class="{ isRotate: isRotate, isRotateReverse: !isRotate }">
-					<p class="home__account__info" v-if="!isDelayRotate">
-						내지갑
+						<span class="email">{{ userInformation.email }}</span>
+						<span v-if="1 /*userInformation.emailVerified*/" class="badge-unverified">미인증</span>
+					</div>
+					<button @click="signOut">로그아웃</button>
+				</div>
+				<div class="home__account" :class="{ isFlip: isFlip, isFlipReverse: !isFlip }">
+					<p class="home__account__info" v-if="!isDelayFlip">
+						내 지갑
 						<br />1-181-0240
 					</p>
 					<p class="home__account__qr" v-else>
@@ -42,10 +42,11 @@
 							<p>+821072078667</p>
 						</span>
 					</p>
-					<h3 class="home__account__money" v-if="!isDelayRotate">25,565원</h3>
-					<p class="home__account__action" @click="toggleRotate">
+					<h3 class="home__account__money" v-if="!isDelayFlip">25,565원</h3>
+					<p class="home__account__action">
 						<span>송금하기</span>
-						<span>내 QR 확인하기</span>
+						<span v-if="!isFlip" @click="toggleFlip">내 QR 보기</span>
+						<span v-else @click="toggleFlip">닫기</span>
 					</p>
 				</div>
 				<div class="home__log">
@@ -149,15 +150,16 @@ import { signIn, signOut } from "@/Auth";
 	},
 })
 export default class Home extends Vue {
-	isAuth: boolean = false;
 	userInformation: Object = {};
+	isAuth: boolean = false;
+	isProfileOpen: boolean = false;
 
-	isRotate: boolean = false;
-	isDelayRotate: boolean = false;
-	toggleRotate() {
-		this.isRotate = !this.isRotate;
+	isFlip: boolean = false;
+	isDelayFlip: boolean = false;
+	toggleFlip() {
+		this.isFlip = !this.isFlip;
 		setTimeout(() => {
-			this.isDelayRotate = this.isRotate;
+			this.isDelayFlip = this.isFlip;
 		}, 500);
 	}
 
@@ -247,17 +249,16 @@ export default class Home extends Vue {
 
 	#loader {
 		text-align: center;
-		i {
-			font-size: 40px;
-			animation: rotate 0.6s linear infinite;
-		}
-	}
-	@keyframes rotate {
-		from {
-			transform: rotate(0deg);
-		}
-		to {
-			transform: rotate(360deg);
+		font-size: 40px;
+		animation: loading 0.5s linear infinite;
+
+		@keyframes loading {
+			from {
+				transform: rotate(0deg);
+			}
+			to {
+				transform: rotate(360deg);
+			}
 		}
 	}
 
@@ -276,14 +277,42 @@ export default class Home extends Vue {
 			img {
 				border-radius: 50%;
 				box-shadow: 0 3px 3px rgba(0, 0, 0, 0.15);
+				cursor: pointer;
+				&:hover {
+					box-shadow: 0 2px 5px rgba(232, 234, 237, 0.08);
+				}
+				position: relative;
 			}
 			.email {
-				font-size: 0.8em;
+				font-size: 0.7em;
+				margin-right: 10px;
 			}
-			.badge {
-				background-color: white;
+			.badge-unverified {
+				font-size: 0.6em;
+				padding: 2px 5px;
+				background-color: #777;
+				border-radius: 20px;
 			}
 		}
+
+		.home__profile {
+			position: absolute;
+			margin-top: -20px;
+			background: rgba(33, 33, 33, 0.98);
+			border: 1px solid rgba(255, 255, 255, 0.1);
+			border-radius: 20px;
+			z-index: 10;
+			div {
+				display: flex;
+			}
+			img {
+				border-radius: 50%;
+			}
+			button {
+				padding: 2px 2px;
+			}
+		}
+
 		.home__account {
 			display: flex;
 			flex-direction: column;
@@ -332,37 +361,46 @@ export default class Home extends Vue {
 
 				display: flex;
 				justify-content: space-around;
+				span {
+					cursor: pointer;
+				}
 			}
 
-			&.isRotate {
-				animation: rotate 1s linear;
+			&.isFlip {
+				animation: flip 0.5s linear;
 			}
 
-			&.isRotateReverse {
-				animation: rotateReverse 1s linear;
+			&.isFlipReverse {
+				animation: flipReverse 0.5s linear;
 			}
 
-			@keyframes rotate {
+			@keyframes flip {
 				0% {
 					transform: rotateY(0);
+					opacity: 1;
 				}
 				50% {
 					transform: rotateY(90deg);
+					opacity: 0;
 				}
 				100% {
 					transform: rotateY(0);
+					opacity: 1;
 				}
 			}
-			@keyframes rotateReverse {
+			@keyframes flipReverse {
 				0% {
 					background-color: red !important;
 					transform: rotateY(0);
+					opacity: 1;
 				}
 				50% {
 					transform: rotateY(-90deg);
+					opacity: 0;
 				}
 				100% {
 					transform: rotateY(0);
+					opacity: 1;
 				}
 			}
 		}
