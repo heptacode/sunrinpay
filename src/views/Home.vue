@@ -170,7 +170,7 @@ export default class Home extends Vue {
 	}
 
 	n: string = "25565";
-x
+
 	mounted() {
 		// const ui = new firebaseui.auth.AuthUI(firebase.auth());
 		const ui = firebaseui.auth.AuthUI.getInstance() || new firebaseui.auth.AuthUI(firebase.auth());
