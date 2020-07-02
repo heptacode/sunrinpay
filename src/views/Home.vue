@@ -37,10 +37,10 @@
 					</p>
 					<p class="home__account__qr" v-else>
 						<QRcode data="test" class="qr"></QRcode>
-						<span class="content">
+						<!-- <span class="content">
 							<h3>선린인터넷고등학교매점</h3>
 							<p>+821072078667</p>
-						</span>
+						</span> -->
 					</p>
 					<h3 class="home__account__money" v-if="!isDelayFlip">25,565원</h3>
 					<p class="home__account__action">
@@ -100,13 +100,7 @@
 				</ul>
 				<div style="margin-top:50px;">
 					<h2>Number Counter</h2>
-					<NumberCounter
-						:text="n"
-						:isNumberFormat="true"
-						defaultChar="0"
-						style="width:100%; font-size:2em;"
-						direction="bottom"
-					></NumberCounter>
+					<NumberCounter :text="n" :isNumberFormat="true" defaultChar="0" style="width:100%; font-size:2em;" direction="bottom"></NumberCounter>
 				</div>
 				<div style="margin-top:50px; width:400px;height:400px;">
 					<h2>View Pager</h2>
@@ -158,8 +152,8 @@ import QRScanner from "../components/intent/QRScanner.vue";
 		NumberCounter: NumberCounterVue,
 		BarcodeScanner: BarcodeScannerVue,
 		ViewPager: ViewPagerVue,
-		SalesChart: SalesChartVue
-	}
+		SalesChart: SalesChartVue,
+	},
 })
 export default class Home extends Vue {
 	userInformation: Object = {};
@@ -172,16 +166,14 @@ export default class Home extends Vue {
 		this.isFlip = !this.isFlip;
 		setTimeout(() => {
 			this.isDelayFlip = this.isFlip;
-		}, 500);
+		}, 250);
 	}
 
 	n: string = "25565";
 
 	mounted() {
 		// const ui = new firebaseui.auth.AuthUI(firebase.auth());
-		const ui =
-			firebaseui.auth.AuthUI.getInstance() ||
-			new firebaseui.auth.AuthUI(firebase.auth());
+		const ui = firebaseui.auth.AuthUI.getInstance() || new firebaseui.auth.AuthUI(firebase.auth());
 		const uiConfig = {
 			callbacks: {
 				signInSuccessWithAuthResult: (authResult, redirectUrl) => {
@@ -192,40 +184,39 @@ export default class Home extends Vue {
 					// The widget is rendered.
 					// Hide the loader.
 					document.getElementById("loader")!.style.display = "none";
-				}
+				},
 			},
 			signInSuccessUrl: "/",
 			signInOptions: [
 				{
 					provider: firebase.auth.EmailAuthProvider.PROVIDER_ID,
-					requireDisplayName: false
+					requireDisplayName: false,
 				},
 				{
 					provider: firebase.auth.PhoneAuthProvider.PROVIDER_ID,
 					recaptchaParameters: {
 						size: "invisible",
-						badge: "bottomright"
+						badge: "bottomright",
 					},
-					defaultCountry: "KR"
+					defaultCountry: "KR",
 				},
 				{
 					provider: firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-					clientId:
-						"604565159530-tf5rvkljdec8n0o83lj2hjba53831q6i.apps.googleusercontent.com"
+					clientId: "604565159530-tf5rvkljdec8n0o83lj2hjba53831q6i.apps.googleusercontent.com",
 				},
 				firebase.auth.FacebookAuthProvider.PROVIDER_ID,
 				firebase.auth.TwitterAuthProvider.PROVIDER_ID,
 				firebase.auth.GithubAuthProvider.PROVIDER_ID,
 				"apple.com",
-				"microsoft.com"
+				"microsoft.com",
 			],
 			credentialHelper: firebaseui.auth.CredentialHelper.GOOGLE_YOLO,
 			tosUrl: "https://sunrinpay.web.app/privacy",
-			privacyPolicyUrl: "https://sunrinpay.web.app/privacy"
+			privacyPolicyUrl: "https://sunrinpay.web.app/privacy",
 		};
 		ui.disableAutoSignIn();
 
-		firebase.auth().onAuthStateChanged(async user => {
+		firebase.auth().onAuthStateChanged(async (user) => {
 			if (user) {
 				await signIn(user);
 				this.userInformation = user;
@@ -356,10 +347,11 @@ export default class Home extends Vue {
 				margin-bottom: 20px;
 
 				display: flex;
+				flex-direction: column;
 				justify-content: center;
 				align-items: center;
 				.qr {
-					height: 80%;
+					height: 100%;
 				}
 				.content {
 					margin-left: 20px;
