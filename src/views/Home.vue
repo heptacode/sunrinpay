@@ -34,7 +34,10 @@
 						<span class="email">{{ userInformation.email }}</span>
 						<span v-if="1 /*userInformation.emailVerified*/" class="badge-unverified">미인증</span>
 					</div>
-					<button @click="signOut">로그아웃</button>
+					<button @click="signOut">
+						<i class="iconify" data-icon="mdi-close"></i>
+						로그아웃
+					</button>
 				</div>
 				<div class="home__account" :class="{ isFlip: isFlip, isFlipReverse: !isFlip }">
 					<p class="home__account__info" v-if="!isDelayFlip">
@@ -261,7 +264,6 @@ export default class Home extends Vue {
 .home {
 	padding: 40px;
 	overflow-y: scroll;
-
 	.inactive {
 		display: none;
 	}
@@ -288,6 +290,8 @@ export default class Home extends Vue {
 
 	main {
 		max-width: 500px;
+		position: relative;
+
 		.home__title {
 			margin-top: 10px;
 			margin-bottom: 30px;
@@ -321,19 +325,40 @@ export default class Home extends Vue {
 
 		.home__profile {
 			position: absolute;
+			right: 0;
 			margin-top: -20px;
-			background: rgba(33, 33, 33, 0.98);
-			border: 1px solid rgba(255, 255, 255, 0.1);
+			background: $content-color;
 			border-radius: 20px;
 			z-index: 10;
 			div {
+				padding: 20px;
 				display: flex;
+				flex-direction: column;
+			}
+			.email {
+			}
+			.badge-unverified {
 			}
 			img {
 				border-radius: 50%;
 			}
 			button {
-				padding: 2px 2px;
+				padding: 10px;
+				width: 100%;
+
+				background: none;
+
+				margin-bottom: 20px;
+
+				display: flex;
+				align-items: center;
+				justify-content: flex-start;
+
+				&:hover {
+					background-color: $background-color;
+
+					border-radius: 0;
+				}
 			}
 		}
 

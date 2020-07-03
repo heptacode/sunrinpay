@@ -15,12 +15,12 @@ $small-normal-size: 1.5em;
 $small-up-size: 1.2em;
 $small-size: 1.1em;
 
-// // Dark Mode
-// @media (prefers-color-scheme: dark) {
-// 	$background-color: #373737 !global;
-// 	$content-color: #282828 !global;
-// 	$disable-color: #aeaeae !global;
-// 	$text-color: white !global;
-// 	$gray-text-color: #979797 !global;
-// 	$select-color: #919eab !global;
-// }
+// Dark Mode
+@media (prefers-color-scheme: dark) {
+	$background-color: #373737 !global;
+	$content-color: #282828 !global;
+	$disable-color: #aeaeae !global;
+	$text-color: white !global;
+	$gray-text-color: #979797 !global;
+	$select-color: #919eab !global;
+}
