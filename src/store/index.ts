@@ -31,8 +31,8 @@ export default new Vuex.Store({
 				return newBalance;
 			} else {
 				// 결제 불가
-				log("info", `잔액 부족 : ${newBalance * -1}원`);
-				return `잔액이 ${newBalance * -1}원 부족합니다.`;
+				log("info", `잔액 부족 : ${Math.abs(newBalance)}원`);
+				return `잔액이 ${Math.abs(newBalance)}원 부족합니다.`;
 			}
 		},
 	},
