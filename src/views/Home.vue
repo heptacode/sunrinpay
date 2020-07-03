@@ -350,6 +350,7 @@ export default class Home extends Vue {
 			padding: 25px;
 
 			overflow: hidden;
+			color: white;
 
 			.home__account__info {
 				height: 1.5em;

@@ -143,6 +143,10 @@ export default class StockList extends Vue {
 
 	position: relative;
 
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+
 	background-color: $primary-color;
 
 	.stocklist__search {
@@ -169,14 +173,12 @@ export default class StockList extends Vue {
 	}
 
 	.stocklist__list {
+		flex: 1;
 		width: 100%;
-		height: 100%;
 
 		padding: 30px 50px;
 
 		overflow-y: auto;
-
-		position: relative;
 
 		/* scroll-behavior: smooth; */
 		&::-webkit-scrollbar {
