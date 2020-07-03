@@ -27,7 +27,7 @@ export default new Vuex.Store({
 				await doc
 					.update({ balance: newBalance })
 					.then(() => transaction({ price: data.price }))
-					.catch(err => log("error", `결제 후 잔고 업데이트 실패 : ${err}`));
+					.catch((err) => log("error", `결제 후 잔고 업데이트 실패 : ${err}`));
 				return newBalance;
 			} else {
 				// 결제 불가
