@@ -16,6 +16,16 @@ export default new Vuex.Store({
 	actions: {
 		async CREATE_ORDER({ commit, state }, data) {
 			event("action", "CREATE_ORDER", "createOrder", data);
+			try {
+				await db
+					.collection("orders")
+					.doc(data.orderID)
+					.set({ id: data.orderID, itemList: data.itemList });
+				return true;
+			} catch (err) {
+				log("error", `${err}`);
+				return false;
+			}
 		},
 		async CHECKOUT({ commit, state }, data) {
 			event("action", "CHECKOUT", "checkout", data);
@@ -24,11 +34,13 @@ export default new Vuex.Store({
 			const newBalance = snapshot.data()!.balance - data.price;
 			if (newBalance >= 0) {
 				// 결제 가능
-				await doc
-					.update({ balance: newBalance })
-					.then(() => transaction({ price: data.price }))
-					.catch(err => log("error", `결제 후 잔고 업데이트 실패 : ${err}`));
-				return newBalance;
+				try {
+					await doc.update({ balance: newBalance }).then(() => transaction({ price: data.price }));
+					return newBalance;
+				} catch (err) {
+					log("error", `결제 후 잔고 업데이트 실패 : ${err}`);
+					return false;
+				}
 			} else {
 				// 결제 불가
 				log("info", `잔액 부족 : ${Math.abs(newBalance)}원`);

@@ -15,22 +15,28 @@ export const db = firebase
 	})
 	.firestore();
 
-export function transaction(_data: object): void {
-	db.collection("transactions").add({
-		a0_timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-		a1_year: new Date().getFullYear(),
-		a2_month: new Date().getMonth() + 1,
-		a3_date: new Date().getDate(),
-		a4_hour: new Date().getHours(),
-		a5_minute: new Date().getMinutes(),
-		b0_uid: firebase.auth().currentUser?.uid,
-		c0_data: _data,
-	});
+export async function transaction(_data: object): Promise<boolean> {
+	try {
+		await db.collection("transactions").add({
+			a0_timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+			a1_year: new Date().getFullYear(),
+			a2_month: new Date().getMonth() + 1,
+			a3_date: new Date().getDate(),
+			a4_hour: new Date().getHours(),
+			a5_minute: new Date().getMinutes(),
+			b0_uid: firebase.auth().currentUser?.uid,
+			c0_data: _data,
+		});
+		return true;
+	} catch (err) {
+		log("error", `트랜잭션 추가 실패 : ${err}`);
+		return false;
+	}
 }
 
-export function log(_type: string, _message: string): void {
-	db.collection("logs")
-		.add({
+export async function log(_type: string, _message: string): Promise<boolean> {
+	try {
+		await db.collection("logs").add({
 			a0_timestamp: firebase.firestore.FieldValue.serverTimestamp(),
 			a1_year: new Date().getFullYear(),
 			a2_month: new Date().getMonth() + 1,
@@ -43,9 +49,13 @@ export function log(_type: string, _message: string): void {
 			b3_providerData: firebase.auth().currentUser?.providerData,
 			c0_type: _type,
 			c1_message: _message,
-		})
-		.then(() => console.log(_message))
-		.catch(() => console.log("Unexpected Error While Logging"));
+		});
+		console.log(_message);
+		return true;
+	} catch (err) {
+		console.log("Unexpected Error While Logging");
+		return false;
+	}
 }
 
 // Export types that exists in Firestore
