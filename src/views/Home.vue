@@ -265,6 +265,9 @@ export default class Home extends Vue {
 .home {
 	padding: 40px;
 	overflow-y: scroll;
+
+	display: flex;
+	justify-content: center;
 	.inactive {
 		display: none;
 	}
