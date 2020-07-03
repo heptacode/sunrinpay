@@ -30,9 +30,10 @@
 				<div v-if="isProfileOpen" class="home__profile">
 					<div>
 						<img :src="userInformation.photoURL" width="40px" height="40px" draggable="false" />
-
-						<span class="email">{{ userInformation.email }}</span>
-						<span v-if="1 /*userInformation.emailVerified*/" class="badge-unverified">미인증</span>
+						<p>
+							<span class="email">{{ userInformation.email }}</span>
+							<span v-if="1 /*userInformation.emailVerified*/" class="badge-unverified">미인증</span>
+						</p>
 					</div>
 					<button @click="signOut">
 						<i class="iconify" data-icon="mdi-close"></i>
@@ -334,11 +335,16 @@ export default class Home extends Vue {
 			div {
 				padding: 20px;
 				display: flex;
+				align-items: center;
+			}
+			p {
+				margin-left: 20px;
+				display: flex;
 				flex-direction: column;
-			}
-			.email {
-			}
-			.badge-unverified {
+				.email {
+				}
+				.badge-unverified {
+				}
 			}
 			img {
 				border-radius: 50%;
