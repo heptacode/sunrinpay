@@ -4,14 +4,14 @@
 			<img
 				v-if="!isAuth"
 				class="home__logo"
-				src="https://firebasestorage.googleapis.com/v0/b/sunrinpay.appspot.com/o/Logo%20Dark.svg?alt=media&token=efbdb91a-392e-40ce-85a9-479614eb2fb8"
+				src="https://firebasestorage.googleapis.com/v0/b/sunrinpay.appspot.com/o/Logo%20%23FFFFFF.svg?alt=media&token=e1058ee5-c956-4499-960c-fd848b551daa"
 				alt="SunrinPay Logo"
-				width="200px"
+				width="250px"
 				draggable="false"
 			/>
 			<!-- 로그인 UI -->
 			<div id="loader" :class="{ inactive: isAuth }">
-				<i class="iconify" data-icon="mdi-loading"></i>
+				<i class="iconify loading" data-icon="mdi-loading"></i>
 			</div>
 			<div id="firebaseui-auth-container" :class="{ inactive: isAuth }"></div>
 
@@ -216,7 +216,7 @@ export default class Home extends Vue {
 		};
 		ui.disableAutoSignIn();
 
-		firebase.auth().onAuthStateChanged(async (user) => {
+		firebase.auth().onAuthStateChanged(async user => {
 			if (user) {
 				await signIn(user);
 				this.userInformation = user;
@@ -258,9 +258,10 @@ export default class Home extends Vue {
 
 	#loader {
 		text-align: center;
-		font-size: 40px;
-		animation: loading 0.5s linear infinite;
-
+		.loading {
+			font-size: 40px;
+			animation: loading 0.5s linear infinite;
+		}
 		@keyframes loading {
 			from {
 				transform: rotate(0deg);
