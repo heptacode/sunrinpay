@@ -132,6 +132,11 @@ export default class StockList extends Vue {
 			color: white;
 
 			font-size: $small-up-size;
+
+			&::placeholder {
+				color: white;
+				opacity: 0.5;
+			}
 		}
 	}
 	.stocklist__list__wrapper {
