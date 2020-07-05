@@ -67,10 +67,14 @@ export default class StockList extends Vue {
 	}
 
 	getConsonant(word: string): string {
-		const f: string[] = ["ㄱ", "ㄲ", "ㄴ", "ㄷ", "ㄸ", "ㄹ", "ㅁ", "ㅂ", "ㅃ", "ㅅ", "ㅆ", "ㅇ", "ㅈ", "ㅉ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ"];
-		let uni: number = word.charCodeAt(0) - 44032;
-		let fn: number = Math.floor(uni / 588);
-		return f[fn] || word[0].toUpperCase();
+		if (word) {
+			const f: string[] = ["ㄱ", "ㄲ", "ㄴ", "ㄷ", "ㄸ", "ㄹ", "ㅁ", "ㅂ", "ㅃ", "ㅅ", "ㅆ", "ㅇ", "ㅈ", "ㅉ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ"];
+			let uni: number = word.charCodeAt(0) - 44032;
+			let fn: number = Math.floor(uni / 588);
+			return f[fn] || word[0].toUpperCase();
+		} else {
+			return "-";
+		}
 	}
 	touchSearchTip(e: TouchEvent) {
 		let el: HTMLDivElement = this.$refs.search_tip as HTMLDivElement;

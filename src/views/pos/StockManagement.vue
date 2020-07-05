@@ -1,25 +1,26 @@
 <template>
 	<div class="stockmanagement">
 		<div class="stockmanagement__stocklist">
-			<StockList :data="list"></StockList>
+			<StockList :data="list" @add-item="selectItem"></StockList>
+			<button class="stockmanagement__stocklist__addbtn" @click="addItme">+</button>
 		</div>
-		<div class="stockmanagement__stockedit">
+		<div class="stockmanagement__stockedit" v-if="selectedItem">
 			<h2 class="stockmanagement__stockedit__name">
-				<span><input type="text" class="editable" value="메로나메론맛"/></span>
+				<span><input type="text" class="editable" v-model="selectedItem.name"/></span>
 				<i class="iconify" data-icon="mdi-edit"></i>
 			</h2>
 			<div class="stockmanagement__stockedit__barcode">
 				<h3>바코드</h3>
-				<input type="text" class="editable" value="123456789" />
+				<input type="text" class="editable" v-model="selectedItem.barcode" />
 			</div>
 			<div class="stockmanagement__stockedit__quantity">
 				<div>
 					<h3>개당 가격</h3>
-					<input type="text" class="editable" value="5700" />원
+					<input type="text" class="editable" v-model="selectedItem.price" />원
 				</div>
 				<div>
 					<h3>재고</h3>
-					<input type="text" class="editable" value="55" />개
+					<input type="text" class="editable" v-model="selectedItem.quantity" />개
 				</div>
 			</div>
 			<SalesChart></SalesChart>
@@ -46,6 +47,25 @@ import { StockItem } from "../../schema";
 })
 export default class StockManagement extends Vue {
 	list: StockItem[] = [];
+	selectedItem: StockItem | null = null;
+	selectItem(item: StockItem) {
+		this.selectedItem = item;
+	}
+	async addItme() {
+		let data = {
+			name: "물건",
+			barcode: "",
+			quantity: 1,
+			price: 1000,
+		} as StockItem;
+		await db
+			.collection("stock")
+			.doc()
+			.set(data);
+	}
+	async updateItem() {
+		// FIXME: 업데이트 안됨
+	}
 }
 </script>
 
@@ -66,6 +86,30 @@ export default class StockManagement extends Vue {
 	display: flex;
 	.stockmanagement__stocklist {
 		flex: 1 1 50%;
+		max-width: 50%;
+
+		position: relative;
+
+		.stockmanagement__stocklist__addbtn {
+			position: absolute;
+			right: 20px;
+			bottom: 20px;
+
+			width: $small-large-size;
+			height: $small-large-size;
+
+			display: flex;
+			justify-content: center;
+			align-items: center;
+
+			border-radius: 50%;
+			box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.2);
+			background-color: #ff53a3;
+
+			font-size: $small-normal-size;
+
+			z-index: 100;
+		}
 	}
 	.stockmanagement__stockedit {
 		flex: 1 1 50%;
