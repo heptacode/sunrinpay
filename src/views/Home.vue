@@ -48,7 +48,7 @@
 					</p>
 					<h3 class="home__account__money" v-if="!isDelayFlip">25,565원</h3>
 					<p class="home__account__action">
-						<span>송금하기</span>
+						<router-link :to="{ name: 'sendmoney' }">송금하기</router-link>
 						<span v-if="!isFlip" @click="toggleFlip">내 QR 보기</span>
 						<span v-else @click="toggleFlip">닫기</span>
 					</p>
