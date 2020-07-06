@@ -2,26 +2,39 @@
 	<div class="stockmanagement">
 		<div class="stockmanagement__stocklist">
 			<StockList :data="list" @add-item="selectItem"></StockList>
-			<button class="stockmanagement__stocklist__addbtn" @click="addItme">+</button>
+			<button class="stockmanagement__stocklist__addbtn" @click="addItem">+</button>
 		</div>
 		<div class="stockmanagement__stockedit" v-if="selectedItem">
-			<h2 class="stockmanagement__stockedit__name">
-				<span><input type="text" class="editable" v-model="selectedItem.name"/></span>
+			<h2 class="stockmanagement__stockedit__withicon">
 				<i class="iconify" data-icon="mdi-edit"></i>
+				<span>
+					<input type="text" class="editable" v-model="selectedItem.name" @change="updateItem('name')" />
+				</span>
 			</h2>
-			<div class="stockmanagement__stockedit__barcode">
+			<div class="stockmanagement__stockedit__small">
 				<h3>바코드</h3>
-				<input type="text" class="editable" v-model="selectedItem.barcode" />
+				<input type="text" class="editable" v-model="selectedItem.barcode" @change="updateItem('barcode')" />
 			</div>
-			<div class="stockmanagement__stockedit__quantity">
+			<div class="stockmanagement__stockedit__flex">
 				<div>
-					<h3>개당 가격</h3>
-					<input type="text" class="editable" v-model="selectedItem.price" />원
+					<h3>단가 <i class="iconify" data-icon="mdi-currency-krw"></i></h3>
+					<input type="text" class="editable" v-model="selectedItem.price" @change="updateItem('price')" />원
+				</div>
+				<div>
+					<h3>할인율 <i class="iconify" data-icon="mdi-sale"></i></h3>
+					<input type="text" class="editable" v-model="selectedItem.discount" @change="updateItem('discount')" />%
 				</div>
 				<div>
 					<h3>재고</h3>
-					<input type="text" class="editable" v-model="selectedItem.quantity" />개
+					<input type="text" class="editable" v-model="selectedItem.quantity" @change="updateItem('quantity')" />개
 				</div>
+			</div>
+			<div class="stockmanagement__stockedit__small">
+				<h3>태그</h3>
+				<!-- TODO: 태그 구현(필드 추가+, 삭제-) -->
+				<!-- <input type="text" class="editable" v-model="selectedItem.tags[0]" @change="updateItem('tags')" />개
+				<input type="text" class="editable" v-model="selectedItem.tags[1]" @change="updateItem('tags')" />개
+				<input type="text" class="editable" v-model="selectedItem.tags[2]" @change="updateItem('tags')" />개 -->
 			</div>
 			<SalesChart></SalesChart>
 		</div>
@@ -29,7 +42,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component } from "vue-property-decorator";
+import { Vue, Component, Watch } from "vue-property-decorator";
 import StockListVue from "../../components/StockList.vue";
 import SalesChart from "../../components/SalesChart.vue";
 
@@ -48,23 +61,33 @@ import { StockItem } from "../../schema";
 export default class StockManagement extends Vue {
 	list: StockItem[] = [];
 	selectedItem: StockItem | null = null;
+
+	@Watch("list")
+	onListChanged(next: any[], prev: any[]) {
+		this.selectedItem = this.list[0];
+	}
+
 	selectItem(item: StockItem) {
 		this.selectedItem = item;
 	}
-	async addItme() {
-		let data = {
+	async addItem() {
+		// TODO: INTENT로 추가할 상품 정보 입력받기
+		await db.collection("stock").add({
 			name: "물건",
 			barcode: "",
 			quantity: 1,
 			price: 1000,
-		} as StockItem;
+			discount: 0,
+			tags: [],
+		});
+	}
+	async updateItem(key: string) {
 		await db
 			.collection("stock")
-			.doc()
-			.set(data);
-	}
-	async updateItem() {
-		// FIXME: 업데이트 안됨
+			.doc(this.selectedItem?.id)
+			.update({
+				[key]: this.selectedItem?.[key],
+			});
 	}
 }
 </script>
@@ -123,7 +146,7 @@ export default class StockManagement extends Vue {
 			color: $gray-text-color;
 		}
 
-		.stockmanagement__stockedit__name {
+		.stockmanagement__stockedit__withicon {
 			display: flex;
 			justify-content: space-between;
 			align-items: center;
@@ -136,12 +159,12 @@ export default class StockManagement extends Vue {
 				width: 100%;
 			}
 		}
-		.stockmanagement__stockedit__barcode {
+		.stockmanagement__stockedit__small {
 			input {
 				font-size: $small-normal-size;
 			}
 		}
-		.stockmanagement__stockedit__quantity {
+		.stockmanagement__stockedit__flex {
 			display: flex;
 			div {
 				flex: 1;
