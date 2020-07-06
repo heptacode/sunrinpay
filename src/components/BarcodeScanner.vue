@@ -17,7 +17,7 @@ import { Vue, Component, Watch, Prop } from "vue-property-decorator";
 @Component
 export default class BarcodeScanner extends Vue {
 	result: string = "";
-	resultResetTimer: Number = 0;
+	resultResetTimer: any = 0;
 
 	@Prop({ default: () => {} }) onDetected: Function | undefined;
 
@@ -33,25 +33,18 @@ export default class BarcodeScanner extends Vue {
 				constraints: {
 					width: 1024,
 					height: 1024,
-					facingMode: "environment"
-				}
+					facingMode: "environment",
+				},
 			},
 			decoder: {
-				readers: [
-					"code_128_reader",
-					"ean_reader",
-					"ean_8_reader",
-					"code_39_reader",
-					"code_39_vin_reader",
-					"code_93_reader"
-				]
+				readers: ["code_128_reader", "ean_reader", "ean_8_reader", "code_39_reader", "code_39_vin_reader", "code_93_reader"],
 			},
 			locate: false, // 가로 인식
 			numOfWorkers: navigator.hardwareConcurrency,
-			frequency: 10
+			frequency: 10,
 		};
 
-		Quagga.init(config, err => {
+		Quagga.init(config, (err) => {
 			if (err) {
 				console.log(err);
 				return;
@@ -69,7 +62,7 @@ export default class BarcodeScanner extends Vue {
 			if (this.onDetected) this.onDetected(barcode);
 			this.result = barcode;
 			if (!this.resultResetTimer) {
-				setTimeout(() => {
+				this.resultResetTimer = setTimeout(() => {
 					this.result = "";
 					this.resultResetTimer = 0;
 				}, 1000);
@@ -81,18 +74,8 @@ export default class BarcodeScanner extends Vue {
 		let drawingCanvas = Quagga.canvas.dom.overlay;
 		if (result) {
 			if (result.codeResult && result.codeResult.code) {
-				drawingCtx.clearRect(
-					0,
-					0,
-					parseInt(drawingCanvas.getAttribute("width")),
-					parseInt(drawingCanvas.getAttribute("height"))
-				);
-				Quagga.ImageDebug.drawPath(
-					result.line,
-					{ x: "x", y: "y" },
-					drawingCtx,
-					{ color: "red", lineWidth: 3 }
-				);
+				drawingCtx.clearRect(0, 0, parseInt(drawingCanvas.getAttribute("width")), parseInt(drawingCanvas.getAttribute("height")));
+				Quagga.ImageDebug.drawPath(result.line, { x: "x", y: "y" }, drawingCtx, { color: "red", lineWidth: 3 });
 			}
 		}
 	}

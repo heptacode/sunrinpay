@@ -10,19 +10,9 @@
 				<i class="iconify cube" data-icon="mdi-cube-outline"></i>
 			</h3>
 			<h2 class="stockmanagement__stockedit__name">
-				<input
-					type="text"
-					class="editable name"
-					v-model="selectedItem.name"
-					@change="updateItem('name')"
-				/>
+				<input type="text" class="editable name" v-model="selectedItem.name" @change="updateItem('name')" />
 				<i class="iconify multiply" data-icon="mdi-close"></i>
-				<input
-					type="text"
-					class="editable quantity"
-					v-model="selectedItem.quantity"
-					@change="updateItem('quantity')"
-				/>
+				<input type="text" class="editable quantity" v-model="selectedItem.quantity" @change="updateItem('quantity')" />
 			</h2>
 			<div class="stockmanagement__stockedit__barcode">
 				<h3>
@@ -31,15 +21,9 @@
 				</h3>
 
 				<div>
-					<input
-						type="text"
-						class="editable"
-						v-model="selectedItem.barcode"
-						@change="updateItem('barcode')"
-					/>
+					<input type="text" class="editable" v-model="selectedItem.barcode" @change="updateItem('barcode')" />
 					<!-- TODO: Barcode Scan (INTENT) -->
-                    <!-- <BarcodeScannerIntent></BarcodeScannerIntent> -->
-					<button>
+					<button @click="toggleBarcodeScanner">
 						<i class="iconify" data-icon="mdi-barcode-scan"></i>
 					</button>
 				</div>
@@ -57,16 +41,12 @@
 						할인율
 						<i class="iconify" data-icon="mdi-sale"></i>
 					</h3>
-					<input
-						type="text"
-						class="editable"
-						v-model="selectedItem.discount"
-						@change="updateItem('discount')"
-					/>%
+					<input type="text" class="editable" v-model="selectedItem.discount" @change="updateItem('discount')" />%
 				</div>
 			</div>
 			<SalesChart></SalesChart>
 		</div>
+		<BarcodeScannerIntent v-if="isShowBarcodeScanner" :onDetected="onDetected"></BarcodeScannerIntent>
 	</div>
 </template>
 
@@ -83,41 +63,51 @@ import StockList from "../../components/StockList.vue";
 	components: {
 		StockList,
 		SalesChart,
-		BarcodeScannerIntent
+		BarcodeScannerIntent,
 	},
 	firestore: {
-		list: db.collection("stock")
-	}
+		list: db.collection("stock"),
+	},
 })
 export default class StockManagement extends Vue {
 	list: StockItem[] = [];
 	selectedItem: StockItem | null = null;
+	isShowBarcodeScanner = false;
 
 	@Watch("list")
 	onListChanged(next: any[], prev: any[]) {
 		if (this.selectedItem === null) this.selectedItem = this.list[0];
 	}
 
+	toggleBarcodeScanner() {
+		this.isShowBarcodeScanner = !this.isShowBarcodeScanner;
+	}
+	onDetected(barcode: string) {
+		console.log(barcode);
+		this.isShowBarcodeScanner = false;
+		this.selectedItem!.barcode = barcode;
+	}
 	selectItem(item: StockItem) {
 		this.selectedItem = item;
 	}
 	async addItem() {
 		// TODO: INTENT로 추가할 상품 정보 입력받기
-		await db.collection("stock").add({
+		let data = await db.collection("stock").add({
 			name: "물건",
 			barcode: "",
 			quantity: 1,
 			price: 1000,
 			discount: 0,
-			tags: []
+			tags: [],
 		});
+		this.selectedItem = this.list[this.list.findIndex((item) => item.id == data.id)];
 	}
 	async updateItem(key: string) {
 		await db
 			.collection("stock")
 			.doc(this.selectedItem?.id)
 			.update({
-				[key]: this.selectedItem?.[key]
+				[key]: this.selectedItem?.[key],
 			});
 	}
 }

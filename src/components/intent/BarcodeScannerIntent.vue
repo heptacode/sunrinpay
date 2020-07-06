@@ -13,13 +13,11 @@ import BarcodeScanner from "../BarcodeScanner.vue";
 
 @Component({
 	components: {
-		BarcodeScanner
-	}
+		BarcodeScanner,
+	},
 })
 export default class BarcodeScannerIntent extends Vue {
-	onDetected() {
-		console.log("HELLO");
-	}
+	@Prop({ default: () => {} }) onDetected: Function | undefined;
 }
 </script>
 
