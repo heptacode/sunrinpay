@@ -14,7 +14,7 @@ import { QrcodeStream, QrcodeDropZone, QrcodeCapture } from "vue-qrcode-reader";
 		QrcodeStream
 	}
 })
-export default class QRScanner extends Vue {}
+export default class QRScannerIntent extends Vue {}
 </script>
 
 <style lang="scss" scoped>

@@ -10,35 +10,60 @@
 				<i class="iconify cube" data-icon="mdi-cube-outline"></i>
 			</h3>
 			<h2 class="stockmanagement__stockedit__name">
-				<input type="text" class="editable name" v-model="selectedItem.name" @change="updateItem('name')" />
+				<input
+					type="text"
+					class="editable name"
+					v-model="selectedItem.name"
+					@change="updateItem('name')"
+				/>
 				<i class="iconify multiply" data-icon="mdi-close"></i>
-				<input type="text" class="editable quantity" v-model="selectedItem.quantity" @change="updateItem('quantity')" />
+				<input
+					type="text"
+					class="editable quantity"
+					v-model="selectedItem.quantity"
+					@change="updateItem('quantity')"
+				/>
 			</h2>
 			<div class="stockmanagement__stockedit__barcode">
-				<h3>바코드 <i class="iconify" data-icon="mdi-barcode"></i></h3>
+				<h3>
+					바코드
+					<i class="iconify" data-icon="mdi-barcode"></i>
+				</h3>
 
 				<div>
-					<input type="text" class="editable" v-model="selectedItem.barcode" @change="updateItem('barcode')" />
-					<!-- TODO: Barcode Scan -->
-					<button><i class="iconify" data-icon="mdi-barcode-scan"></i></button>
+					<input
+						type="text"
+						class="editable"
+						v-model="selectedItem.barcode"
+						@change="updateItem('barcode')"
+					/>
+					<!-- TODO: Barcode Scan (INTENT) -->
+                    <!-- <BarcodeScannerIntent></BarcodeScannerIntent> -->
+					<button>
+						<i class="iconify" data-icon="mdi-barcode-scan"></i>
+					</button>
 				</div>
 			</div>
 			<div class="stockmanagement__stockedit__flex">
 				<div>
-					<h3>단가 <i class="iconify" data-icon="mdi-currency-krw"></i></h3>
+					<h3>
+						단가
+						<i class="iconify" data-icon="mdi-currency-krw"></i>
+					</h3>
 					<input type="text" class="editable" v-model="selectedItem.price" @change="updateItem('price')" />원
 				</div>
 				<div>
-					<h3>할인율 <i class="iconify" data-icon="mdi-sale"></i></h3>
-					<input type="text" class="editable" v-model="selectedItem.discount" @change="updateItem('discount')" />%
+					<h3>
+						할인율
+						<i class="iconify" data-icon="mdi-sale"></i>
+					</h3>
+					<input
+						type="text"
+						class="editable"
+						v-model="selectedItem.discount"
+						@change="updateItem('discount')"
+					/>%
 				</div>
-			</div>
-			<div class="stockmanagement__stockedit__small">
-				<h3>태그 <i class="iconify" data-icon="mdi-tag-multiple"></i></h3>
-				<!-- TODO: 태그 구현(필드 추가+, 삭제-) -->
-				<!-- <input type="text" class="editable" v-model="selectedItem.tags[0]" @change="updateItem('tags')" />개
-				<input type="text" class="editable" v-model="selectedItem.tags[1]" @change="updateItem('tags')" />개
-				<input type="text" class="editable" v-model="selectedItem.tags[2]" @change="updateItem('tags')" />개 -->
 			</div>
 			<SalesChart></SalesChart>
 		</div>
@@ -47,20 +72,22 @@
 
 <script lang="ts">
 import { Vue, Component, Watch } from "vue-property-decorator";
-import StockListVue from "../../components/StockList.vue";
 import SalesChart from "../../components/SalesChart.vue";
 
 import { db } from "@/DB";
 import { StockItem } from "../../schema";
+import BarcodeScannerIntent from "../../components/intent/BarcodeScannerIntent.vue";
+import StockList from "../../components/StockList.vue";
 
 @Component({
 	components: {
-		StockList: StockListVue,
+		StockList,
 		SalesChart,
+		BarcodeScannerIntent
 	},
 	firestore: {
-		list: db.collection("stock"),
-	},
+		list: db.collection("stock")
+	}
 })
 export default class StockManagement extends Vue {
 	list: StockItem[] = [];
@@ -82,7 +109,7 @@ export default class StockManagement extends Vue {
 			quantity: 1,
 			price: 1000,
 			discount: 0,
-			tags: [],
+			tags: []
 		});
 	}
 	async updateItem(key: string) {
@@ -90,7 +117,7 @@ export default class StockManagement extends Vue {
 			.collection("stock")
 			.doc(this.selectedItem?.id)
 			.update({
-				[key]: this.selectedItem?.[key],
+				[key]: this.selectedItem?.[key]
 			});
 	}
 }
