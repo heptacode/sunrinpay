@@ -5,19 +5,23 @@
 			<button class="stockmanagement__stocklist__addbtn" @click="addItem">+</button>
 		</div>
 		<div class="stockmanagement__stockedit" v-if="selectedItem">
-			<h2 class="stockmanagement__stockedit__withicon">
-				<i class="iconify" data-icon="mdi-cube-outline"></i>
-				<span>
-					<input type="text" class="editable" v-model="selectedItem.name" @change="updateItem('name')" />
-				</span>
+			<h3 class="stockmanagement__stockedit__title">
+				상품 정보 업데이트
+				<i class="iconify cube" data-icon="mdi-cube-outline"></i>
+			</h3>
+			<h2 class="stockmanagement__stockedit__name">
+				<input type="text" class="editable name" v-model="selectedItem.name" @change="updateItem('name')" />
+				<i class="iconify multiply" data-icon="mdi-close"></i>
+				<input type="text" class="editable quantity" v-model="selectedItem.quantity" @change="updateItem('quantity')" />
 			</h2>
-			<div class="stockmanagement__stockedit__small">
+			<div class="stockmanagement__stockedit__barcode">
 				<h3>바코드 <i class="iconify" data-icon="mdi-barcode"></i></h3>
-				<input type="text" class="editable" v-model="selectedItem.barcode" @change="updateItem('barcode')" />
-				<!-- TODO: Barcode Scan -->
-				<span>
-					<i class="iconify" data-icon="mdi-barcode-scan"></i>
-				</span>
+
+				<div>
+					<input type="text" class="editable" v-model="selectedItem.barcode" @change="updateItem('barcode')" />
+					<!-- TODO: Barcode Scan -->
+					<button><i class="iconify" data-icon="mdi-barcode-scan"></i></button>
+				</div>
 			</div>
 			<div class="stockmanagement__stockedit__flex">
 				<div>
@@ -27,10 +31,6 @@
 				<div>
 					<h3>할인율 <i class="iconify" data-icon="mdi-sale"></i></h3>
 					<input type="text" class="editable" v-model="selectedItem.discount" @change="updateItem('discount')" />%
-				</div>
-				<div>
-					<h3>재고 <i class="iconify" data-icon="mdi-archive"></i></h3>
-					<input type="text" class="editable" v-model="selectedItem.quantity" @change="updateItem('quantity')" />개
 				</div>
 			</div>
 			<div class="stockmanagement__stockedit__small">
@@ -150,22 +150,41 @@ export default class StockManagement extends Vue {
 			color: $gray-text-color;
 		}
 
-		.stockmanagement__stockedit__withicon {
+		.stockmanagement__stockedit__name {
 			display: flex;
 			justify-content: space-between;
 			align-items: center;
 			font-size: $small-normal-size;
 			width: 100%;
-			span {
-				flex: 1;
+			.cube {
+				flex: 1.5;
 			}
 			input {
 				width: 100%;
 			}
+			.name {
+				flex: 8;
+			}
+			.multiply {
+				flex: 1;
+				margin-bottom: 3px;
+				align-self: flex-end;
+			}
+			.quantity {
+				flex: 2;
+			}
 		}
-		.stockmanagement__stockedit__small {
+		.stockmanagement__stockedit__barcode {
+			div {
+				display: flex;
+			}
 			input {
 				font-size: $small-normal-size;
+				flex: 11;
+			}
+			button {
+				flex: 1;
+				padding: 10px 20px;
 			}
 		}
 		.stockmanagement__stockedit__flex {
