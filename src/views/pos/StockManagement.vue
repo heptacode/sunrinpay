@@ -6,13 +6,13 @@
 		</div>
 		<div class="stockmanagement__stockedit" v-if="selectedItem">
 			<h2 class="stockmanagement__stockedit__withicon">
-				<i class="iconify" data-icon="mdi-edit"></i>
+				<i class="iconify" data-icon="mdi-pencil"></i>
 				<span>
 					<input type="text" class="editable" v-model="selectedItem.name" @change="updateItem('name')" />
 				</span>
 			</h2>
 			<div class="stockmanagement__stockedit__small">
-				<h3>바코드</h3>
+				<h3>바코드 <i class="iconify" data-icon="mdi-barcode"></i></h3>
 				<input type="text" class="editable" v-model="selectedItem.barcode" @change="updateItem('barcode')" />
 			</div>
 			<div class="stockmanagement__stockedit__flex">
@@ -30,7 +30,7 @@
 				</div>
 			</div>
 			<div class="stockmanagement__stockedit__small">
-				<h3>태그</h3>
+				<h3>태그 <i class="iconify" data-icon="mdi-tag-multiple"></i></h3>
 				<!-- TODO: 태그 구현(필드 추가+, 삭제-) -->
 				<!-- <input type="text" class="editable" v-model="selectedItem.tags[0]" @change="updateItem('tags')" />개
 				<input type="text" class="editable" v-model="selectedItem.tags[1]" @change="updateItem('tags')" />개
@@ -64,7 +64,7 @@ export default class StockManagement extends Vue {
 
 	@Watch("list")
 	onListChanged(next: any[], prev: any[]) {
-		this.selectedItem = this.list[0];
+		if (this.selectedItem === null) this.selectedItem = this.list[0];
 	}
 
 	selectItem(item: StockItem) {
