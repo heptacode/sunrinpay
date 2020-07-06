@@ -2,8 +2,6 @@
 	<div class="barcodescanner">
 		<!-- FIXME: START 버튼 없애기 -->
 		<BarcodeScanner :onDetected="onDetected"></BarcodeScanner>
-		<button>수동으로 바코드 입력</button>
-		<!-- TODO: 클릭이벤트、바코드 인식 이벤트 -->
 	</div>
 </template>
 

@@ -32,8 +32,6 @@ import { Vue, Component, Prop } from "vue-property-decorator";
 import { PropType } from "vue";
 import { StockItem } from "../schema";
 
-// TODO: 상품 검색, 태그
-
 interface FilterConsonantItem {
 	consonant: string;
 	list: StockItem[];

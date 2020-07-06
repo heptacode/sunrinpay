@@ -22,7 +22,6 @@
 
 				<div>
 					<input type="text" class="editable" v-model="selectedItem.barcode" @change="updateItem('barcode')" />
-					<!-- TODO: Barcode Scan (INTENT) -->
 					<button @click="toggleBarcodeScanner">
 						<i class="iconify" data-icon="mdi-barcode-scan"></i>
 					</button>
