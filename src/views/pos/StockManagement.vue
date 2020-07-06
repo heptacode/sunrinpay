@@ -6,7 +6,7 @@
 		</div>
 		<div class="stockmanagement__stockedit" v-if="selectedItem">
 			<h2 class="stockmanagement__stockedit__withicon">
-				<i class="iconify" data-icon="mdi-pencil"></i>
+				<i class="iconify" data-icon="mdi-cube-outline"></i>
 				<span>
 					<input type="text" class="editable" v-model="selectedItem.name" @change="updateItem('name')" />
 				</span>
@@ -29,7 +29,7 @@
 					<input type="text" class="editable" v-model="selectedItem.discount" @change="updateItem('discount')" />%
 				</div>
 				<div>
-					<h3>재고 <i class="iconify" data-icon="mdi-database"></i></h3>
+					<h3>재고 <i class="iconify" data-icon="mdi-archive"></i></h3>
 					<input type="text" class="editable" v-model="selectedItem.quantity" @change="updateItem('quantity')" />개
 				</div>
 			</div>
