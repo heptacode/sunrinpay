@@ -2,7 +2,7 @@
 	<div class="sendmoney">
 		<h2>TOSS 송금 QR 생성</h2>
 		<form action="javascript:void(0)" @submit="generateQR">
-			<input type="number" v-model="amount" min="1" max="300000" minlength="1" maxlength="6" required />
+			<input type="tel" v-model="amount" minlength="1" maxlength="6" required />
 			<NumberCounter :text="amount.toString()" :isNumberFormat="true" defaultChar="0"></NumberCounter>원
 			<div class="sendmoney__bank">
 				<div>
