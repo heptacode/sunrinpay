@@ -13,7 +13,7 @@ import PaymentClear from "@/views/Payment-Clear.vue";
 import PaymentError from "@/views/Payment-Error.vue";
 import SimpleUserPayment from "@/views/SimpleUserPayment.vue";
 import DetailsUserPayment from "@/views/DetailsUserPayment.vue";
-// import Main from "@/views/user/Main.vue";
+import SendMoney from "@/views/SendMoney.vue";
 
 // Pos
 import PoS from "@/views/pos/PoS.vue";
@@ -69,6 +69,11 @@ const routes: Array<RouteConfig> = [
 		path: "/details-payment",
 		name: "details-payment",
 		component: DetailsUserPayment,
+	},
+	{
+		path: "/sendmoney",
+		name: "sendmoney",
+		component: SendMoney,
 	},
 
 	// PoS

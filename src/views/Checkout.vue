@@ -24,6 +24,7 @@
 			</ul>
 		</div>
 		<div class="detailsmode__actions">
+			<button @click="checkoutWithKakaoPay">Kakao Pay로 결제</button>
 			<PaymentButton class="detailsmode__actions__btn"></PaymentButton>
 			<CashButton class="detailsmode__actions__btn"></CashButton>
 		</div>
@@ -44,18 +45,17 @@ import { Vue, Component } from "vue-property-decorator";
 	},
 })
 export default class Checkout extends Vue {
-	checkoutWithKakaoPay() {
-		this.$store
-			.dispatch("CHECKOUT_KAKAOPAY", {
-				item_name: "초코파이",
-				quantity: 1,
-				total_amount: 2200,
-				vat_amount: 0,
-				tax_free_amount: 0,
-				price: 1000,
-			})
-			.then(res => console.log(res))
-			.catch(err => console.log(err));
+	async checkoutWithKakaoPay() {
+		let res = await this.$store.dispatch("CHECKOUT_KAKAOPAY", {
+			item_name: "초코파이",
+			quantity: 1,
+			total_amount: 2200,
+			vat_amount: 0,
+			tax_free_amount: 0,
+			price: 1000,
+		});
+		console.log(res);
+		window.open(res.data.next_redirect_pc_url);
 	}
 }
 </script>

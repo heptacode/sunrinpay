@@ -49,9 +49,8 @@ export default new Vuex.Store({
 		},
 		async CHECKOUT_KAKAOPAY({ commit, state }, data) {
 			event("action", "CHECKOUT_KAKAOPAY", "checkout_kakaopay", data);
-
-			axios.post(
-				"http://kapi.kakao.com/v1/payment/ready",
+			return await axios.post(
+				"https://kapi.kakao.com/v1/payment/ready",
 				{
 					cid: "TC0ONETIME",
 					partner_order_id: 1,
@@ -69,6 +68,7 @@ export default new Vuex.Store({
 					headers: {
 						Authorization: `KakaoAK ${process.env.VUE_APP_KAKAO_ADMIN_KEY}`,
 						"Content-type": "application/x-www-form-urlencoded;charset=utf-8",
+						"Access-Control-Allow-Origin": "*",
 					},
 				}
 			);
