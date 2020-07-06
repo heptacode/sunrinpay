@@ -14,6 +14,10 @@
 			<div class="stockmanagement__stockedit__small">
 				<h3>바코드 <i class="iconify" data-icon="mdi-barcode"></i></h3>
 				<input type="text" class="editable" v-model="selectedItem.barcode" @change="updateItem('barcode')" />
+				<!-- TODO: Barcode Scan -->
+				<span>
+					<i class="iconify" data-icon="mdi-barcode-scan"></i>
+				</span>
 			</div>
 			<div class="stockmanagement__stockedit__flex">
 				<div>
@@ -25,7 +29,7 @@
 					<input type="text" class="editable" v-model="selectedItem.discount" @change="updateItem('discount')" />%
 				</div>
 				<div>
-					<h3>재고</h3>
+					<h3>재고 <i class="iconify" data-icon="mdi-database"></i></h3>
 					<input type="text" class="editable" v-model="selectedItem.quantity" @change="updateItem('quantity')" />개
 				</div>
 			</div>
