@@ -40,7 +40,7 @@
 						<br />1-181-0240
 					</p>
 					<p class="home__account__qr" v-else>
-						<QRcode data="test" class="qr"></QRcode>
+						<QRcode :data="'https://sunrinpay.web.app/sendmoney#' + userInformation.email" class="qr"></QRcode>
 						<!-- <span class="content">
                      <h3>선린인터넷고등학교매점</h3>
                      <p>+821072078667</p>
