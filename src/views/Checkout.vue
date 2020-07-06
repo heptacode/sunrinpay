@@ -4,21 +4,15 @@
 			<ul class="detailsmode__content__prices">
 				<div class="detailsmode__content__prices__item">
 					<p>금액</p>
-					<h2>
-						<NumberCounter text="12900" :isNumberFormat="true" defaultChar="0"></NumberCounter>원
-					</h2>
+					<h2><NumberCounter text="12900" :isNumberFormat="true" defaultChar="0"></NumberCounter>원</h2>
 				</div>
 				<div class="detailsmode__content__prices__item">
 					<p>할인된 금액</p>
-					<h2>
-						<NumberCounter text="900" :isNumberFormat="true" defaultChar="0"></NumberCounter>원
-					</h2>
+					<h2><NumberCounter text="900" :isNumberFormat="true" defaultChar="0"></NumberCounter>원</h2>
 				</div>
 				<div class="detailsmode__content__prices__item total">
 					<p>결제하실 금액</p>
-					<h2>
-						<NumberCounter text="12000" :isNumberFormat="true" defaultChar="0"></NumberCounter>원
-					</h2>
+					<h2><NumberCounter text="12000" :isNumberFormat="true" defaultChar="0"></NumberCounter>원</h2>
 				</div>
 			</ul>
 			<ul class="detailsmode__content__list">
@@ -46,10 +40,24 @@ import { Vue, Component } from "vue-property-decorator";
 	components: {
 		PaymentButton: PaymentButtonVue,
 		CashButton: CashButtonVue,
-		NumberCounter: NumberCounterVue
-	}
+		NumberCounter: NumberCounterVue,
+	},
 })
-export default class Checkout extends Vue {}
+export default class Checkout extends Vue {
+	checkoutWithKakaoPay() {
+		this.$store
+			.dispatch("CHECKOUT_KAKAOPAY", {
+				item_name: "초코파이",
+				quantity: 1,
+				total_amount: 2200,
+				vat_amount: 0,
+				tax_free_amount: 0,
+				price: 1000,
+			})
+			.then(res => console.log(res))
+			.catch(err => console.log(err));
+	}
+}
 </script>
 
 <style lang="scss" scoped>

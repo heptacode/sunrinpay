@@ -1,8 +1,8 @@
 import Vue from "vue";
 import Vuex from "vuex";
-
 import firebase from "firebase/app";
 import "firebase/analytics";
+import axios from "axios";
 
 import { db, log, transaction } from "@/DB";
 
@@ -46,6 +46,32 @@ export default new Vuex.Store({
 				log("info", `잔액 부족 : ${Math.abs(newBalance)}원`);
 				return `잔액이 ${Math.abs(newBalance)}원 부족합니다.`;
 			}
+		},
+		async CHECKOUT_KAKAOPAY({ commit, state }, data) {
+			event("action", "CHECKOUT_KAKAOPAY", "checkout_kakaopay", data);
+
+			axios.post(
+				"http://kapi.kakao.com/v1/payment/ready",
+				{
+					cid: "TC0ONETIME",
+					partner_order_id: 1,
+					partner_user_id: 1,
+					item_name: data.item_name,
+					quantity: data.quantity,
+					total_amount: data.total_amount,
+					vat_amount: data.vat_amount,
+					tax_free_amount: data.tax_free_amount,
+					approval_url: "https://sunrinpay.web.app/",
+					fail_url: "https://sunrinpay.web.app/",
+					cancel_url: "https://sunrinpay.web.app/",
+				},
+				{
+					headers: {
+						Authorization: `KakaoAK ${process.env.VUE_APP_KAKAO_ADMIN_KEY}`,
+						"Content-type": "application/x-www-form-urlencoded;charset=utf-8",
+					},
+				}
+			);
 		},
 	},
 	modules: {},
