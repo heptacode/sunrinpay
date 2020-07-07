@@ -1,8 +1,8 @@
 <template>
 	<div class="stockmanagement">
 		<div class="stockmanagement__stocklist">
-			<StockList :data="list" @add-item="selectItem"></StockList>
-			<button class="stockmanagement__stocklist__addbtn" @click="addItem">+</button>
+			<StockList :data="list" @add-item="selectItem" :highlight="selectedItem"></StockList>
+			<button class="stockmanagement__stocklist__addbtn" @click="toggleCreateStock">+</button>
 		</div>
 		<div class="stockmanagement__stockedit" v-if="selectedItem">
 			<h3 class="stockmanagement__stockedit__title">
@@ -10,9 +10,19 @@
 				<i class="iconify cube" data-icon="mdi-cube-outline"></i>
 			</h3>
 			<h2 class="stockmanagement__stockedit__name">
-				<input type="text" class="editable name" v-model="selectedItem.name" @change="updateItem('name')" />
+				<input
+					type="text"
+					class="editable name"
+					v-model="selectedItem.name"
+					@change="updateItem('name')"
+				/>
 				<i class="iconify multiply" data-icon="mdi-close"></i>
-				<input type="text" class="editable quantity" v-model="selectedItem.quantity" @change="updateItem('quantity')" />
+				<input
+					type="text"
+					class="editable quantity"
+					v-model="selectedItem.quantity"
+					@change="updateItem('quantity')"
+				/>
 			</h2>
 			<div class="stockmanagement__stockedit__barcode">
 				<h3>
@@ -21,7 +31,12 @@
 				</h3>
 
 				<div>
-					<input type="text" class="editable" v-model="selectedItem.barcode" @change="updateItem('barcode')" />
+					<input
+						type="text"
+						class="editable"
+						v-model="selectedItem.barcode"
+						@change="updateItem('barcode')"
+					/>
 					<button @click="toggleBarcodeScanner">
 						<i class="iconify" data-icon="mdi-barcode-scan"></i>
 					</button>
@@ -40,12 +55,18 @@
 						할인율
 						<i class="iconify" data-icon="mdi-sale"></i>
 					</h3>
-					<input type="text" class="editable" v-model="selectedItem.discount" @change="updateItem('discount')" />%
+					<input
+						type="text"
+						class="editable"
+						v-model="selectedItem.discount"
+						@change="updateItem('discount')"
+					/>%
 				</div>
 			</div>
 			<SalesChart></SalesChart>
 		</div>
 		<BarcodeScannerIntent v-if="isShowBarcodeScanner" :onDetected="onDetected"></BarcodeScannerIntent>
+		<CreateStock v-if="isShowCreateStock" @close="toggleCreateStock" @submit="addItem"></CreateStock>
 	</div>
 </template>
 
@@ -57,27 +78,33 @@ import { db } from "@/DB";
 import { StockItem } from "../../schema";
 import BarcodeScannerIntent from "../../components/intent/BarcodeScannerIntent.vue";
 import StockList from "../../components/StockList.vue";
+import CreateStock from "../../components/intent/CreateStockIntent.vue";
 
 @Component({
 	components: {
 		StockList,
 		SalesChart,
 		BarcodeScannerIntent,
+		CreateStock
 	},
 	firestore: {
-		list: db.collection("stock"),
-	},
+		list: db.collection("stock")
+	}
 })
 export default class StockManagement extends Vue {
 	list: StockItem[] = [];
 	selectedItem: StockItem | null = null;
-	isShowBarcodeScanner = false;
+	isShowBarcodeScanner: boolean = false;
+	isShowCreateStock: boolean = false;
 
 	@Watch("list")
 	onListChanged(next: any[], prev: any[]) {
 		if (this.selectedItem === null) this.selectedItem = this.list[0];
 	}
 
+	toggleCreateStock() {
+		this.isShowCreateStock = !this.isShowCreateStock;
+	}
 	toggleBarcodeScanner() {
 		this.isShowBarcodeScanner = !this.isShowBarcodeScanner;
 	}
@@ -89,24 +116,26 @@ export default class StockManagement extends Vue {
 	selectItem(item: StockItem) {
 		this.selectedItem = item;
 	}
-	async addItem() {
+	async addItem(preData: { name: string }) {
+		this.isShowCreateStock = false;
 		// TODO: INTENT로 추가할 상품 정보 입력받기
 		let data = await db.collection("stock").add({
-			name: "물건",
+			name: preData.name,
 			barcode: "",
 			quantity: 1,
 			price: 1000,
-			discount: 0,
-			tags: [],
+			discount: 0
 		});
-		this.selectedItem = this.list[this.list.findIndex((item) => item.id == data.id)];
+		this.selectedItem = this.list[
+			this.list.findIndex(item => item.id == data.id)
+		];
 	}
 	async updateItem(key: string) {
 		await db
 			.collection("stock")
 			.doc(this.selectedItem?.id)
 			.update({
-				[key]: this.selectedItem?.[key],
+				[key]: this.selectedItem?.[key]
 			});
 	}
 }

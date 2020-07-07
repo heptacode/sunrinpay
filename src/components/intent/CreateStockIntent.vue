@@ -1,8 +1,19 @@
 <template>
 	<div class="createstock">
-		<div class="createstock__popup">
-			<input type="text" placeholder="이름" />
-		</div>
+		<form action="javascript:void()" class="createstock__popup" @submit="submit">
+			<div class="createstock__popup__action">
+				<h2>상품 등록하기</h2>
+				<span @click="close">
+					<i class="iconify" data-icon="mdi-close"></i>
+				</span>
+			</div>
+			<div class="createstock__popup__content">
+				<input type="text" placeholder="이름" min="1" required v-model="name" />
+			</div>
+			<div class="createstock__popup__endaction">
+				<button type="submit">생성하기</button>
+			</div>
+		</form>
 		<!-- TODO: 디자인 필요 -->
 	</div>
 </template>
@@ -11,7 +22,18 @@
 import { Vue, Component, Prop, Watch } from "vue-property-decorator";
 
 @Component
-export default class CreateStock extends Vue {}
+export default class CreateStock extends Vue {
+	name: string = "";
+	// @Prop({ default: () => {} }) onSubmit!: Function;
+	submit() {
+		this.$emit("submit", {
+			name: this.name
+		});
+	}
+	close() {
+		this.$emit("close", false);
+	}
+}
 </script>
 
 <style lang="scss" scoped>
@@ -34,18 +56,38 @@ export default class CreateStock extends Vue {}
 		background-color: $content-color;
 
 		padding: 30px;
+		padding-top: 20px;
 
 		min-width: 400px;
-		height: 300px;
 
-        border-radius: 25px;
+		border-radius: 25px;
+		.createstock__popup__action {
+			display: flex;
+			justify-content: space-between;
+			margin-bottom: 20px;
+
+			h2 {
+				font-size: $small-up-size;
+			}
+		}
+		.createstock__popup__endaction {
+			display: flex;
+			justify-content: flex-end;
+			button {
+				margin-top: 20px;
+			}
+		}
 
 		input {
+			padding: 5px;
 			width: 100%;
+
 			background: none;
 			border: none;
 			outline: none;
+
 			border-bottom: 1px solid white;
+			color: $text-color;
 		}
 	}
 }
