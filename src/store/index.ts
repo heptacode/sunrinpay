@@ -65,29 +65,13 @@ export default new Vuex.Store({
 		},
 		async CHECKOUT_KAKAOPAY({ commit, state }, data) {
 			event("action", "CHECKOUT_KAKAOPAY", "checkout_kakaopay", data);
-			return await axios.post(
-				"https://kapi.kakao.com/v1/payment/ready",
-				{
-					cid: "TC0ONETIME",
-					partner_order_id: 1,
-					partner_user_id: 1,
-					item_name: data.item_name,
-					quantity: data.quantity,
-					total_amount: data.total_amount,
-					vat_amount: data.vat_amount,
-					tax_free_amount: data.tax_free_amount,
-					approval_url: "https://sunrinpay.web.app/",
-					fail_url: "https://sunrinpay.web.app/",
-					cancel_url: "https://sunrinpay.web.app/",
-				},
-				{
-					headers: {
-						Authorization: `KakaoAK ${process.env.VUE_APP_KAKAO_ADMIN_KEY}`,
-						"Content-type": "application/x-www-form-urlencoded;charset=utf-8",
-						"Access-Control-Allow-Origin": "*",
-					},
-				}
-			);
+			return await axios.post("https://kl9h2eg0hk.execute-api.ap-northeast-2.amazonaws.com/default/relayPayment", {
+				item_name: data.item_name,
+				quantity: data.quantity,
+				total_amount: data.total_amount,
+				vat_amount: data.vat_amount,
+				tax_free_amount: data.tax_free_amount,
+			});
 		},
 	},
 	modules: {},
