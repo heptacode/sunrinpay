@@ -11,9 +11,25 @@ const event = require("vue-analytics").event;
 Vue.use(Vuex);
 
 export default new Vuex.Store({
-	state: {},
+	state: {
+		balance: 0 as number,
+	},
 	mutations: {},
 	actions: {
+		async GET_BALANCE({ commit, state }, data) {
+			event("action", "GET_BALANCE", "getBalance", data);
+			try {
+				let doc = await db
+					.collection("accounts")
+					.doc(firebase.auth().currentUser!.uid)
+					.get();
+				state.balance = doc.data()!.balance;
+				return state.balance;
+			} catch (err) {
+				log("error", `CREATE_ORDER : ${err}`);
+				return false;
+			}
+		},
 		async CREATE_ORDER({ commit, state }, data) {
 			event("action", "CREATE_ORDER", "createOrder", data);
 			try {
@@ -23,14 +39,14 @@ export default new Vuex.Store({
 					.set({ id: data.orderID, itemList: data.itemList });
 				return true;
 			} catch (err) {
-				log("error", `${err}`);
+				log("error", `CREATE_ORDER : ${err}`);
 				return false;
 			}
 		},
 		async CHECKOUT({ commit, state }, data) {
 			event("action", "CHECKOUT", "checkout", data);
-			const doc = db.collection("accounts").doc(firebase.auth().currentUser!.uid);
-			const snapshot = await doc.get();
+			let doc = db.collection("accounts").doc(firebase.auth().currentUser!.uid);
+			let snapshot = await doc.get();
 			const newBalance = snapshot.data()!.balance - data.price;
 			if (newBalance >= 0) {
 				// 결제 가능

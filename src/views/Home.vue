@@ -19,13 +19,7 @@
 			<main v-if="isAuth">
 				<div class="home__title">
 					<h3>{{ userInformation.displayName }}</h3>
-					<img
-						:src="userInformation.photoURL"
-						width="32px"
-						height="32px"
-						draggable="false"
-						@click="isProfileOpen = !isProfileOpen"
-					/>
+					<img :src="userInformation.photoURL" width="32px" height="32px" draggable="false" @click="isProfileOpen = !isProfileOpen" />
 				</div>
 				<div v-if="isProfileOpen" class="home__profile">
 					<div>
@@ -43,7 +37,6 @@
 				<div class="home__account" :class="{ isFlip: isFlip, isFlipReverse: !isFlip }">
 					<p class="home__account__info" v-if="!isDelayFlip">
 						내 지갑
-						<br />1-181-0240
 					</p>
 					<p class="home__account__qr" v-else>
 						<QRcode :data="'https://sunrinpay.web.app/sendmoney#' + userInformation.email" class="qr"></QRcode>
@@ -52,7 +45,7 @@
                      <p>+821072078667</p>
 						</span>-->
 					</p>
-					<h3 class="home__account__money" v-if="!isDelayFlip">25,565원</h3>
+					<h3 class="home__account__money" v-if="!isDelayFlip">{{ balance }}원</h3>
 					<p class="home__account__action">
 						<router-link :to="{ name: 'sendmoney' }">송금하기</router-link>
 						<span v-if="!isFlip" @click="toggleFlip">내 QR 보기</span>
@@ -110,13 +103,7 @@
 				</ul>
 				<div style="margin-top:50px;">
 					<h2>Number Counter</h2>
-					<NumberCounter
-						:text="n"
-						:isNumberFormat="true"
-						defaultChar="0"
-						style="width:100%; font-size:2em;"
-						direction="bottom"
-					></NumberCounter>
+					<NumberCounter :text="n" :isNumberFormat="true" defaultChar="0" style="width:100%; font-size:2em;" direction="bottom"></NumberCounter>
 				</div>
 				<div style="margin-top:50px; width:400px;height:400px;">
 					<h2>View Pager</h2>
@@ -155,11 +142,9 @@ import QRScannerIntent from "../components/intent/QRScannerIntent.vue";
 
 import firebase from "firebase/app";
 import "firebase/auth";
-import * as firebaseui from "firebaseui";
-firebase.auth().languageCode = "ko";
 
 import { db, log } from "@/DB";
-import { signIn, signOut } from "@/Auth";
+import { ui, uiConfig, signIn, signOut } from "@/Auth";
 
 @Component({
 	components: {
@@ -168,8 +153,8 @@ import { signIn, signOut } from "@/Auth";
 		NumberCounter: NumberCounterVue,
 		BarcodeScanner: BarcodeScannerVue,
 		ViewPager: ViewPagerVue,
-		SalesChart: SalesChartVue
-	}
+		SalesChart: SalesChartVue,
+	},
 })
 export default class Home extends Vue {
 	userInformation: Object = {};
@@ -178,6 +163,7 @@ export default class Home extends Vue {
 
 	isFlip: boolean = false;
 	isDelayFlip: boolean = false;
+	balance: number = 0;
 	toggleFlip() {
 		this.isFlip = !this.isFlip;
 		setTimeout(() => {
@@ -187,70 +173,25 @@ export default class Home extends Vue {
 
 	n: string = "25565";
 	x;
+
 	mounted() {
-		// const ui = new firebaseui.auth.AuthUI(firebase.auth());
-		const ui =
-			firebaseui.auth.AuthUI.getInstance() ||
-			new firebaseui.auth.AuthUI(firebase.auth());
-		const uiConfig = {
-			callbacks: {
-				signInSuccessWithAuthResult: (authResult, redirectUrl) => {
-					//
-					return true;
-				},
-				uiShown: () => {
-					// The widget is rendered.
-					// Hide the loader.
-					document.getElementById("loader")!.style.display = "none";
-				}
-			},
-			signInSuccessUrl: "/",
-			signInOptions: [
-				{
-					provider: firebase.auth.EmailAuthProvider.PROVIDER_ID,
-					requireDisplayName: false
-				},
-				{
-					provider: firebase.auth.PhoneAuthProvider.PROVIDER_ID,
-					recaptchaParameters: {
-						size: "invisible",
-						badge: "bottomright"
-					},
-					defaultCountry: "KR"
-				},
-				{
-					provider: firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-					clientId:
-						"604565159530-tf5rvkljdec8n0o83lj2hjba53831q6i.apps.googleusercontent.com"
-				},
-				firebase.auth.FacebookAuthProvider.PROVIDER_ID,
-				firebase.auth.TwitterAuthProvider.PROVIDER_ID,
-				firebase.auth.GithubAuthProvider.PROVIDER_ID,
-				"apple.com",
-				"microsoft.com"
-			],
-			credentialHelper: firebaseui.auth.CredentialHelper.GOOGLE_YOLO,
-			tosUrl: "https://sunrinpay.web.app/privacy",
-			privacyPolicyUrl: "https://sunrinpay.web.app/privacy"
-		};
-		ui.disableAutoSignIn();
+		setInterval(() => {
+			this.n = Math.floor(Math.random() * 65535).toString();
+		}, 1000);
 
 		firebase.auth().onAuthStateChanged(async user => {
 			if (user) {
 				await signIn(user);
+				this.balance = await this.$store.dispatch("GET_BALANCE");
 				this.userInformation = user;
 				this.isAuth = true;
 			} else {
 				await ui.start("#firebaseui-auth-container", uiConfig);
-				console.log("Not Signed in");
 				this.isAuth = false;
 			}
 		});
-
-		setInterval(() => {
-			this.n = Math.floor(Math.random() * 65535).toString();
-		}, 1000);
 	}
+
 	async signOut() {
 		await signOut();
 	}
