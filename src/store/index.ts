@@ -65,13 +65,18 @@ export default new Vuex.Store({
 		},
 		async CHECKOUT_KAKAOPAY({ commit, state }, data) {
 			event("action", "CHECKOUT_KAKAOPAY", "checkout_kakaopay", data);
-			return await axios.post("https://kl9h2eg0hk.execute-api.ap-northeast-2.amazonaws.com/default/relayPayment", {
-				item_name: data.item_name,
-				quantity: data.quantity,
-				total_amount: data.total_amount,
-				vat_amount: data.vat_amount,
-				tax_free_amount: data.tax_free_amount,
-			});
+			try {
+				let result = await axios.post("https://kl9h2eg0hk.execute-api.ap-northeast-2.amazonaws.com/default/relayPayment", {
+					item_name: data.item_name,
+					quantity: data.quantity,
+					total_amount: data.total_amount,
+					vat_amount: data.vat_amount,
+					tax_free_amount: data.tax_free_amount,
+				});
+				return result.data;
+			} catch (err) {
+				return console.dir(err);
+			}
 		},
 	},
 	modules: {},

@@ -4,15 +4,21 @@
 			<ul class="detailsmode__content__prices">
 				<div class="detailsmode__content__prices__item">
 					<p>금액</p>
-					<h2><NumberCounter text="12900" :isNumberFormat="true" defaultChar="0"></NumberCounter>원</h2>
+					<h2>
+						<NumberCounter text="12900" :isNumberFormat="true" defaultChar="0"></NumberCounter>원
+					</h2>
 				</div>
 				<div class="detailsmode__content__prices__item">
 					<p>할인된 금액</p>
-					<h2><NumberCounter text="900" :isNumberFormat="true" defaultChar="0"></NumberCounter>원</h2>
+					<h2>
+						<NumberCounter text="900" :isNumberFormat="true" defaultChar="0"></NumberCounter>원
+					</h2>
 				</div>
 				<div class="detailsmode__content__prices__item total">
 					<p>결제하실 금액</p>
-					<h2><NumberCounter text="12000" :isNumberFormat="true" defaultChar="0"></NumberCounter>원</h2>
+					<h2>
+						<NumberCounter text="12000" :isNumberFormat="true" defaultChar="0"></NumberCounter>원
+					</h2>
 				</div>
 			</ul>
 			<ul class="detailsmode__content__list">
@@ -41,8 +47,8 @@ import { Vue, Component } from "vue-property-decorator";
 	components: {
 		PaymentButton: PaymentButtonVue,
 		CashButton: CashButtonVue,
-		NumberCounter: NumberCounterVue,
-	},
+		NumberCounter: NumberCounterVue
+	}
 })
 export default class Checkout extends Vue {
 	async checkoutWithKakaoPay() {
@@ -52,10 +58,10 @@ export default class Checkout extends Vue {
 			total_amount: 2200,
 			vat_amount: 0,
 			tax_free_amount: 0,
-			price: 1000,
+			price: 1000
 		});
 		console.log(res);
-		window.open(res.data.next_redirect_pc_url);
+		// window.open(res.next_redirect_pc_url);
 	}
 }
 </script>
