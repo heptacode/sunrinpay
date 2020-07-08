@@ -22,7 +22,7 @@ export const uiConfig = {
 	signInOptions: [
 		{
 			provider: firebase.auth.EmailAuthProvider.PROVIDER_ID,
-			requireDisplayName: false,
+			requireDisplayName: true,
 		},
 		{
 			provider: firebase.auth.GoogleAuthProvider.PROVIDER_ID,
