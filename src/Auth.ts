@@ -13,8 +13,6 @@ export const uiConfig = {
 			return true;
 		},
 		uiShown: () => {
-			// The widget is rendered.
-			// Hide the loader.
 			document.getElementById("loader")!.style.display = "none";
 		},
 	},
@@ -27,12 +25,26 @@ export const uiConfig = {
 		{
 			provider: firebase.auth.GoogleAuthProvider.PROVIDER_ID,
 			clientId: "604565159530-tf5rvkljdec8n0o83lj2hjba53831q6i.apps.googleusercontent.com",
+			scopes: ["https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/userinfo.profile"],
 		},
-		firebase.auth.FacebookAuthProvider.PROVIDER_ID,
+		{
+			provider: firebase.auth.FacebookAuthProvider.PROVIDER_ID,
+			scopes: ["email"],
+		},
 		firebase.auth.TwitterAuthProvider.PROVIDER_ID,
-		firebase.auth.GithubAuthProvider.PROVIDER_ID,
-		"apple.com",
-		"microsoft.com",
+		{
+			provider: firebase.auth.GithubAuthProvider.PROVIDER_ID,
+			scopes: ["read:user", "user:email"],
+		},
+		{
+			provider: "apple.com",
+			scopes: ["email", "name"],
+			locale: "ko_KR",
+		},
+		{
+			provider: "microsoft.com",
+			scopes: ["email", "profile"],
+		},
 	],
 	credentialHelper: firebaseui.auth.CredentialHelper.GOOGLE_YOLO,
 	tosUrl: "https://sunrinpay.web.app/privacy",
