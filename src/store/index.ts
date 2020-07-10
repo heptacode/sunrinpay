@@ -7,7 +7,6 @@ import axios from "axios";
 import { db, log, transaction } from "@/DB";
 
 const event = require("vue-analytics").event;
-const docRef = db.collection("accounts").doc(firebase.auth().currentUser!.uid);
 
 Vue.use(Vuex);
 
@@ -20,6 +19,8 @@ export default new Vuex.Store({
 		async GET_BALANCE({ commit, state }, data): Promise<boolean | number> {
 			event("action", "GET_BALANCE", "getBalance", data);
 			try {
+				const docRef = await db.collection("accounts").doc(firebase.auth().currentUser!.uid);
+
 				let snapshot = await docRef.get();
 				state.balance = snapshot.data()!.balance;
 				return state.balance;
@@ -30,6 +31,8 @@ export default new Vuex.Store({
 		},
 		async SEND_MONEY({ commit, state }, data): Promise<boolean | string> {
 			event("action", "SEND_MONEY", "sendMoney", data);
+			const docRef = await db.collection("accounts").doc(firebase.auth().currentUser!.uid);
+
 			try {
 				// 보내는 사람 도큐먼트 가져오기
 				let snapshot = await docRef.get();
@@ -86,6 +89,8 @@ export default new Vuex.Store({
 		},
 		async CHECKOUT({ commit, state }, data): Promise<boolean | string> {
 			event("action", "CHECKOUT", "checkout", data);
+			const docRef = await db.collection("accounts").doc(firebase.auth().currentUser!.uid);
+
 			let snapshot = await docRef.get();
 			const newBalance = snapshot.data()!.balance - data.price;
 			if (newBalance >= 0) {
