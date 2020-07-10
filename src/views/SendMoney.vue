@@ -2,51 +2,54 @@
 	<div class="sendmoney">
 		<h2>TOSS 송금 QR 생성</h2>
 		<form action="javascript:void(0)" @submit="generateQR">
-			{{bank}}
-			<input type="tel" v-model="amount" minlength="1" maxlength="6" required />
-			<NumberCounter :text="amount.toString()" :isNumberFormat="true" defaultChar="0"></NumberCounter>원
-			<div class="sendmoney__bank" :class="{'active':isShowBankList}">
-				<span @click="selectBank('NH농협')">
-					<i class="iconify" data-icon="mdi-bank"></i> NH 농협1
-				</span>
-				<span @click="bank = '신한은행'">
-					<i class="iconify" data-icon="mdi-bank"></i> 신한은행
-				</span>
-				<span>
-					<i class="iconify" data-icon="mdi-bank"></i> NH 농협3
-				</span>
-				<span>
-					<i class="iconify" data-icon="mdi-bank"></i> NH 농협4
-				</span>
-				<span>
-					<i class="iconify" data-icon="mdi-bank"></i> NH 농협5
-				</span>
-				<span>
-					<i class="iconify" data-icon="mdi-bank"></i> NH 농협6
-				</span>
-				<span>
-					<i class="iconify" data-icon="mdi-bank"></i> NH 농협7
-				</span>
-				<span>
-					<i class="iconify" data-icon="mdi-bank"></i> NH 농협8
-				</span>
-				<span>
-					<i class="iconify" data-icon="mdi-bank"></i> NH 농협9
-				</span>
-				<span>
-					<i class="iconify" data-icon="mdi-bank"></i> NH 농협10
-				</span>
+			<NumberCounter :text="getTotal" :isNumberFormat="true" defaultChar="0"></NumberCounter>원
+			<div class="sendmoney__numpad">
+				<div v-for="idx in 9" :key="idx" class="sendmoney__numpad__item" @click="appendTotalStr(idx)">{{ idx }}</div>
+				<div class="sendmoney__numpad__item"></div>
+				<div class="sendmoney__numpad__item" @click="appendTotalStr(0)">0</div>
+				<div class="sendmoney__numpad__item">
+					<span @click="removeTotalStr">
+						<i class="iconify" data-icon="mdi-backspace"></i>
+					</span>
+				</div>
 			</div>
-			<input
-				type="text"
-				v-model="accountNo"
-				placeholder="계좌번호"
-				minlength="6"
-				required
-				@focus="showBankList"
-			/>
-			<button type="submit">QR 생성</button>
+			<div class="sendmoney__bank" :class="{ active: isShowBankList }">
+				<span @click="selectBank('NH농협')"><i class="iconify" data-icon="mdi-bank"></i>NH 농협</span>
+				<span @click="selectBank('KB국민')"><i class="iconify" data-icon="mdi-bank"></i>KB국민</span>
+				<span @click="selectBank('신한')"><i class="iconify" data-icon="mdi-bank"></i>신한</span>
+				<span @click="selectBank('우리')"><i class="iconify" data-icon="mdi-bank"></i>우리</span>
+				<span @click="selectBank('하나')"><i class="iconify" data-icon="mdi-bank"></i>하나</span>
+				<span @click="selectBank('IBK기업')"><i class="iconify" data-icon="mdi-bank"></i>IBK기업</span>
+				<span @click="selectBank('SC제일')"><i class="iconify" data-icon="mdi-bank"></i>SC제일</span>
+				<span @click="selectBank('씨티')"><i class="iconify" data-icon="mdi-bank"></i>씨티</span>
+				<span @click="selectBank('KDB산업')"><i class="iconify" data-icon="mdi-bank"></i>KDB산업</span>
+				<span @click="selectBank('SBI저축은행')"><i class="iconify" data-icon="mdi-bank"></i>SBI저축은행</span>
+				<span @click="selectBank('새마을')"><i class="iconify" data-icon="mdi-bank"></i>새마을</span>
+				<span @click="selectBank('대구')"><i class="iconify" data-icon="mdi-bank"></i>대구</span>
+				<span @click="selectBank('광주')"><i class="iconify" data-icon="mdi-bank"></i>광주</span>
+				<span @click="selectBank('우체국')"><i class="iconify" data-icon="mdi-bank"></i>우체국</span>
+				<span @click="selectBank('신협')"><i class="iconify" data-icon="mdi-bank"></i>신협</span>
+				<span @click="selectBank('전북')"><i class="iconify" data-icon="mdi-bank"></i>전북</span>
+				<span @click="selectBank('경남')"><i class="iconify" data-icon="mdi-bank"></i>경남</span>
+				<span @click="selectBank('부산')"><i class="iconify" data-icon="mdi-bank"></i>부산</span>
+				<span @click="selectBank('수협')"><i class="iconify" data-icon="mdi-bank"></i>수협</span>
+				<span @click="selectBank('제주')"><i class="iconify" data-icon="mdi-bank"></i>제주</span>
+				<span @click="selectBank('저축은행')"><i class="iconify" data-icon="mdi-bank"></i>저축은행</span>
+				<span @click="selectBank('신림조합')"><i class="iconify" data-icon="mdi-bank"></i>신림조합</span>
+				<span @click="selectBank('케이뱅크')"><i class="iconify" data-icon="mdi-bank"></i>케이뱅크</span>
+				<span @click="selectBank('카카오뱅크')"><i class="iconify" data-icon="mdi-bank"></i>카카오뱅크</span>
+				<span @click="selectBank('HSBC')"><i class="iconify" data-icon="mdi-bank"></i>HSBC</span>
+				<span @click="selectBank('중국공상')"><i class="iconify" data-icon="mdi-bank"></i>중국공상</span>
+				<span @click="selectBank('JP모간')"><i class="iconify" data-icon="mdi-bank"></i>JP모간</span>
+				<span @click="selectBank('도이치')"><i class="iconify" data-icon="mdi-bank"></i>도이치</span>
+				<span @click="selectBank('BNP파리바')"><i class="iconify" data-icon="mdi-bank"></i>BNP파리바</span>
+				<span @click="selectBank('BOA')"><i class="iconify" data-icon="mdi-bank"></i>BOA</span>
+				<span @click="selectBank('중국건설')"><i class="iconify" data-icon="mdi-bank"></i>중국건설</span>
+			</div>
+			{{ bank }}
 			<button type="button" @click="showBankList(true)">은행 다시 선택</button>
+			<input type="text" v-model="accountNo" placeholder="계좌번호" minlength="6" required @focus="showBankList" />
+			<button type="submit">QR 생성</button>
 		</form>
 		<br />
 		<QRcode v-if="qrData" :data="qrData" class="qr"></QRcode>
@@ -62,27 +65,35 @@ import { Vue, Component } from "vue-property-decorator";
 @Component({
 	components: {
 		QRcode,
-		NumberCounter: NumberCounterVue
-	}
+		NumberCounter: NumberCounterVue,
+	},
 })
 export default class SendMoney extends Vue {
 	amount: number = 0;
 	bank: string = "";
 	accountNo: string = "";
 	qrData: string = "";
+	totalString: string = "";
 
 	isShowBankList: boolean = false;
+
+	get getTotal() {
+		return this.totalString;
+	}
+	appendTotalStr(str: string | number) {
+		this.totalString = this.totalString + str;
+	}
+	removeTotalStr() {
+		this.totalString = this.totalString.substring(0, this.totalString.length - 1);
+	}
 
 	showBankList(important?: boolean) {
 		if (!this.bank || important) this.isShowBankList = true;
 	}
-	hiddenBankList() {
-		this.isShowBankList = false;
-	}
 
 	selectBank(bank: string) {
 		this.bank = bank;
-		this.hiddenBankList();
+		this.isShowBankList = false;
 	}
 
 	generateQR() {
@@ -96,6 +107,32 @@ export default class SendMoney extends Vue {
 	max-width: 720px;
 	form {
 		width: 100%;
+		.sendmoney__numpad {
+			width: 100%;
+			max-width: 50%;
+
+			margin: 0 auto;
+			margin-top: 40px;
+
+			display: flex;
+			flex-wrap: wrap;
+
+			.sendmoney__numpad__item {
+				flex: 1 33%;
+				width: 1.5em;
+				height: 1.5em;
+
+				display: flex;
+				justify-content: center;
+				align-items: center;
+
+				font-size: $large-size;
+				i {
+					font-size: 0.7em;
+					color: $gray-text-color;
+				}
+			}
+		}
 		.sendmoney__bank {
 			position: fixed;
 			max-width: 720px;
