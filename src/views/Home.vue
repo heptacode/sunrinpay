@@ -19,13 +19,7 @@
 			<main v-if="isAuth">
 				<div class="home__title">
 					<h3>{{ userInformation.displayName }}</h3>
-					<img
-						:src="userInformation.photoURL"
-						width="32px"
-						height="32px"
-						draggable="false"
-						@click="isProfileOpen = !isProfileOpen"
-					/>
+					<img :src="userInformation.photoURL" width="32px" height="32px" draggable="false" @click="isProfileOpen = !isProfileOpen" />
 				</div>
 				<div v-if="isProfileOpen" class="home__profile">
 					<div>
@@ -43,20 +37,18 @@
 				<div class="home__account" :class="{ isFlip: isFlip, isFlipReverse: !isFlip && !isFirst }">
 					<div class="home__account__info" :class="{ unshown: isDelayFlip }">
 						내 지갑
-						<span>
-							<span v-if="!isReloading" class="home__account__info__reload" @click="reload">
+						<span v-if="!isReloading" class="home__account__info__reload">
+							<span v-if="!isReloadingDelay" @click="reload">
 								<i class="iconify reload" data-icon="mdi-reload"></i>
 							</span>
-							<span v-else>
-								<i class="iconify loading" data-icon="mdi-loading"></i>
-							</span>
+							<span v-else>업데이트됨 <i class="iconify" data-icon="mdi-check"></i></span>
+						</span>
+						<span v-else>
+							<i class="iconify loading" data-icon="mdi-loading"></i>
 						</span>
 					</div>
 
-					<h3
-						class="home__account__money"
-						:class="{ unshown: isDelayFlip }"
-					>{{ balance.numberFormat() }}원</h3>
+					<h3 class="home__account__money" :class="{ unshown: isDelayFlip }">{{ balance.numberFormat() }}원</h3>
 
 					<div class="home__account__qr" :class="{ unshown: !isDelayFlip }">
 						<QRcode :data="'https://sunrinpay.com/sendmoney?account=' + userInformation.email" class="qr"></QRcode>
@@ -119,13 +111,7 @@
 				</ul>
 				<div style="margin-top:50px;">
 					<h2>Number Counter</h2>
-					<NumberCounter
-						:text="n"
-						:isNumberFormat="true"
-						defaultChar="0"
-						style="width:100%; font-size:2em;"
-						direction="bottom"
-					></NumberCounter>
+					<NumberCounter :text="n" :isNumberFormat="true" defaultChar="0" style="width:100%; font-size:2em;" direction="bottom"></NumberCounter>
 				</div>
 				<div style="margin-top:50px; width:400px;height:400px;">
 					<h2>View Pager</h2>
@@ -175,13 +161,14 @@ import { ui, uiConfig, signIn, signOut } from "@/Auth";
 		NumberCounter: NumberCounterVue,
 		BarcodeScanner: BarcodeScannerVue,
 		ViewPager: ViewPagerVue,
-		SalesChart: SalesChartVue
-	}
+		SalesChart: SalesChartVue,
+	},
 })
 export default class Home extends Vue {
 	userInformation: Object = {};
 	isAuth: boolean = false;
 	isReloading: boolean = false;
+	isReloadingDelay: boolean = false;
 	isProfileOpen: boolean = false;
 	isFirst: boolean = true;
 
@@ -219,9 +206,10 @@ export default class Home extends Vue {
 	}
 
 	async reload() {
-		this.isReloading = true;
+		this.isReloading = this.isReloadingDelay = true;
 		this.balance = await this.$store.dispatch("GET_BALANCE");
 		this.isReloading = false;
+		setTimeout(() => (this.isReloadingDelay = false), 5000);
 	}
 
 	async signOut() {
@@ -372,9 +360,12 @@ export default class Home extends Vue {
 				height: 1.5em;
 				font-size: $small-size;
 				.home__account__info__reload {
-					cursor: pointer;
 					.reload {
 						font-size: 30px;
+						cursor: pointer;
+					}
+					span {
+						font-size: 20px;
 					}
 				}
 				.loading {
@@ -429,26 +420,26 @@ export default class Home extends Vue {
 
 			@keyframes flip {
 				0% {
-					transform: rotateY(0) scale(1) translateY(0px);
+					transform: rotateY(0) scale(1) translateY(0);
 				}
 				50% {
 					transform: rotateY(90deg) scale(1.1) translateY(-20px);
-					box-shadow: 0px 20px 10px rgba(0, 0, 0, 0.5);
+					box-shadow: 0 20px 10px rgba(0, 0, 0, 0.5);
 				}
 				100% {
-					transform: rotateY(0) scale(1) translateY(0px);
+					transform: rotateY(0) scale(1) translateY(0);
 				}
 			}
 			@keyframes flipReverse {
 				0% {
-					transform: rotateY(0) scale(1) translateY(0px);
+					transform: rotateY(0) scale(1) translateY(0);
 				}
 				50% {
 					transform: rotateY(90deg) scale(1.1) translateY(-20px);
-					box-shadow: 0px 20px 10px rgba(0, 0, 0, 0.5);
+					box-shadow: 0 20px 10px rgba(0, 0, 0, 0.5);
 				}
 				100% {
-					transform: rotateY(0) scale(1) translateY(0px);
+					transform: rotateY(0) scale(1) translateY(0);
 				}
 			}
 		}
