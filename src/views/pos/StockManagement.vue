@@ -59,8 +59,14 @@
 						type="text"
 						class="editable"
 						v-model="selectedItem.discount"
+						max="100"
+						min="0"
 						@change="updateItem('discount')"
 					/>%
+				</div>
+				<div>
+					<h3>판매가</h3>
+					<span>{{ (selectedItem.price * ((100-Number(selectedItem.discount || 0))/100)).numberFormat() }}원</span>
 				</div>
 			</div>
 			<SalesChart></SalesChart>
@@ -193,8 +199,11 @@ export default class StockManagement extends Vue {
 		h3 {
 			font-size: $small-size;
 			color: $gray-text-color;
+			font-weight: normal !important;
 		}
-
+		.stockmanagement__stockedit__title {
+			font-weight: bold;
+		}
 		.stockmanagement__stockedit__name {
 			display: flex;
 			justify-content: space-between;
@@ -234,12 +243,17 @@ export default class StockManagement extends Vue {
 		}
 		.stockmanagement__stockedit__flex {
 			display: flex;
+
 			div {
 				flex: 1;
-
-				input {
+				span {
+					font-weight: bold;
 					font-size: $small-normal-size;
-					width: 40%;
+				}
+				input {
+					font-weight: bold;
+					font-size: $small-normal-size;
+					width: 60%;
 				}
 			}
 		}
