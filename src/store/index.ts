@@ -39,7 +39,7 @@ export default new Vuex.Store({
 
 				// state 잔액 갱신
 				state.balance = snapshot.data()!.balance;
-				if (state.balance - data.amount > 0) return `잔액이 ${Math.abs(state.balance - data.amount)}원 부족합니다.`;
+				if (state.balance - data.amount < 0) return `잔액이 ${Math.abs(state.balance - data.amount)}원 부족합니다.`;
 
 				// 보내는 사람 잔액 차감
 				await docRef.update({
@@ -47,13 +47,13 @@ export default new Vuex.Store({
 				});
 
 				// 받는 사람 도큐멘트의 uid 조회
-				let query = await db
+				let recipientQuerySnapshot = await db
 					.collection("accounts")
 					.where("email", "==", data.recipient)
 					.get();
 
 				// 받는 사람  도큐먼트 가져오기
-				let recipientDocRef = await db.collection("accounts").doc(query[0].doc.id);
+				let recipientDocRef = await db.collection("accounts").doc(recipientQuerySnapshot.docs[0].id);
 				let recipientSnapshot = await recipientDocRef.get();
 
 				// 받는 사람 잔액 조회
