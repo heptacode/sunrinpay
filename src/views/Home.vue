@@ -39,7 +39,7 @@
 						내 지갑
 					</p>
 					<p class="home__account__qr" v-else>
-						<QRcode :data="'https://sunrinpay.web.app/sendmoney#' + userInformation.email" class="qr"></QRcode>
+						<QRcode :data="'https://sunrinpay.com/sendmoney?account=' + userInformation.email" class="qr"></QRcode>
 						<!-- <span class="content">
                      <h3>선린인터넷고등학교매점</h3>
                      <p>+821072078667</p>
@@ -235,7 +235,7 @@ export default class Home extends Vue {
 	}
 
 	main {
-		max-width: 500px;
+		max-width: 720px;
 		position: relative;
 
 		.home__title {
