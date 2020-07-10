@@ -5,10 +5,16 @@
 			<input type="search" class="stocklist__search__input" placeholder="검색" v-model="searchString" />
 		</div>
 		<div class="stocklist__list__wrapper" ref="searchList">
-			<div class="stocklist__list">
+			<div class="stocklist__list" ref="searchList__scroll">
 				<ul v-for="fl in getFilterList" :key="fl.consonant" :ref="`searchItem_${fl.consonant}`">
 					<h2>{{ fl.consonant }}</h2>
-					<li class="stocklist__list__item" :class="{ active: getHighlightId == item.id }" v-for="(item, idx) in fl.list" :key="item.name + idx" @click="addItem(item)">
+					<li
+						class="stocklist__list__item"
+						:class="{ active: getHighlightId == item.id }"
+						v-for="(item, idx) in fl.list"
+						:key="item.name + idx"
+						@click="addItem(item)"
+					>
 						<div>
 							<h3>{{ item.name }}</h3>
 							<p>{{ item.quantity }}개 남음</p>
@@ -18,8 +24,17 @@
 						</div>
 					</li>
 				</ul>
-				<div class="stocklist__tip" ref="search_tip" @touchmove="touchSearchTip" @touchend="currentConsonant = ''">
-					<span v-for="consonant in getConsonantList" :key="consonant" @click="moveScroll(consonant)">{{ consonant }}</span>
+				<div
+					class="stocklist__tip"
+					ref="search_tip"
+					@touchmove="touchSearchTip"
+					@touchend="currentConsonant = ''"
+				>
+					<span
+						v-for="consonant in getConsonantList"
+						:key="consonant"
+						@click="moveScroll(consonant)"
+					>{{ consonant }}</span>
 				</div>
 				<div class="stocklist__tiptext" v-if="currentConsonant">{{ currentConsonant }}</div>
 			</div>
@@ -40,8 +55,12 @@ interface FilterConsonantItem {
 export default class StockList extends Vue {
 	currentConsonant: string = "";
 	searchString: string = "";
-	@Prop({ type: Array as PropType<StockItem[]> }) data: StockItem[] | undefined;
-	@Prop({ type: Object as PropType<StockItem> }) highlight: StockItem | undefined;
+	@Prop({ type: Array as PropType<StockItem[]> }) data:
+		| StockItem[]
+		| undefined;
+	@Prop({ type: Object as PropType<StockItem> }) highlight:
+		| StockItem
+		| undefined;
 	get getFilterList(): FilterConsonantItem[] {
 		let result: FilterConsonantItem[] = [];
 		this.data!.filter(item => {
@@ -52,13 +71,15 @@ export default class StockList extends Vue {
 			if (idx == -1) {
 				result.push({
 					consonant: consonant,
-					list: [item],
+					list: [item]
 				});
 			} else {
 				result[idx].list.push(item);
 			}
 		});
-		return result.sort((a, b) => (a.consonant < b.consonant ? -1 : a.consonant > b.consonant ? 1 : 0));
+		return result.sort((a, b) =>
+			a.consonant < b.consonant ? -1 : a.consonant > b.consonant ? 1 : 0
+		);
 	}
 
 	get getConsonantList(): string[] {
@@ -70,7 +91,27 @@ export default class StockList extends Vue {
 
 	getConsonant(word: string): string {
 		if (word) {
-			const f: string[] = ["ㄱ", "ㄲ", "ㄴ", "ㄷ", "ㄸ", "ㄹ", "ㅁ", "ㅂ", "ㅃ", "ㅅ", "ㅆ", "ㅇ", "ㅈ", "ㅉ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ"];
+			const f: string[] = [
+				"ㄱ",
+				"ㄲ",
+				"ㄴ",
+				"ㄷ",
+				"ㄸ",
+				"ㄹ",
+				"ㅁ",
+				"ㅂ",
+				"ㅃ",
+				"ㅅ",
+				"ㅆ",
+				"ㅇ",
+				"ㅈ",
+				"ㅉ",
+				"ㅊ",
+				"ㅋ",
+				"ㅌ",
+				"ㅍ",
+				"ㅎ"
+			];
 			let uni: number = word.charCodeAt(0) - 44032;
 			let fn: number = Math.floor(uni / 588);
 			return f[fn] || word[0].toUpperCase();
@@ -83,7 +124,6 @@ export default class StockList extends Vue {
 		let height = el.clientHeight + 20;
 
 		let y = e.touches[0].clientY - el.getBoundingClientRect().y;
-		console.log(y);
 
 		let idx = Math.floor(y / (height / this.getConsonantList.length));
 
@@ -93,8 +133,11 @@ export default class StockList extends Vue {
 		}
 	}
 	moveScroll(consonant: string) {
-		let searchList: HTMLElement = this.$refs.searchList as HTMLElement;
-		let el: HTMLElement = this.$refs[`searchItem_${consonant}`][0] as HTMLElement;
+		let searchList: HTMLElement = this.$refs
+			.searchList__scroll as HTMLElement;
+		let el: HTMLElement = this.$refs[
+			`searchItem_${consonant}`
+		][0] as HTMLElement;
 		if (searchList && el) {
 			searchList.scrollTo(0, el.offsetTop);
 		}

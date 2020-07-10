@@ -64,7 +64,7 @@ import BarcodeScannerVue from "../../components/BarcodeScanner.vue";
 
 import randomWords from "random-words";
 
-import { Vue, Component, Watch } from "vue-property-decorator";
+import { Vue, Component, Watch, Prop } from "vue-property-decorator";
 import StockListVue from "../../components/StockList.vue";
 import { StockItem } from "../../schema";
 import PaymentRequireButtonVue from "../../components/PaymentRequireButton.vue";
@@ -116,17 +116,23 @@ export default class Order extends Vue {
 
 	appendSelectedItem(item: StockItem) {
 		let idx = this.selectedList.findIndex(i => i.name == item.name);
-		if (idx == -1) {
-			let copyObject = Object.assign({}, item);
-			copyObject.quantity = 1;
-			this.selectedList.push(copyObject);
-		} else this.selectedList[idx].quantity++;
+		if (item.quantity > 0) {
+			item.quantity--;
+
+			if (idx == -1) {
+				let copyObject = Object.assign({}, item);
+				copyObject.quantity = 1;
+				this.selectedList.push(copyObject);
+			} else {
+				this.selectedList[idx].quantity++;
+			}
+		}
 	}
 	removeSelectItem(item: StockItem) {
-		this.selectedList.splice(
-			this.selectedList.findIndex(i => i.name == item.name),
-			1
-		);
+		let idx = this.selectedList.findIndex(i => i.name == item.name);
+		this.list.find(i => i.name == this.selectedList[idx].name)!.quantity +=
+			item.quantity;
+		this.selectedList.splice(idx, 1);
 	}
 	onDetected(result: string) {
 		let idx = this.list.findIndex(item => item.barcode == result);
@@ -140,9 +146,17 @@ export default class Order extends Vue {
 	}
 
 	plusItemCount(item: StockItem) {
-		item.quantity++;
+		let idx = this.list.findIndex(i => i.name == item.name);
+		let original = this.list[idx];
+		if (original.quantity > 0) {
+			original.quantity--;
+			item.quantity++;
+		}
 	}
 	minousItemCount(item: StockItem) {
+		let idx = this.list.findIndex(i => i.name == item.name);
+		let original = this.list[idx];
+		original.quantity++;
 		item.quantity--;
 		if (item.quantity <= 0) this.removeSelectItem(item);
 	}
@@ -198,7 +212,7 @@ export default class Order extends Vue {
 				justify-content: space-between;
 				align-items: center;
 
-                width: 100%;
+				width: 100%;
 
 				padding-bottom: 20px;
 
