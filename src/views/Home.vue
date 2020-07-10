@@ -19,7 +19,13 @@
 			<main v-if="isAuth">
 				<div class="home__title">
 					<h3>{{ userInformation.displayName }}</h3>
-					<img :src="userInformation.photoURL" width="32px" height="32px" draggable="false" @click="isProfileOpen = !isProfileOpen" />
+					<img
+						:src="userInformation.photoURL"
+						width="32px"
+						height="32px"
+						draggable="false"
+						@click="isProfileOpen = !isProfileOpen"
+					/>
 				</div>
 				<div v-if="isProfileOpen" class="home__profile">
 					<div>
@@ -47,7 +53,10 @@
 						</span>
 					</div>
 
-					<h3 class="home__account__money" :class="{ unshown: isDelayFlip }">{{ balance.numberFormat() }}원</h3>
+					<h3
+						class="home__account__money"
+						:class="{ unshown: isDelayFlip }"
+					>{{ balance.numberFormat() }}원</h3>
 
 					<div class="home__account__qr" :class="{ unshown: !isDelayFlip }">
 						<QRcode :data="'https://sunrinpay.com/sendmoney?account=' + userInformation.email" class="qr"></QRcode>
@@ -110,7 +119,13 @@
 				</ul>
 				<div style="margin-top:50px;">
 					<h2>Number Counter</h2>
-					<NumberCounter :text="n" :isNumberFormat="true" defaultChar="0" style="width:100%; font-size:2em;" direction="bottom"></NumberCounter>
+					<NumberCounter
+						:text="n"
+						:isNumberFormat="true"
+						defaultChar="0"
+						style="width:100%; font-size:2em;"
+						direction="bottom"
+					></NumberCounter>
 				</div>
 				<div style="margin-top:50px; width:400px;height:400px;">
 					<h2>View Pager</h2>
@@ -160,8 +175,8 @@ import { ui, uiConfig, signIn, signOut } from "@/Auth";
 		NumberCounter: NumberCounterVue,
 		BarcodeScanner: BarcodeScannerVue,
 		ViewPager: ViewPagerVue,
-		SalesChart: SalesChartVue,
-	},
+		SalesChart: SalesChartVue
+	}
 })
 export default class Home extends Vue {
 	userInformation: Object = {};
@@ -405,40 +420,35 @@ export default class Home extends Vue {
 			}
 
 			&.isFlip {
-				animation: flip 0.5s linear;
+				animation: flip 0.5s;
 			}
 
 			&.isFlipReverse {
-				animation: flipReverse 0.5s linear;
+				animation: flipReverse 0.5s;
 			}
 
 			@keyframes flip {
 				0% {
-					transform: rotateY(0);
-					opacity: 1;
+					transform: rotateY(0) scale(1) translateY(0px);
 				}
 				50% {
-					transform: rotateY(90deg);
-					opacity: 0;
+					transform: rotateY(90deg) scale(1.1) translateY(-20px);
+					box-shadow: 0px 20px 10px rgba(0, 0, 0, 0.5);
 				}
 				100% {
-					transform: rotateY(0);
-					opacity: 1;
+					transform: rotateY(0) scale(1) translateY(0px);
 				}
 			}
 			@keyframes flipReverse {
 				0% {
-					background-color: red !important;
-					transform: rotateY(0);
-					opacity: 1;
+					transform: rotateY(0) scale(1) translateY(0px);
 				}
 				50% {
-					transform: rotateY(-90deg);
-					opacity: 0;
+					transform: rotateY(90deg) scale(1.1) translateY(-20px);
+					box-shadow: 0px 20px 10px rgba(0, 0, 0, 0.5);
 				}
 				100% {
-					transform: rotateY(0);
-					opacity: 1;
+					transform: rotateY(0) scale(1) translateY(0px);
 				}
 			}
 		}
