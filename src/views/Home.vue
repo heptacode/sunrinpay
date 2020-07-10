@@ -35,7 +35,7 @@
 					</button>
 				</div>
 				<div class="home__account" :class="{ isFlip: isFlip, isFlipReverse: !isFlip && !isFirst }">
-					<p class="home__account__info" v-if="!isDelayFlip">
+					<div class="home__account__info" :class="{ unshown: isDelayFlip }">
 						내 지갑
 						<span>
 							<span v-if="!isReloading" class="home__account__info__reload" @click="reload">
@@ -45,11 +45,14 @@
 								<i class="iconify loading" data-icon="mdi-loading"></i>
 							</span>
 						</span>
-					</p>
-					<p class="home__account__qr" v-else>
+					</div>
+
+					<h3 class="home__account__money" :class="{ unshown: isDelayFlip }">{{ balance.numberFormat() }}원</h3>
+
+					<div class="home__account__qr" :class="{ unshown: !isDelayFlip }">
 						<QRcode :data="'https://sunrinpay.com/sendmoney?account=' + userInformation.email" class="qr"></QRcode>
-					</p>
-					<h3 class="home__account__money" v-if="!isDelayFlip">{{ balance.numberFormat() }}원</h3>
+					</div>
+
 					<p class="home__account__action">
 						<router-link :to="{ name: 'sendmoney' }">송금하기</router-link>
 						<span v-if="!isFlip" @click="toggleFlip">내 QR 보기</span>
@@ -226,6 +229,7 @@ export default class Home extends Vue {
 		transform: rotate(360deg);
 	}
 }
+
 .home {
 	max-width: 720px;
 
@@ -344,6 +348,9 @@ export default class Home extends Vue {
 			overflow: hidden;
 			color: white;
 
+			.unshown {
+				display: none !important;
+			}
 			.home__account__info {
 				display: flex;
 				justify-content: space-between;
@@ -373,6 +380,7 @@ export default class Home extends Vue {
 				.qr {
 					height: 100%;
 				}
+
 				.content {
 					margin-left: 20px;
 					h3 {
