@@ -30,7 +30,11 @@
 			</ul>
 		</div>
 		<div class="detailsmode__actions">
-			<PaymentButton class="detailsmode__actions__btn"></PaymentButton>
+			<PaymentButton
+				class="detailsmode__actions__btn"
+				paymentName="Kakao Pay"
+				@click="checkoutWithKakaoPay"
+			></PaymentButton>
 			<PaymentButton class="detailsmode__actions__btn"></PaymentButton>
 		</div>
 	</div>
@@ -42,6 +46,9 @@ import CashButtonVue from "@/components/CashButton.vue";
 import NumberCounterVue from "vue-roller";
 
 import { Vue, Component } from "vue-property-decorator";
+
+import isMobile from "@/lib/isMobile";
+
 @Component({
 	components: {
 		PaymentButton: PaymentButtonVue,
@@ -59,8 +66,11 @@ export default class Checkout extends Vue {
 			tax_free_amount: 0,
 			price: 1000
 		});
-		console.log(res);
-		// window.open(res.next_redirect_pc_url);
+		if (isMobile()) {
+			window.open(res.next_redirect_mobile_url);
+		} else {
+			window.open(res.next_redirect_pc_url);
+		}
 	}
 }
 </script>
