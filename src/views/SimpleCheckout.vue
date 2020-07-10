@@ -11,7 +11,11 @@
 		</div>
 		<div class="simplemode__actions">
 			<PaymentButton class="simplemode__actions__btn" @click="test"></PaymentButton>
-			<CashButton class="simplemode__actions__btn"></CashButton>
+			<PaymentButton
+				class="simplemode__actions__btn"
+				paymentName="Kakao Pay"
+				@click="checkoutWithKakaoPay"
+			></PaymentButton>
 		</div>
 	</div>
 </template>
@@ -22,6 +26,7 @@ import CashButtonVue from "@/components/CashButton.vue";
 import NumberCounterVue from "vue-roller";
 
 import { Vue, Component } from "vue-property-decorator";
+import isMobile from "../lib/isMobile";
 
 @Component({
 	components: {
@@ -42,6 +47,22 @@ export default class SimpleCheckout extends Vue {
 			})
 			.then(res => console.log(res))
 			.catch(err => console.log(err));
+	}
+	async checkoutWithKakaoPay() {
+		let res = await this.$store.dispatch("CHECKOUT_KAKAOPAY", {
+			item_name: "초코파이",
+			quantity: 1,
+			total_amount: 2200,
+			vat_amount: 0,
+			tax_free_amount: 0,
+			price: 1000
+		});
+		if (isMobile()) {
+			// 모바일
+			window.open(res.next_redirect_mobile_url);
+		} else {
+			window.open(res.next_redirect_pc_url);
+		}
 	}
 }
 </script>
