@@ -37,13 +37,17 @@
 				<div class="home__account" :class="{ isFlip: isFlip, isFlipReverse: !isFlip }">
 					<p class="home__account__info" v-if="!isDelayFlip">
 						내 지갑
+						<span>
+							<span v-if="!isReloading" class="home__account__info__reload" @click="reload">
+								<i class="iconify reload" data-icon="mdi-reload"></i>
+							</span>
+							<span v-else>
+								<i class="iconify loading" data-icon="mdi-loading"></i>
+							</span>
+						</span>
 					</p>
 					<p class="home__account__qr" v-else>
 						<QRcode :data="'https://sunrinpay.com/sendmoney?account=' + userInformation.email" class="qr"></QRcode>
-						<!-- <span class="content">
-                     <h3>선린인터넷고등학교매점</h3>
-                     <p>+821072078667</p>
-						</span>-->
 					</p>
 					<h3 class="home__account__money" v-if="!isDelayFlip">{{ balance }}원</h3>
 					<p class="home__account__action">
@@ -135,7 +139,7 @@ import NumberCounterVue from "vue-roller";
 import BarcodeScannerVue from "../components/BarcodeScanner.vue";
 import ViewPagerVue from "../components/ViewPager.vue";
 
-import { Vue, Component } from "vue-property-decorator";
+import { Vue, Component, Watch } from "vue-property-decorator";
 import SalesChartVue from "../components/SalesChart.vue";
 import QRcode from "../components/QRcode.vue";
 import QRScannerIntent from "../components/intent/QRScannerIntent.vue";
@@ -159,6 +163,7 @@ import { ui, uiConfig, signIn, signOut } from "@/Auth";
 export default class Home extends Vue {
 	userInformation: Object = {};
 	isAuth: boolean = false;
+	isReloading: boolean = false;
 	isProfileOpen: boolean = false;
 
 	isFlip: boolean = false;
@@ -192,9 +197,16 @@ export default class Home extends Vue {
 		});
 	}
 
+	async reload() {
+		this.isReloading = true;
+		this.balance = await this.$store.dispatch("GET_BALANCE");
+		this.isReloading = false;
+	}
+
 	async signOut() {
 		await signOut();
 	}
+
 	onDecode(decodedString) {
 		console.log(decodedString);
 	}
@@ -203,6 +215,14 @@ export default class Home extends Vue {
 
 <style lang="scss" scoped>
 @import url("https://www.gstatic.com/firebasejs/ui/4.5.0/firebase-ui-auth.css");
+@keyframes loading {
+	from {
+		transform: rotate(0deg);
+	}
+	to {
+		transform: rotate(360deg);
+	}
+}
 .home {
 	padding: 40px;
 	overflow-y: scroll;
@@ -223,14 +243,6 @@ export default class Home extends Vue {
 		.loading {
 			font-size: 40px;
 			animation: loading 0.5s linear infinite;
-		}
-		@keyframes loading {
-			from {
-				transform: rotate(0deg);
-			}
-			to {
-				transform: rotate(360deg);
-			}
 		}
 	}
 
@@ -329,8 +341,20 @@ export default class Home extends Vue {
 			color: white;
 
 			.home__account__info {
+				display: flex;
+				justify-content: space-between;
 				height: 1.5em;
 				font-size: $small-size;
+				.home__account__info__reload {
+					cursor: pointer;
+					.reload {
+						font-size: 30px;
+					}
+				}
+				.loading {
+					font-size: 30px;
+					animation: loading 0.5s linear infinite;
+				}
 			}
 			.home__account__qr {
 				flex: 1;
