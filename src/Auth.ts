@@ -9,7 +9,6 @@ export const ui = firebaseui.auth.AuthUI.getInstance() || new firebaseui.auth.Au
 export const uiConfig = {
 	callbacks: {
 		signInSuccessWithAuthResult: (authResult, redirectUrl) => {
-			//
 			return true;
 		},
 		uiShown: () => {
