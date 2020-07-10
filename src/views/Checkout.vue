@@ -30,9 +30,8 @@
 			</ul>
 		</div>
 		<div class="detailsmode__actions">
-			<button @click="checkoutWithKakaoPay">Kakao Pay로 결제</button>
 			<PaymentButton class="detailsmode__actions__btn"></PaymentButton>
-			<CashButton class="detailsmode__actions__btn"></CashButton>
+			<PaymentButton class="detailsmode__actions__btn"></PaymentButton>
 		</div>
 	</div>
 </template>

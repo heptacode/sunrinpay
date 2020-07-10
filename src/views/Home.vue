@@ -19,7 +19,13 @@
 			<main v-if="isAuth">
 				<div class="home__title">
 					<h3>{{ userInformation.displayName }}</h3>
-					<img :src="userInformation.photoURL" width="32px" height="32px" draggable="false" @click="isProfileOpen = !isProfileOpen" />
+					<img
+						:src="userInformation.photoURL"
+						width="32px"
+						height="32px"
+						draggable="false"
+						@click="isProfileOpen = !isProfileOpen"
+					/>
 				</div>
 				<div v-if="isProfileOpen" class="home__profile">
 					<div>
@@ -34,10 +40,8 @@
 						로그아웃
 					</button>
 				</div>
-				<div class="home__account" :class="{ isFlip: isFlip, isFlipReverse: !isFlip }">
-					<p class="home__account__info" v-if="!isDelayFlip">
-						내 지갑
-					</p>
+				<div class="home__account" :class="{ isFlip: isFlip, isFlipReverse: !isFlip && !isFirst }">
+					<p class="home__account__info" v-if="!isDelayFlip">내 지갑</p>
 					<p class="home__account__qr" v-else>
 						<QRcode :data="'https://sunrinpay.web.app/sendmoney#' + userInformation.email" class="qr"></QRcode>
 						<!-- <span class="content">
@@ -45,7 +49,7 @@
                      <p>+821072078667</p>
 						</span>-->
 					</p>
-					<h3 class="home__account__money" v-if="!isDelayFlip">{{ balance }}원</h3>
+					<h3 class="home__account__money" v-if="!isDelayFlip">{{ balance.numberFormat() }}원</h3>
 					<p class="home__account__action">
 						<router-link :to="{ name: 'sendmoney' }">송금하기</router-link>
 						<span v-if="!isFlip" @click="toggleFlip">내 QR 보기</span>
@@ -103,7 +107,13 @@
 				</ul>
 				<div style="margin-top:50px;">
 					<h2>Number Counter</h2>
-					<NumberCounter :text="n" :isNumberFormat="true" defaultChar="0" style="width:100%; font-size:2em;" direction="bottom"></NumberCounter>
+					<NumberCounter
+						:text="n"
+						:isNumberFormat="true"
+						defaultChar="0"
+						style="width:100%; font-size:2em;"
+						direction="bottom"
+					></NumberCounter>
 				</div>
 				<div style="margin-top:50px; width:400px;height:400px;">
 					<h2>View Pager</h2>
@@ -153,18 +163,21 @@ import { ui, uiConfig, signIn, signOut } from "@/Auth";
 		NumberCounter: NumberCounterVue,
 		BarcodeScanner: BarcodeScannerVue,
 		ViewPager: ViewPagerVue,
-		SalesChart: SalesChartVue,
-	},
+		SalesChart: SalesChartVue
+	}
 })
 export default class Home extends Vue {
 	userInformation: Object = {};
 	isAuth: boolean = false;
 	isProfileOpen: boolean = false;
+	isFirst: boolean = true;
 
 	isFlip: boolean = false;
 	isDelayFlip: boolean = false;
 	balance: number = 0;
+
 	toggleFlip() {
+		this.isFirst = false;
 		this.isFlip = !this.isFlip;
 		setTimeout(() => {
 			this.isDelayFlip = this.isFlip;
@@ -204,11 +217,11 @@ export default class Home extends Vue {
 <style lang="scss" scoped>
 @import url("https://www.gstatic.com/firebasejs/ui/4.5.0/firebase-ui-auth.css");
 .home {
+	max-width: 720px;
+
 	padding: 40px;
 	overflow-y: scroll;
 
-	display: flex;
-	justify-content: center;
 	.inactive {
 		display: none;
 	}
@@ -235,7 +248,6 @@ export default class Home extends Vue {
 	}
 
 	main {
-		max-width: 500px;
 		position: relative;
 
 		.home__title {
@@ -276,6 +288,7 @@ export default class Home extends Vue {
 			background: $content-color;
 			border-radius: 20px;
 			z-index: 10;
+
 			div {
 				padding: 20px;
 				display: flex;
@@ -318,6 +331,7 @@ export default class Home extends Vue {
 			flex-direction: column;
 			justify-content: space-between;
 			height: 30vh;
+			width: 100% !important;
 
 			background-color: $primary-color;
 			border-radius: 8px;
