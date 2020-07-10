@@ -15,6 +15,9 @@ export default class App extends Vue {}
 #app {
 	width: 100%;
 	height: 100%;
+
+	display: flex;
+	justify-content: center;
 }
 .router {
 	height: 100%;

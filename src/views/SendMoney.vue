@@ -93,11 +93,15 @@ export default class SendMoney extends Vue {
 
 <style lang="scss" scoped>
 .sendmoney {
-	// display: flex;
+	max-width: 720px;
 	form {
 		width: 100%;
 		.sendmoney__bank {
 			position: fixed;
+			max-width: 720px;
+			left: 50%;
+			transform: translateX(-50%);
+
 			width: 100%;
 			height: 80%;
 
@@ -108,6 +112,8 @@ export default class SendMoney extends Vue {
 
 			display: flex;
 			flex-wrap: wrap;
+			align-content: flex-start;
+
 			background-color: $content-color;
 
 			overflow-y: scroll;
@@ -117,6 +123,7 @@ export default class SendMoney extends Vue {
 			span {
 				flex: 1 1 30%;
 				margin: 20px;
+				padding: 30px;
 				border-radius: 20px;
 				background-color: $background-color;
 
@@ -124,6 +131,8 @@ export default class SendMoney extends Vue {
 				justify-content: center;
 				align-items: center;
 				flex-direction: column;
+
+				height: fit-content;
 
 				.iconify {
 					font-size: 2em;
