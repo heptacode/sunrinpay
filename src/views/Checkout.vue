@@ -67,6 +67,7 @@ export default class Checkout extends Vue {
 			price: 1000
 		});
 		if (isMobile()) {
+			// 모바일
 			window.open(res.next_redirect_mobile_url);
 		} else {
 			window.open(res.next_redirect_pc_url);
