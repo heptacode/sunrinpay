@@ -45,16 +45,17 @@ body {
 ::-webkit-scrollbar {
 	width: 5px;
 	height: 5px;
+	display: none;
 }
-::-webkit-scrollbar-thumb:window-inactive,
-::-webkit-scrollbar-thumb {
-	width: 5px;
-	background-color: #444444;
-}
-::-webkit-scrollbar-track {
-	width: 5px;
-	background-color: #111111;
-}
+// ::-webkit-scrollbar-thumb:window-inactive,
+// ::-webkit-scrollbar-thumb {
+// 	width: 5px;
+// 	background-color: #444444;
+// }
+// ::-webkit-scrollbar-track {
+// 	width: 5px;
+// 	background-color: #111111;
+// }
 
 // 버튼
 button {

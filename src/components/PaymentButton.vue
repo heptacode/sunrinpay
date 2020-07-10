@@ -1,15 +1,19 @@
 <template>
 	<button class="paymentbtn" v-on="$listeners">
-		<h2 class="paymentbtn__title">Sunrin Pay 결제</h2>
+		<h2 class="paymentbtn__title">{{paymentName}} 결제</h2>
 		<p class="paymentbtn__content">pay 호환</p>
 	</button>
 </template>
 
 <script lang="ts">
-import { Vue, Component } from "vue-property-decorator";
+import { Vue, Component, Prop } from "vue-property-decorator";
+import { PropType } from "vue";
 
 @Component
-export default class PaymentButton extends Vue {}
+export default class PaymentButton extends Vue {
+	@Prop({ type: String as PropType<string>, default: "Sunrin Pay" })
+	paymentName!: string;
+}
 </script>
 
 <style lang="scss" scoped>
