@@ -27,7 +27,7 @@ export default class CreateStock extends Vue {
 	// @Prop({ default: () => {} }) onSubmit!: Function;
 	submit() {
 		this.$emit("submit", {
-			name: this.name
+			name: this.name,
 		});
 	}
 	close() {
@@ -76,18 +76,6 @@ export default class CreateStock extends Vue {
 			button {
 				margin-top: 20px;
 			}
-		}
-
-		input {
-			padding: 5px;
-			width: 100%;
-
-			background: none;
-			border: none;
-			outline: none;
-
-			border-bottom: 1px solid white;
-			color: $text-color;
 		}
 	}
 }

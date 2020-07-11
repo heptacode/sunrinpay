@@ -96,6 +96,17 @@ button {
 ul {
 	list-style: none;
 }
+input[type="text"] {
+	padding: 5px;
+	width: 100%;
+
+	background: none;
+	border: none;
+	outline: none;
+
+	border-bottom: 1px solid $text-color;
+	color: $text-color;
+}
 
 // radio 버튼 커스텀
 input[type="radio"] {

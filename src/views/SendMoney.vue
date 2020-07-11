@@ -1,8 +1,10 @@
 <template>
 	<div class="sendmoney">
-		<h2>TOSS 송금 QR 생성</h2>
+		<div class="sendmoney__contentbox">
+			<h2>TOSS 송금 QR 생성</h2>
+			<p><NumberCounter :text="getTotal" :isNumberFormat="true" defaultChar="0"></NumberCounter>원</p>
+		</div>
 		<form action="javascript:void(0)" @submit="generateQR">
-			<NumberCounter :text="getTotal" :isNumberFormat="true" defaultChar="0"></NumberCounter>원
 			<div class="sendmoney__numpad">
 				<div v-for="idx in 9" :key="idx" class="sendmoney__numpad__item" @click="appendTotalStr(idx)">{{ idx }}</div>
 				<div class="sendmoney__numpad__item"></div>
@@ -46,9 +48,11 @@
 				<span @click="selectBank('BOA')"><i class="iconify" data-icon="mdi-bank"></i>BOA</span>
 				<span @click="selectBank('중국건설')"><i class="iconify" data-icon="mdi-bank"></i>중국건설</span>
 			</div>
-			{{ bank }}
 			<button type="button" @click="showBankList(true)">은행 다시 선택</button>
-			<input type="text" v-model="accountNo" placeholder="계좌번호" minlength="6" required @focus="showBankList" />
+			<div class="sendmoney__inputbox">
+				<p>{{ bank || "은행 선택안함" }}</p>
+				<input type="text" v-model="accountNo" placeholder="계좌번호" minlength="6" required @focus="showBankList" />
+			</div>
 			<button type="submit">QR 생성</button>
 		</form>
 		<br />
@@ -105,6 +109,31 @@ export default class SendMoney extends Vue {
 <style lang="scss" scoped>
 .sendmoney {
 	max-width: 720px;
+	text-align: center;
+	.sendmoney__contentbox {
+		margin-top: 30px;
+		h3 {
+			font-size: $small-up-size;
+		}
+		p {
+			display: flex;
+			justify-content: center;
+			font-size: $large-size;
+		}
+	}
+	.sendmoney__inputbox {
+		display: flex;
+		align-items: center;
+		p {
+			margin-right: 10px;
+		}
+		input {
+			flex: 1;
+		}
+	}
+	button{
+		margin-top: 20px;
+	}
 	form {
 		width: 100%;
 		.sendmoney__numpad {
@@ -158,6 +187,8 @@ export default class SendMoney extends Vue {
 			transition: 0.5s;
 
 			span {
+				cursor: pointer;
+
 				flex: 1 1 30%;
 				margin: 20px;
 				padding: 30px;
