@@ -1,7 +1,7 @@
 <template>
 	<div class="sendmoney">
 		<div class="sendmoney__contentbox">
-			<h2>송금하기</h2>
+			<h2>{{ this.$route.query.account ? this.$route.query.account + "님에게 " : "" }}송금하기</h2>
 			<p><NumberCounter :text="getTotal" :isNumberFormat="true" defaultChar="0"></NumberCounter>원</p>
 		</div>
 		<div v-if="!bank && !showRecipientInput">
@@ -15,16 +15,16 @@
 					</span>
 				</div>
 			</div>
-			<button type="button" @click="showBankList(true)">Toss로 송금</button>&nbsp;
+			<button type="button" v-if="!this.$route.query.account" @click="showBankList(true)">Toss로 송금</button>&nbsp;
 			<button type="button" @click="showRecipientInput = true">송금하기</button>
 		</div>
 
 		<div v-if="showRecipientInput">
 			<form action="javascript:void(0)" @submit="submitForm">
-				<input type="email" v-model="recipient" placeholder="받는 분 이메일 주소" :readonly="isLoading" required />
+				<input type="email" v-model="recipient" placeholder="받는 분 이메일 주소" :readonly="isLoading" :disabled="this.$route.query.account" required />
 				<button type="submit" :class="{ disabled: isLoading }">
 					<div v-if="!isLoading">승인</div>
-					<span v-if="isLoading">
+					<span v-else>
 						<i class="iconify loading" data-icon="mdi-loading"></i>
 					</span>
 				</button>
@@ -111,6 +111,12 @@ export default class SendMoney extends Vue {
 	totalString: string = "";
 	openToss: boolean = false;
 
+	mounted() {
+		if (this.$route.query.account) {
+			let account = this.$route.query.account;
+			this.recipient = account.toString();
+		}
+	}
 	get getTotal() {
 		return this.totalString;
 	}
