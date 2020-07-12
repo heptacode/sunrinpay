@@ -148,18 +148,6 @@ export default class StockManagement extends Vue {
 </script>
 
 <style lang="scss">
-.editable {
-	background: none;
-	border: none;
-	outline: none;
-
-	color: $text-color;
-
-	&:hover,
-	&:focus {
-		background-color: rgba(0, 0, 0, 0.1);
-	}
-}
 .stockmanagement {
 	display: flex;
 	.stockmanagement__stocklist {

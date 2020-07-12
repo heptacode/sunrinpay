@@ -20,6 +20,7 @@ import SendMoney from "@/views/SendMoney.vue";
 import PoS from "@/views/pos/PoS.vue";
 import Order from "@/views/pos/Order.vue";
 import StockManagement from "@/views/pos/StockManagement.vue";
+import Setting from "@/views/pos/Settings.vue";
 
 Vue.use(VueRouter);
 
@@ -97,6 +98,11 @@ const routes: Array<RouteConfig> = [
 		path: "/pos/stock-management",
 		name: "StockManagement",
 		component: StockManagement,
+	},
+	{
+		path: "/pos/setting",
+		name: "Setting",
+		component: Setting,
 	},
 ];
 

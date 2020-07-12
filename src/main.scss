@@ -118,7 +118,7 @@ input[type="radio"] {
 
 		border-radius: 100%;
 
-		background-color: white;
+		background-color: $background-color;
 
 		border: 2px solid $disable-color;
 
@@ -126,5 +126,21 @@ input[type="radio"] {
 	}
 	&:checked ~ span {
 		border: 6px solid $primary-color;
+	}
+	&:disabled ~ span {
+		background-color: $content-color;
+	}
+}
+
+.editable {
+	background: none;
+	border: none !important;
+	outline: none;
+
+	color: $text-color;
+
+	&:hover,
+	&:focus {
+		background-color: rgba(0, 0, 0, 0.1);
 	}
 }
