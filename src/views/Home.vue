@@ -1,152 +1,94 @@
 <template>
 	<div class="home">
-		<div>
-			<img
-				v-if="!isAuth"
-				class="home__logo"
-				src="https://firebasestorage.googleapis.com/v0/b/sunrinpay.appspot.com/o/Logo%20%23FFFFFF.svg?alt=media&token=e1058ee5-c956-4499-960c-fd848b551daa"
-				alt="SunrinPay Logo"
-				width="250px"
-				draggable="false"
-			/>
-			<!-- 로그인 UI -->
-			<div id="loader" :class="{ inactive: isAuth }">
-				<i class="iconify loading" data-icon="mdi-loading"></i>
+		<img
+			v-if="!isAuth"
+			class="home__logo"
+			src="https://firebasestorage.googleapis.com/v0/b/sunrinpay.appspot.com/o/HomeLogo.png?alt=media&token=89218436-fd2e-411e-98cf-6ab865059b8e"
+			alt="SunrinPay Logo"
+			width="250px"
+			draggable="false"
+		/>
+		<!-- 로그인 UI -->
+		<div id="loader" :class="{ inactive: isAuth }">
+			<i class="iconify loading" data-icon="mdi-loading"></i>
+		</div>
+		<div id="firebaseui-auth-container" :class="{ inactive: isAuth }"></div>
+
+		<!-- isAuth == true -->
+		<main v-if="isAuth">
+			<div class="home__title">
+				<h3>{{ userInformation.displayName }}</h3>
+				<img :src="userInformation.photoURL" width="32px" height="32px" draggable="false" @click="isProfileOpen = !isProfileOpen" />
 			</div>
-			<div id="firebaseui-auth-container" :class="{ inactive: isAuth }"></div>
-
-			<!-- isAuth == true -->
-			<main v-if="isAuth">
-				<div class="home__title">
-					<h3>{{ userInformation.displayName }}</h3>
-					<img :src="userInformation.photoURL" width="32px" height="32px" draggable="false" @click="isProfileOpen = !isProfileOpen" />
-				</div>
-				<div v-if="isProfileOpen" class="home__profile">
-					<div>
-						<img :src="userInformation.photoURL" width="40px" height="40px" draggable="false" />
-						<p>
-							<span class="email">{{ userInformation.email }}</span>
-							<span v-if="1 /*userInformation.emailVerified*/" class="badge-unverified">미인증</span>
-						</p>
-					</div>
-					<button @click="signOut">
-						<i class="iconify" data-icon="mdi-close"></i>
-						로그아웃
-					</button>
-				</div>
-				<div class="home__account" :class="{ isFlip: isFlip, isFlipReverse: !isFlip && !isFirst }">
-					<div class="home__account__info" :class="{ unshown: isDelayFlip }">
-						내 지갑
-						<span v-if="!isReloading" class="home__account__info__reload">
-							<span v-if="!isReloadingDelay" @click="reload">
-								<i class="iconify reload" data-icon="mdi-reload"></i>
-							</span>
-							<span v-else>업데이트됨 <i class="iconify" data-icon="mdi-check"></i></span>
-						</span>
-						<span v-else>
-							<i class="iconify loading" data-icon="mdi-loading"></i>
-						</span>
-					</div>
-
-					<h3 class="home__account__money" :class="{ unshown: isDelayFlip }">{{ balance.numberFormat() }}원</h3>
-
-					<div class="home__account__qr" :class="{ unshown: !isDelayFlip }">
-						<QRcode :data="'https://sunrinpay.com/sendmoney?account=' + userInformation.email" class="qr"></QRcode>
-					</div>
-
-					<p class="home__account__action">
-						<router-link :to="{ name: 'sendmoney' }">송금하기</router-link>
-						<span v-if="!isFlip" @click="toggleFlip">내 QR 보기</span>
-						<span v-else @click="toggleFlip">닫기</span>
+			<div v-if="isProfileOpen" class="home__profile">
+				<div>
+					<img :src="userInformation.photoURL" width="40px" height="40px" draggable="false" />
+					<p>
+						<span class="email">{{ userInformation.email }}</span>
+						<span v-if="1 /*userInformation.emailVerified*/" class="badge-unverified">미인증</span>
 					</p>
 				</div>
-				<div class="home__log">
-					<h2>송금 및 결제 내역</h2>
-					<ul class="home__log__list">
-						<li class="home__log__list__item" v-for="idx in 10" :key="idx">
-							<div class="left">
-								<h3>선린 인터넷 고등학교 매점</h3>
-								<p>철근 530g 외 10개</p>
-							</div>
-							<div class="right">
-								<p class="result">
-									-1,800원
-									<br />내 지갑(*0240)
-								</p>
-							</div>
-						</li>
-					</ul>
+				<button>
+					<i class="iconify" data-icon="mdi-theme-light-dark"></i>
+					다크 모드
+				</button>
+				<button @click="signOut">
+					<i class="iconify" data-icon="mdi-logout-variant"></i>
+					로그아웃
+				</button>
+			</div>
+			<div class="home__account" :class="{ isFlip: isFlip, isFlipReverse: !isFlip && !isFirst }">
+				<div class="home__account__info" :class="{ unshown: isDelayFlip }">
+					내 지갑
+					<span v-if="!isReloading" class="home__account__info__reload">
+						<span v-if="!isReloadingDelay" @click="reload">
+							<i class="iconify reload" data-icon="mdi-reload"></i>
+						</span>
+						<span v-else>업데이트됨 <i class="iconify" data-icon="mdi-check"></i></span>
+					</span>
+					<span v-else>
+						<i class="iconify loading" data-icon="mdi-loading"></i>
+					</span>
 				</div>
-			</main>
-			<!-- /isAuth == true -->
 
-			<section v-else>
-				<h2>Customer</h2>
-				<ul>
-					<li>
-						<router-link :to="{ name: 'payment' }">payment</router-link>
-					</li>
-					<li>
-						<router-link :to="{ name: 'payment-clear' }">payment-clear</router-link>
-					</li>
-					<li>
-						<router-link :to="{ name: 'payment-error' }">payment-error</router-link>
-					</li>
-					<li>
-						<router-link :to="{ name: 'simple-payment' }">simple-payment</router-link>
-					</li>
-					<li>
-						<router-link :to="{ name: 'details-payment' }">details-payment</router-link>
+				<h3 class="home__account__money" :class="{ unshown: isDelayFlip }">{{ balance.numberFormat() }}원</h3>
+
+				<div class="home__account__qr" :class="{ unshown: !isDelayFlip }">
+					<QRcode :data="'https://sunrinpay.com/sendmoney?account=' + userInformation.email" class="qr"></QRcode>
+				</div>
+
+				<p class="home__account__action">
+					<router-link :to="{ name: 'sendmoney' }">송금하기</router-link>
+					<span v-if="!isFlip" @click="toggleFlip">내 QR 보기</span>
+					<span v-else @click="toggleFlip">닫기</span>
+				</p>
+			</div>
+			<div class="home__log">
+				<h2>송금 및 결제 내역</h2>
+				<ul class="home__log__list">
+					<li class="home__log__list__item" v-for="idx in 10" :key="idx">
+						<div class="left">
+							<h3>선린 인터넷 고등학교 매점</h3>
+							<p>철근 530g 외 10개</p>
+						</div>
+						<div class="right">
+							<p class="result">
+								-1,800원
+								<br />내 지갑(*0240)
+							</p>
+						</div>
 					</li>
 				</ul>
-				<br />
-				<h2>PoS</h2>
-				<ul>
-					<li>
-						<router-link :to="{ name: 'pos' }">pos</router-link>
-					</li>
-					<li>
-						<router-link :to="{ name: 'order' }">order</router-link>
-					</li>
-				</ul>
-				<div style="margin-top:50px;">
-					<h2>Number Counter</h2>
-					<NumberCounter :text="n" :isNumberFormat="true" defaultChar="0" style="width:100%; font-size:2em;" direction="bottom"></NumberCounter>
-				</div>
-				<div style="margin-top:50px; width:400px;height:400px;">
-					<h2>View Pager</h2>
-					<ViewPager :tab="['0', '1', '2']">
-						<template v-slot:tab0>tab0</template>
-						<template v-slot:tab1>tab1</template>
-						<template v-slot:tab2>tab2</template>
-					</ViewPager>
-				</div>
-				<div style="margin-top:50px;">
-					<h2>Sales Chart</h2>
-					<SalesChart style="height:500px;"></SalesChart>
-				</div>
-				<div style="margin-top:50px;">
-					<h2>Barcode Scanner</h2>
-					<BarcodeScanner></BarcodeScanner>
-				</div>
-				<div style="margin-top:50px;">
-					<h2>QR Scanner</h2>
-					<!-- <QRScannerIntent @decode="onDecode"></QRScannerIntent> -->
-				</div>
-			</section>
-		</div>
+			</div>
+		</main>
+		<!-- /isAuth == true -->
 	</div>
 </template>
 
 <script lang="ts">
-import NumberCounterVue from "vue-roller";
-import BarcodeScannerVue from "../components/BarcodeScanner.vue";
-import ViewPagerVue from "../components/ViewPager.vue";
+import QRcode from "../components/QRcode.vue";
 
 import { Vue, Component, Watch } from "vue-property-decorator";
-import SalesChartVue from "../components/SalesChart.vue";
-import QRcode from "../components/QRcode.vue";
-import QRScannerIntent from "../components/intent/QRScannerIntent.vue";
 
 import firebase from "firebase/app";
 import "firebase/auth";
@@ -156,12 +98,7 @@ import { ui, uiConfig, signIn, signOut } from "@/Auth";
 
 @Component({
 	components: {
-		QRScannerIntent,
 		QRcode,
-		NumberCounter: NumberCounterVue,
-		BarcodeScanner: BarcodeScannerVue,
-		ViewPager: ViewPagerVue,
-		SalesChart: SalesChartVue,
 	},
 })
 export default class Home extends Vue {
@@ -176,22 +113,7 @@ export default class Home extends Vue {
 	isDelayFlip: boolean = false;
 	balance: number = 0;
 
-	toggleFlip() {
-		this.isFirst = false;
-		this.isFlip = !this.isFlip;
-		setTimeout(() => {
-			this.isDelayFlip = this.isFlip;
-		}, 250);
-	}
-
-	n: string = "25565";
-	x;
-
 	mounted() {
-		setInterval(() => {
-			this.n = Math.floor(Math.random() * 65535).toString();
-		}, 1000);
-
 		firebase.auth().onAuthStateChanged(async user => {
 			if (user) {
 				await signIn(user);
@@ -212,12 +134,16 @@ export default class Home extends Vue {
 		setTimeout(() => (this.isReloadingDelay = false), 5000);
 	}
 
-	async signOut() {
-		await signOut();
+	toggleFlip() {
+		this.isFirst = false;
+		this.isFlip = !this.isFlip;
+		setTimeout(() => {
+			this.isDelayFlip = this.isFlip;
+		}, 250);
 	}
 
-	onDecode(decodedString) {
-		console.log(decodedString);
+	async signOut() {
+		await signOut();
 	}
 }
 </script>
@@ -245,7 +171,7 @@ export default class Home extends Vue {
 
 	.home__logo {
 		display: block;
-		margin: auto;
+		margin: 40px auto;
 	}
 
 	#loader {
@@ -263,7 +189,6 @@ export default class Home extends Vue {
 			margin-top: 10px;
 			margin-bottom: 30px;
 			display: flex;
-			// align-content: center;
 			justify-content: space-between;
 
 			span {
@@ -331,6 +256,10 @@ export default class Home extends Vue {
 					background-color: $background-color;
 
 					border-radius: 0;
+				}
+
+				.iconify {
+					margin-right: 5px;
 				}
 			}
 		}
