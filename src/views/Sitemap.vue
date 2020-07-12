@@ -28,10 +28,19 @@
 				<li>
 					<router-link :to="{ name: 'order' }">order</router-link>
 				</li>
+				<li>
+					<router-link :to="{ name: 'setting' }">setting</router-link>
+				</li>
 			</ul>
 			<div style="margin-top:50px;">
 				<h2>Number Counter</h2>
-				<NumberCounter :text="n" :isNumberFormat="true" defaultChar="0" style="width:100%; font-size:2em;" direction="bottom"></NumberCounter>
+				<NumberCounter
+					:text="n"
+					:isNumberFormat="true"
+					defaultChar="0"
+					style="width:100%; font-size:2em;"
+					direction="bottom"
+				></NumberCounter>
 			</div>
 			<div style="margin-top:50px; width:400px;height:400px;">
 				<h2>View Pager</h2>
@@ -74,8 +83,8 @@ import { Vue, Component, Watch } from "vue-property-decorator";
 		NumberCounter,
 		BarcodeScanner,
 		ViewPager,
-		SalesChart,
-	},
+		SalesChart
+	}
 })
 export default class Home extends Vue {
 	n: string = "25565";
