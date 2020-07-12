@@ -188,7 +188,7 @@ export default class SendMoney extends Vue {
 
 			padding: 25px;
 			border-radius: 25px 25px 0 0;
-			box-shadow: 0 -6px 20px rgba(10, 10, 10, 0.5);
+			box-shadow: 0 -6px 10px rgba(10, 10, 10, 0.3);
 
 			display: flex;
 			flex-wrap: wrap;
