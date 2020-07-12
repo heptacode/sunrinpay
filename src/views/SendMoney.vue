@@ -5,7 +5,7 @@
 			<p><NumberCounter :text="getTotal" :isNumberFormat="true" defaultChar="0"></NumberCounter>원</p>
 		</div>
 		<form action="javascript:void(0)" @submit="generateQR">
-			<div class="sendmoney__numpad">
+			<div v-if="!bank" class="sendmoney__numpad">
 				<div v-for="idx in 9" :key="idx" class="sendmoney__numpad__item" @click="appendTotalStr(idx)">{{ idx }}</div>
 				<div class="sendmoney__numpad__item"></div>
 				<div class="sendmoney__numpad__item" @click="appendTotalStr(0)">0</div>
@@ -16,6 +16,7 @@
 				</div>
 			</div>
 			<div class="sendmoney__bank" :class="{ active: isShowBankList }">
+				<div class="sendmoney__bank__title">은행 선택</div>
 				<span @click="selectBank('NH농협')"><i class="iconify" data-icon="mdi-bank"></i>NH 농협</span>
 				<span @click="selectBank('KB국민')"><i class="iconify" data-icon="mdi-bank"></i>KB국민</span>
 				<span @click="selectBank('신한')"><i class="iconify" data-icon="mdi-bank"></i>신한</span>
@@ -48,15 +49,17 @@
 				<span @click="selectBank('BOA')"><i class="iconify" data-icon="mdi-bank"></i>BOA</span>
 				<span @click="selectBank('중국건설')"><i class="iconify" data-icon="mdi-bank"></i>중국건설</span>
 			</div>
-			<button type="button" @click="showBankList(true)">은행 다시 선택</button>
-			<div class="sendmoney__inputbox">
-				<p>{{ bank || "은행 선택안함" }}</p>
-				<input type="text" v-model="accountNo" placeholder="계좌번호" minlength="6" required @focus="showBankList" />
+			<button v-if="!bank" type="button" @click="showBankList(true)">승인</button>
+			<div v-else class="sendmoney__input">
+				<div @click="showBankList(true)">
+					<input type="text" :value="bank || '은행 선택'" readonly /><span class="chevron_down"><i class="iconify" data-icon="mdi-chevron-down"></i></span>
+				</div>
+				<input type="tel" v-model="accountNo" placeholder="계좌번호" minlength="6" required @keydown="qrData = ''" />
+				<button v-if="accountNo" type="submit">QR 생성</button>
 			</div>
-			<button type="submit">QR 생성</button>
+			<br />
+			<QRcode v-if="qrData && accountNo" :data="qrData" class="qr"></QRcode>
 		</form>
-		<br />
-		<QRcode v-if="qrData" :data="qrData" class="qr"></QRcode>
 	</div>
 </template>
 
@@ -121,17 +124,27 @@ export default class SendMoney extends Vue {
 			font-size: $large-size;
 		}
 	}
-	.sendmoney__inputbox {
-		display: flex;
-		align-items: center;
-		p {
-			margin-right: 10px;
+	.sendmoney__input {
+		max-width: 720px;
+		div {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			cursor: pointer;
+			.chevron_down {
+				padding: 10px 0;
+				border-bottom: 1px solid $text-color;
+			}
 		}
 		input {
-			flex: 1;
+			margin-top: 10px;
+		}
+		input[type="text"] {
+			cursor: pointer;
+			margin-top: 10px;
 		}
 	}
-	button{
+	button {
 		margin-top: 20px;
 	}
 	form {
@@ -175,6 +188,7 @@ export default class SendMoney extends Vue {
 
 			padding: 25px;
 			border-radius: 25px 25px 0 0;
+			box-shadow: 0 -6px 20px rgba(10, 10, 10, 0.5);
 
 			display: flex;
 			flex-wrap: wrap;
@@ -185,6 +199,14 @@ export default class SendMoney extends Vue {
 			overflow-y: scroll;
 
 			transition: 0.5s;
+
+			z-index: 10;
+
+			.sendmoney__bank__title {
+				flex: 1 1 100%;
+				margin-left: 10px;
+				text-align: left;
+			}
 
 			span {
 				cursor: pointer;
