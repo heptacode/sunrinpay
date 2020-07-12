@@ -1,21 +1,14 @@
 <template>
 	<div class="pos">
 		<div class="pos__content">
-			<div class="pos__content__head">
-				<div class="left">
-					<h2>오늘의 매출</h2>
-					<h3>3,700,000원</h3>
-				</div>
-				<div class="right">
-					<p>
-						7일 전 대비
-						<span>9.4%p</span>
-					</p>
-					<p>
-						평균 대비
-						<span>5.1%p</span>
-					</p>
-				</div>
+			<h2 class="pos__content__title">
+				업장 정보
+			</h2>
+			<div class="pos__content__actions">
+				<h2>오늘 시간대별 방문객</h2>
+			</div>
+			<div class="pos__content__chart">
+				<SalesChart style="width:100%; height:90%;" v-if="isMounted"></SalesChart>
 			</div>
 			<div class="pos__content__actions">
 				<h2>지난 7일간 매출</h2>
@@ -24,31 +17,66 @@
 			<div class="pos__content__chart">
 				<SalesChart style="width:100%; height:90%;" v-if="isMounted"></SalesChart>
 			</div>
-			<div class="pos__content__top3">
-				<h2>오늘 판매 순위</h2>
-				<ul class="pos__content__top3__list">
-					<li class="pos__content__top3__list__item">
-						<div class="score">1</div>
-						<div class="name">커피콜라맛우유</div>
-						<div class="price">4,200원</div>
-						<div class="sales">5,740</div>
-					</li>
-					<li class="pos__content__top3__list__item">
-						<div class="score">2</div>
-						<div class="name">커피콜라맛우유</div>
-						<div class="price">4,200원</div>
-						<div class="sales">5,740</div>
-					</li>
-					<li class="pos__content__top3__list__item">
-						<div class="score">3</div>
-						<div class="name">커피콜라맛우유</div>
-						<div class="price">4,200원</div>
-						<div class="sales">5,740</div>
-					</li>
-				</ul>
+		</div>
+		<div class="pos__content">
+			<h2 class="pos__content__title">
+				업장 정보
+			</h2>
+			<div class="pos__content__fg">
+				<div class="pos__content__actions">
+					<h2>오늘 판매 순위 TOP 5</h2>
+				</div>
+				<div class="pos__content__top3">
+					<ul class="pos__content__top3__list">
+						<li class="pos__content__top3__list__item">
+							<div class="score">1</div>
+							<div class="name">커피콜라맛우유</div>
+							<div class="price">4,200원</div>
+							<div class="sales">5,740</div>
+						</li>
+						<li class="pos__content__top3__list__item">
+							<div class="score">2</div>
+							<div class="name">커피콜라맛우유</div>
+							<div class="price">4,200원</div>
+							<div class="sales">5,740</div>
+						</li>
+						<li class="pos__content__top3__list__item">
+							<div class="score">3</div>
+							<div class="name">커피콜라맛우유</div>
+							<div class="price">4,200원</div>
+							<div class="sales">5,740</div>
+						</li>
+					</ul>
+				</div>
+			</div>
+			<div class="pos__content__fg">
+				<div class="pos__content__actions">
+					<h2>오늘 판매 순위 TOP 5</h2>
+				</div>
+				<div class="pos__content__top3">
+					<ul class="pos__content__top3__list">
+						<li class="pos__content__top3__list__item">
+							<div class="score">1</div>
+							<div class="name">커피콜라맛우유</div>
+							<div class="price">4,200원</div>
+							<div class="sales">5,740</div>
+						</li>
+						<li class="pos__content__top3__list__item">
+							<div class="score">2</div>
+							<div class="name">커피콜라맛우유</div>
+							<div class="price">4,200원</div>
+							<div class="sales">5,740</div>
+						</li>
+						<li class="pos__content__top3__list__item">
+							<div class="score">3</div>
+							<div class="name">커피콜라맛우유</div>
+							<div class="price">4,200원</div>
+							<div class="sales">5,740</div>
+						</li>
+					</ul>
+				</div>
 			</div>
 		</div>
-		<div class="pos__content"></div>
 	</div>
 </template>
 
@@ -57,8 +85,8 @@ import { Vue, Component } from "vue-property-decorator";
 import SalesChart from "../../components/SalesChart.vue";
 @Component({
 	components: {
-		SalesChart: SalesChart
-	}
+		SalesChart: SalesChart,
+	},
 })
 export default class pos extends Vue {
 	isMounted = false;
@@ -85,21 +113,11 @@ export default class pos extends Vue {
 		box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
 		background-color: $content-color;
 
-		.pos__content__head {
-			display: flex;
-			justify-content: space-between;
-			margin-bottom: 30px;
-			h2 {
-				font-size: $small-up-size;
-				font-weight: normal;
-			}
-			h3 {
-				font-size: $small-normal-size;
-			}
-			p {
-				font-size: $small-size;
-				text-align: right;
-			}
+		h2 {
+			font-size: $small-normal-size;
+		}
+		.pos__content__fg {
+			flex: 1;
 		}
 		.pos__content__actions {
 			display: flex;
@@ -115,8 +133,10 @@ export default class pos extends Vue {
 		.pos__content__chart {
 			flex: 1;
 			display: flex;
+			flex-direction: column;
 			justify-content: center;
 			align-items: center;
+			overflow: hidden;
 		}
 		.pos__content__top3 {
 			h2 {
@@ -129,7 +149,7 @@ export default class pos extends Vue {
 					padding: 10px 0;
 
 					display: flex;
-					font-size: $small-normal-size;
+					font-size: $small-up-size;
 					.score {
 						flex: 1;
 					}
