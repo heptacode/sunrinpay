@@ -84,6 +84,11 @@ button {
 		padding: 10px 20px;
 	}
 
+	&.disabled {
+		background-color: $content-color;
+		cursor: not-allowed;
+	}
+
 	&:hover {
 		filter: brightness(1.1);
 	}
@@ -107,6 +112,11 @@ input[type="text"] {
 
 	border-bottom: 1px solid $text-color;
 	color: $text-color;
+
+	&:disabled {
+		background-color: $content-color;
+		cursor: not-allowed;
+	}
 }
 
 input[type="email"] {
@@ -120,6 +130,11 @@ input[type="email"] {
 
 	border-bottom: 1px solid $text-color;
 	color: $text-color;
+
+	&:disabled {
+		background-color: $content-color;
+		cursor: not-allowed;
+	}
 }
 
 input[type="tel"] {
@@ -156,6 +171,7 @@ input[type="radio"] {
 	}
 	&:disabled ~ span {
 		background-color: $content-color;
+		cursor: not-allowed;
 	}
 }
 
