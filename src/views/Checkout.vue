@@ -4,21 +4,15 @@
 			<ul class="detailsmode__content__prices">
 				<div class="detailsmode__content__prices__item">
 					<p>금액</p>
-					<h2>
-						<NumberCounter text="12900" :isNumberFormat="true" defaultChar="0"></NumberCounter>원
-					</h2>
+					<h2><NumberCounter text="12900" :isNumberFormat="true" defaultChar="0"></NumberCounter>원</h2>
 				</div>
 				<div class="detailsmode__content__prices__item">
 					<p>할인된 금액</p>
-					<h2>
-						<NumberCounter text="900" :isNumberFormat="true" defaultChar="0"></NumberCounter>원
-					</h2>
+					<h2><NumberCounter text="900" :isNumberFormat="true" defaultChar="0"></NumberCounter>원</h2>
 				</div>
 				<div class="detailsmode__content__prices__item total">
 					<p>결제하실 금액</p>
-					<h2>
-						<NumberCounter text="12000" :isNumberFormat="true" defaultChar="0"></NumberCounter>원
-					</h2>
+					<h2><NumberCounter text="12000" :isNumberFormat="true" defaultChar="0"></NumberCounter>원</h2>
 				</div>
 			</ul>
 			<ul class="detailsmode__content__list">
@@ -30,20 +24,16 @@
 			</ul>
 		</div>
 		<div class="detailsmode__actions">
-			<PaymentButton
-				class="detailsmode__actions__btn"
-				paymentName="Kakao Pay"
-				@click="checkoutWithKakaoPay"
-			></PaymentButton>
+			<PaymentButton class="detailsmode__actions__btn" paymentName="Kakao Pay" @click="checkoutWithKakaoPay"></PaymentButton>
 			<PaymentButton class="detailsmode__actions__btn"></PaymentButton>
 		</div>
 	</div>
 </template>
 
 <script lang="ts">
-import PaymentButtonVue from "@/components/PaymentButton.vue";
-import CashButtonVue from "@/components/CashButton.vue";
-import NumberCounterVue from "vue-roller";
+import PaymentButton from "@/components/PaymentButton.vue";
+import CashButton from "@/components/CashButton.vue";
+import NumberCounter from "vue-roller";
 
 import { Vue, Component } from "vue-property-decorator";
 
@@ -51,10 +41,10 @@ import isMobile from "@/lib/isMobile";
 
 @Component({
 	components: {
-		PaymentButton: PaymentButtonVue,
-		CashButton: CashButtonVue,
-		NumberCounter: NumberCounterVue
-	}
+		PaymentButton,
+		CashButton,
+		NumberCounter,
+	},
 })
 export default class Checkout extends Vue {
 	async checkoutWithKakaoPay() {
@@ -64,7 +54,7 @@ export default class Checkout extends Vue {
 			total_amount: 2200,
 			vat_amount: 0,
 			tax_free_amount: 0,
-			price: 1000
+			price: 1000,
 		});
 		if (isMobile()) {
 			// 모바일

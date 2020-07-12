@@ -85,7 +85,7 @@ import { Vue, Component } from "vue-property-decorator";
 import SalesChart from "../../components/SalesChart.vue";
 @Component({
 	components: {
-		SalesChart: SalesChart,
+		SalesChart,
 	},
 })
 export default class pos extends Vue {

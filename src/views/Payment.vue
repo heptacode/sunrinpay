@@ -26,19 +26,16 @@
 </template>
 
 <script lang="ts">
-import QRcodeVue from "@/components/QRcode.vue";
-import NumberCounterVue from "vue-roller";
+import QRcode from "@/components/QRcode.vue";
+import NumberCounter from "vue-roller";
 
 import { Vue, Component } from "vue-property-decorator";
 
 @Component({
 	components: {
-		QRcode: QRcodeVue,
-		NumberCounter: NumberCounterVue
+		QRcode,
+		NumberCounter,
 	},
-	data() {
-		return {};
-	}
 })
 export default class Payment extends Vue {
 	time: number = 180;

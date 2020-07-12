@@ -58,23 +58,23 @@
 </template>
 
 <script lang="ts">
-import NumberCounterVue from "vue-roller";
-import BarcodeScannerVue from "../components/BarcodeScanner.vue";
-import ViewPagerVue from "../components/ViewPager.vue";
-
-import { Vue, Component, Watch } from "vue-property-decorator";
-import SalesChartVue from "../components/SalesChart.vue";
+import NumberCounter from "vue-roller";
+import BarcodeScanner from "../components/BarcodeScanner.vue";
+import ViewPager from "../components/ViewPager.vue";
+import SalesChart from "../components/SalesChart.vue";
 import QRcode from "../components/QRcode.vue";
 import QRScannerIntent from "../components/intent/QRScannerIntent.vue";
+
+import { Vue, Component, Watch } from "vue-property-decorator";
 
 @Component({
 	components: {
 		QRScannerIntent,
 		QRcode,
-		NumberCounter: NumberCounterVue,
-		BarcodeScanner: BarcodeScannerVue,
-		ViewPager: ViewPagerVue,
-		SalesChart: SalesChartVue,
+		NumberCounter,
+		BarcodeScanner,
+		ViewPager,
+		SalesChart,
 	},
 })
 export default class Home extends Vue {

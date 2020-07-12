@@ -55,27 +55,25 @@
 </template>
 
 <script lang="ts">
-import ViewPagerVue from "../../components/ViewPager.vue";
-import BarcodeScannerVue from "../../components/BarcodeScanner.vue";
-
-import randomWords from "random-words";
+// import randomWords from "random-words";
+import ViewPager from "../../components/ViewPager.vue";
+import BarcodeScanner from "../../components/BarcodeScanner.vue";
+import StockList from "../../components/StockList.vue";
+import { StockItem } from "../../schema";
+import PaymentRequireButton from "../../components/PaymentRequireButton.vue";
+import NumberCounter from "vue-roller";
 
 import { Vue, Component, Watch, Prop } from "vue-property-decorator";
-import StockListVue from "../../components/StockList.vue";
-import { StockItem } from "../../schema";
-import PaymentRequireButtonVue from "../../components/PaymentRequireButton.vue";
-
-import NumberCounterVue from "vue-roller";
 
 import { db } from "@/DB";
 
 @Component({
 	components: {
-		ViewPager: ViewPagerVue,
-		BarcodeScanner: BarcodeScannerVue,
-		StockList: StockListVue,
-		PaymentRequireButton: PaymentRequireButtonVue,
-		NumberCounter: NumberCounterVue,
+		ViewPager,
+		BarcodeScanner,
+		StockList,
+		PaymentRequireButton,
+		NumberCounter,
 	},
 	firestore: {
 		list: db.collection("stock"),
@@ -253,6 +251,8 @@ export default class Order extends Vue {
 					align-items: center;
 
 					font-size: $large-size;
+
+					cursor: pointer;
 					i {
 						font-size: 0.7em;
 						color: $gray-text-color;
