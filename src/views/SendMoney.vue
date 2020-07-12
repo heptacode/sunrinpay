@@ -19,9 +19,9 @@
 			<button type="button" @click="showRecipientInput = true">송금하기</button>
 		</div>
 
-		<div v-if="showRecipientInput">
+		<div v-if="showRecipientInput" class="sendmoney__recipientInput">
 			<form action="javascript:void(0)" @submit="submitForm">
-				<input type="email" v-model="recipient" placeholder="받는 분 이메일 주소" :readonly="isLoading" :disabled="this.$route.query.account" required />
+				<input type="email" v-model="recipient" v-if="!this.$route.query.account" placeholder="받는 분 이메일 주소" :readonly="isLoading" required />
 				<button type="submit" :class="{ disabled: isLoading }">
 					<div v-if="!isLoading">승인</div>
 					<span v-else>
@@ -219,6 +219,11 @@ export default class SendMoney extends Vue {
 			}
 		}
 	}
+
+	.sendmoney__recipientInput {
+		margin-top: 20px;
+	}
+
 	.sendmoney__bank {
 		position: fixed;
 		max-width: 720px;
