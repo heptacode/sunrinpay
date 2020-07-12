@@ -29,37 +29,33 @@ export default new Vuex.Store({
 				return false;
 			}
 		},
-		async SEND_MONEY({ commit, state }, data): Promise<boolean | string> {
+		async SEND_MONEY({ commit, state }, data): Promise<string> {
 			event("action", "SEND_MONEY", "sendMoney", data);
+			if (firebase.auth().currentUser!.email == data.recipient) return "본인에게 송금할 수 없습니다.";
 			const docRef = await db.collection("accounts").doc(firebase.auth().currentUser!.uid);
-
 			try {
-				// 보내는 사람 도큐먼트 가져오기
-				let snapshot = await docRef.get();
-
-				// state 잔액 갱신
-				state.balance = snapshot.data()!.balance;
-				if (state.balance - data.amount < 0) return `잔액이 ${Math.abs(state.balance - data.amount)}원 부족합니다.`;
-
-				// 보내는 사람 잔액 차감
-				await docRef.update({
-					balance: state.balance - data.amount,
-				});
-
-				// 받는 사람 도큐멘트의 uid 조회
+				// 받는 사람 도큐먼트의 uid 조회
 				let recipientQuerySnapshot = await db
 					.collection("accounts")
 					.where("email", "==", data.recipient)
 					.get();
+				if (!recipientQuerySnapshot.docs[0]) return "계정이 존재하지 않습니다.";
+
+				// 보내는 사람 도큐먼트 가져오기
+				let snapshot = await docRef.get();
+
+				if (snapshot.data()!.balance - data.amount < 0) return `잔액이 ${Math.abs(snapshot.data()!.balance - data.amount)}원 부족합니다.`;
+
+				// 보내는 사람 잔액 차감
+				await docRef.update({
+					balance: snapshot.data()!.balance - data.amount,
+				});
 
 				// 받는 사람  도큐먼트 가져오기
 				let recipientDocRef = await db.collection("accounts").doc(recipientQuerySnapshot.docs[0].id);
 				let recipientSnapshot = await recipientDocRef.get();
 
-				// 받는 사람 잔액 조회
-				recipientSnapshot.data()!.balance;
-
-				// 받는 사람 잔액 추가
+				// 받는 사람 잔액 증감
 				await recipientDocRef.update({
 					balance: recipientSnapshot.data()!.balance + data.amount,
 				});
@@ -68,10 +64,10 @@ export default new Vuex.Store({
 				snapshot = await docRef.get();
 				state.balance = snapshot.data()!.balance;
 
-				return true;
+				return `${data.recipient}님에게 ${data.amount}원을 보냈습니다.`;
 			} catch (err) {
 				log("error", `SEND_MONEY : ${err}`);
-				return false;
+				return "오류가 발생하였습니다.";
 			}
 		},
 		async CREATE_ORDER({ commit, state }, data): Promise<boolean> {

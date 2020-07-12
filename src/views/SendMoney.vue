@@ -21,10 +21,16 @@
 
 		<div v-if="showRecipientInput">
 			<form action="javascript:void(0)" @submit="submitForm">
-				<input type="email" v-model="recipient" placeholder="받는 사람 이메일 주소" required />
-				<button type="submit" v-if="recipient">승인</button>
+				<input type="email" v-model="recipient" placeholder="받는 분 이메일 주소" :readonly="isLoading" required />
+				<button type="submit" :class="{ disabled: isLoading }">
+					<div v-if="!isLoading">승인</div>
+					<span v-if="isLoading">
+						<i class="iconify loading" data-icon="mdi-loading"></i>
+					</span>
+				</button>
 			</form>
-			{{ result }}
+			<br />
+			<p>{{ result }}</p>
 		</div>
 
 		<!-- Toss 송금 -->
@@ -62,7 +68,7 @@
 			<span @click="selectBank('BOA')"><i class="iconify" data-icon="mdi-bank"></i>BOA</span>
 			<span @click="selectBank('중국건설')"><i class="iconify" data-icon="mdi-bank"></i>중국건설</span>
 		</div>
-		<div v-if="bank" class="sendmoney__input">
+		<div v-if="bank" class="sendmoney__toss">
 			<form action="javascript:void(0)" @submit="submitTossForm">
 				<div @click="showBankList(true)">
 					<input type="text" :value="bank || '은행 선택'" readonly /><span class="chevron_down"><i class="iconify" data-icon="mdi-chevron-down"></i></span>
@@ -92,7 +98,8 @@ import { Vue, Component } from "vue-property-decorator";
 	},
 })
 export default class SendMoney extends Vue {
-	amount: number = 0;
+	isLoading: boolean = false;
+
 	showRecipientInput: boolean = false;
 	recipient: string = "";
 	result: string = "";
@@ -107,6 +114,11 @@ export default class SendMoney extends Vue {
 	get getTotal() {
 		return this.totalString;
 	}
+
+	get amount() {
+		return Number(this.totalString);
+	}
+
 	appendTotalStr(str: string | number) {
 		this.totalString = this.totalString + str;
 	}
@@ -115,10 +127,14 @@ export default class SendMoney extends Vue {
 	}
 
 	async submitForm() {
-		this.result = await this.$store.dispatch("SEND_MONEY", {
-			amount: this.amount,
-			recipient: this.recipient,
-		});
+		if (!this.isLoading) {
+			this.isLoading = true;
+			this.result = await this.$store.dispatch("SEND_MONEY", {
+				amount: this.amount,
+				recipient: this.recipient,
+			});
+			this.isLoading = false;
+		}
 	}
 
 	showBankList(important?: boolean) {
@@ -138,6 +154,14 @@ export default class SendMoney extends Vue {
 </script>
 
 <style lang="scss" scoped>
+@keyframes loading {
+	from {
+		transform: rotate(0deg);
+	}
+	to {
+		transform: rotate(360deg);
+	}
+}
 .sendmoney {
 	max-width: 720px;
 	text-align: center;
@@ -152,29 +176,15 @@ export default class SendMoney extends Vue {
 			font-size: $large-size;
 		}
 	}
-	.sendmoney__input {
-		max-width: 720px;
-		div {
-			display: flex;
-			justify-content: center;
-			align-items: center;
-			cursor: pointer;
-			.chevron_down {
-				padding: 10px 0;
-				border-bottom: 1px solid $text-color;
-			}
-		}
-		input {
-			margin-top: 10px;
-		}
-		input[type="text"] {
-			cursor: pointer;
-			margin-top: 10px;
-		}
-	}
+
 	button {
 		margin-top: 20px;
 	}
+	.loading {
+		font-size: 40px;
+		animation: loading 0.5s linear infinite;
+	}
+
 	.sendmoney__numpad {
 		width: 100%;
 		max-width: 50%;
@@ -261,9 +271,29 @@ export default class SendMoney extends Vue {
 			bottom: 0% !important;
 		}
 	}
-	.qr {
-		width: 200px;
-		height: 200px;
+	.sendmoney__toss {
+		max-width: 720px;
+		div {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			cursor: pointer;
+			.chevron_down {
+				padding: 10px 0;
+				border-bottom: 1px solid $text-color;
+			}
+		}
+		input {
+			margin-top: 10px;
+		}
+		input[type="text"] {
+			cursor: pointer;
+			margin-top: 10px;
+		}
+		.qr {
+			width: 200px;
+			height: 200px;
+		}
 	}
 }
 </style>
