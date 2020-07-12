@@ -4,6 +4,7 @@ import VueAnalytics from "vue-analytics";
 
 import Home from "@/views/Home.vue";
 import PrivacyPolicy from "@/views/PrivacyPolicy.vue";
+import Sitemap from "@/views/Sitemap.vue";
 import SignOut from "@/views/SignOut.vue";
 
 // Customer
@@ -34,6 +35,11 @@ const routes: Array<RouteConfig> = [
 		path: "/privacy",
 		name: "privacypolicy",
 		component: PrivacyPolicy,
+	},
+	{
+		path: "/sitemap",
+		name: "sitemap",
+		component: Sitemap,
 	},
 	{
 		path: "/signout",
