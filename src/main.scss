@@ -102,6 +102,7 @@ input[type="text"] {
 
 	background: none;
 	border: none;
+	border-radius: 0;
 	outline: none;
 
 	border-bottom: 1px solid $text-color;
@@ -114,6 +115,7 @@ input[type="tel"] {
 
 	background: none;
 	border: none;
+	border-radius: 0;
 	outline: none;
 
 	border-bottom: 1px solid $text-color;
