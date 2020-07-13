@@ -4,16 +4,18 @@
 			<div class="setting__content__v">
 				<div class="setting__content__title">
 					<div>
-						<h2><input class="editable" type="text" value="선린인터넷고등학교 매점" /></h2>
-						<p><input class="editable" type="text" value="서울특별시 용산구 원효로97길 33-4" /></p>
+						<h2>
+							<input class="editable" type="text" value="선린인터넷고등학교 매점" />
+						</h2>
+						<p>
+							<input class="editable" type="text" value="서울특별시 용산구 원효로97길 33-4" />
+						</p>
 					</div>
 					<div>
 						<i class="iconify" data-icon="mdi-edit"></i>
 					</div>
 				</div>
-				<div class="setting__content__map">
-					대충 지도
-				</div>
+				<div class="setting__content__map">대충 지도</div>
 				<h3>영업 시간</h3>
 
 				<div class="setting__content__time">
@@ -37,9 +39,11 @@
 			<div class="setting__content__v">
 				<h3>매출 관리 지갑</h3>
 				<div class="setting__content__account">
-					<div class="qr">[QR]</div>
+					<QRcode data="test" class="qr"></QRcode>
 					<div>
-						<h2><input class="editable" type="text" value="+123456789 (사업자)" /></h2>
+						<h2>
+							<input class="editable" type="text" value="+123456789 (사업자)" />
+						</h2>
 						<p>잔액 123456789원</p>
 					</div>
 				</div>
@@ -80,8 +84,13 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
+import QRcode from "../../components/QRcode.vue";
 
-@Component
+@Component({
+	components: {
+		QRcode
+	}
+})
 export default class Setting extends Vue {}
 </script>
 
@@ -89,7 +98,7 @@ export default class Setting extends Vue {}
 .setting {
 	padding: 30px;
 	.setting__content {
-		padding: 30px;
+		padding: 40px;
 		width: 100%;
 		height: 100%;
 
@@ -161,6 +170,7 @@ export default class Setting extends Vue {}
 			p {
 			}
 			.qr {
+				height: 100px;
 				margin-right: 20px;
 			}
 			margin-bottom: 40px;
