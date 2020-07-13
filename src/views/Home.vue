@@ -68,7 +68,7 @@
 				<ul class="home__log__list">
 					<li class="home__log__list__item" v-for="idx in 10" :key="idx">
 						<div class="left">
-							<h3>선린 인터넷 고등학교 매점</h3>
+							<h3>{{$store.transactions}}</h3>
 							<p>철근 530g 외 10개</p>
 						</div>
 						<div class="right">
@@ -125,13 +125,15 @@ export default class Home extends Vue {
 				this.isAuth = false;
 			}
 		});
+		
+		this.$store.dispatch("GET_TRANSACTIONS");
 	}
 
 	async reload() {
 		this.isReloading = this.isReloadingDelay = true;
 		this.balance = await this.$store.dispatch("GET_BALANCE");
 		this.isReloading = false;
-		setTimeout(() => (this.isReloadingDelay = false), 5000);
+		setTimeout(() => (this.isReloadingDelay = false), 3000);
 	}
 
 	toggleFlip() {

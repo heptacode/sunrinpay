@@ -13,6 +13,7 @@ Vue.use(Vuex);
 export default new Vuex.Store({
 	state: {
 		balance: 0 as number,
+		transactions: {},
 	},
 	mutations: {},
 	actions: {
@@ -26,6 +27,21 @@ export default new Vuex.Store({
 				return state.balance;
 			} catch (err) {
 				log("error", `CREATE_ORDER : ${err}`);
+				return false;
+			}
+		},
+		async GET_TRANSACTIONS({ commit, state }, data): Promise<boolean> {
+			event("action", "GET_TRANSACTIONS", "getTransactions", data);
+			try {
+				let querySnapshot = await db
+					.collection("transactions")
+					.where("uid", "==", firebase.auth().currentUser!.uid)
+					.get();
+				// state.transactions = snapshot.data()!;
+				//console.log(querySnapshot);
+				return true;
+			} catch (err) {
+				log("error", `GET_TRANSACTIONS : ${err}`);
 				return false;
 			}
 		},
