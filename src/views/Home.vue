@@ -18,9 +18,15 @@
 		<main v-if="isAuth">
 			<div class="home__title">
 				<h3>{{ userInformation.displayName }}</h3>
-				<img :src="userInformation.photoURL" width="32px" height="32px" draggable="false" @click="isProfileOpen = !isProfileOpen" />
+				<img
+					:src="userInformation.photoURL"
+					width="32px"
+					height="32px"
+					draggable="false"
+					@click="isProfileOpen = !isProfileOpen"
+				/>
 			</div>
-			<div v-if="isProfileOpen" class="home__profile">
+			<div v-if="isProfileOpen" class="home__profile" @click="$event.stopImmediatePropagation()">
 				<div>
 					<img :src="userInformation.photoURL" width="40px" height="40px" draggable="false" />
 					<p>
@@ -37,6 +43,11 @@
 					로그아웃
 				</button>
 			</div>
+			<div
+				class="home__profile__background"
+				v-if="isProfileOpen"
+				@click="isProfileOpen = !isProfileOpen"
+			></div>
 			<div class="home__account" :class="{ isFlip: isFlip, isFlipReverse: !isFlip && !isFirst }">
 				<div class="home__account__info" :class="{ unshown: isDelayFlip }">
 					내 지갑
@@ -44,7 +55,10 @@
 						<span v-if="!isReloadingDelay" @click="reload">
 							<i class="iconify reload" data-icon="mdi-reload"></i>
 						</span>
-						<span v-else>업데이트됨 <i class="iconify" data-icon="mdi-check"></i></span>
+						<span v-else>
+							업데이트됨
+							<i class="iconify" data-icon="mdi-check"></i>
+						</span>
 					</span>
 					<span v-else>
 						<i class="iconify loading" data-icon="mdi-loading"></i>
@@ -98,8 +112,8 @@ import { ui, uiConfig, signIn, signOut } from "@/Auth";
 
 @Component({
 	components: {
-		QRcode,
-	},
+		QRcode
+	}
 })
 export default class Home extends Vue {
 	userInformation: Object = {};
@@ -125,7 +139,7 @@ export default class Home extends Vue {
 				this.isAuth = false;
 			}
 		});
-		
+
 		this.$store.dispatch("GET_TRANSACTIONS");
 	}
 
@@ -264,6 +278,14 @@ export default class Home extends Vue {
 					margin-right: 5px;
 				}
 			}
+		}
+		.home__profile__background {
+			z-index: 9;
+			position: fixed;
+			left: 0;
+			right: 0;
+			top: 0;
+			bottom: 0;
 		}
 
 		.home__account {
