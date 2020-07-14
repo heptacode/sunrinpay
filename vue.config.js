@@ -11,8 +11,8 @@ module.exports = {
 		themeColor: "#538fff",
 		workboxPluginMode: "InjectManifest",
 		workboxOptions: {
-			swSrc: "public/service-worker.js"
-		}
+			swSrc: "public/service-worker.js",
+		},
 	},
 	css: {
 		loaderOptions: {
@@ -21,8 +21,8 @@ module.exports = {
 			},
 		},
 	},
-	chainWebpack: config => {
-		config.plugin("html").tap(args => {
+	chainWebpack: (config) => {
+		config.plugin("html").tap((args) => {
 			args[0].title = "SunrinPay";
 			args[0].manifest = `${storage}manifest.json?alt=media&token=880fe333-0fd9-41af-a40e-30cf213b6c08`;
 			args[0].favicon_ico = `${storage}icon%2Ffavicon.ico?alt=media&token=2fa978f2-5d0e-4a0d-b3ec-101f5a64411e`;
