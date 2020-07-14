@@ -62,6 +62,10 @@
 				<h2>QR Scanner</h2>
 				<!-- <QRScannerIntent @decode="onDecode"></QRScannerIntent> -->
 			</div>
+			<div style="margin-top:50px;">
+				<h2>back btn</h2>
+				<BackButton></BackButton>
+			</div>
 		</div>
 	</div>
 </template>
@@ -75,6 +79,7 @@ import QRcode from "../components/QRcode.vue";
 import QRScannerIntent from "../components/intent/QRScannerIntent.vue";
 
 import { Vue, Component, Watch } from "vue-property-decorator";
+import BackButton from "../components/BackButton.vue";
 
 @Component({
 	components: {
@@ -83,7 +88,8 @@ import { Vue, Component, Watch } from "vue-property-decorator";
 		NumberCounter,
 		BarcodeScanner,
 		ViewPager,
-		SalesChart
+		SalesChart,
+		BackButton
 	}
 })
 export default class Home extends Vue {
