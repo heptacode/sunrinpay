@@ -2,6 +2,10 @@ const storage = `https://firebasestorage.googleapis.com/v0/b/sunrinpay.appspot.c
 module.exports = {
 	// publicPath: process.env.NODE_ENV === "production" ? "/Frontend/" : "/",
 	outputDir: "docs",
+	// devServer: {
+	// 	https: true,
+	// 	hotOnly: false,
+	// },
 	pwa: {
 		name: "Sunrin Pay",
 		themeColor: "#538fff",

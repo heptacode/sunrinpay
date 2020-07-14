@@ -10,9 +10,8 @@ import { Vue, Component } from "vue-property-decorator";
 export default class App extends Vue {
   deferredPrompt: any;
 
-  created() {
-	console.log("created");
-	// FIXME: Not work
+  async created() {
+    console.log("created");
     window.addEventListener("beforeinstallprompt", (e: any) => {
       e.preventDefault();
       this.deferredPrompt = e;
