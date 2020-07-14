@@ -1,9 +1,14 @@
 <template>
 	<div class="sendmoney">
-		<div class="sendmoney__contentbox">
-			<h2>{{ this.$route.query.account ? this.$route.query.account + "님에게 " : "" }}송금하기</h2>
-			<p><NumberCounter :text="getTotal" :isNumberFormat="true" defaultChar="0"></NumberCounter>원</p>
-		</div>
+		<header>
+			<router-link to="/" class="login__back">
+				<i class="iconify" data-icon="mdi-chevron-left"></i>
+			</router-link>
+			<div class="sendmoney__contentbox">
+				<h2>{{ this.$route.query.account ? this.$route.query.account + "님에게 " : "" }}송금하기</h2>
+				<p><NumberCounter :text="getTotal" :isNumberFormat="true" defaultChar="0"></NumberCounter>원</p>
+			</div>
+		</header>
 		<div v-if="!bank && !showRecipientInput">
 			<div class="sendmoney__numpad">
 				<div v-for="idx in 9" :key="idx" class="sendmoney__numpad__item" @click="appendTotalStr(idx)">{{ idx }}</div>
