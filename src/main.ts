@@ -7,6 +7,8 @@ import * as firebase from "firebase/app";
 import { firestorePlugin } from "vuefire";
 import VueAnalytics from "vue-analytics";
 
+import "./registerServiceWorker";
+
 import "@iconify/iconify";
 Vue.config.productionTip = false;
 
@@ -22,7 +24,7 @@ declare global {
 		numberFormat: (this: number) => string;
 	}
 }
-Number.prototype.numberFormat = function(this: number): string {
+Number.prototype.numberFormat = function (this: number): string {
 	return new Intl.NumberFormat().format(this);
 };
 
