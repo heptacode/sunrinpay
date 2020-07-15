@@ -12,7 +12,7 @@ export default class App extends Vue {
 	deferredPrompt: any = false;
 
 	async mounted() {
-		console.log("created");
+		console.log("mounted");
 		window.addEventListener("beforeinstallprompt", (e: any) => {
 			e.preventDefault();
 			this.deferredPrompt = e;
