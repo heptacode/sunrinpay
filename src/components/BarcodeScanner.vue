@@ -4,8 +4,6 @@
 			<video />
 			<canvas class="drawingBuffer" />
 		</div>
-		<button class="barcodescanner__startbtn" @click="start">Start</button>
-		<button class="barcodescanner__stopbtn" @click="stop">Stop</button>
 	</div>
 </template>
 
@@ -20,7 +18,9 @@ export default class BarcodeScanner extends Vue {
 	resultResetTimer: any = 0;
 
 	@Prop({ default: () => {} }) onDetected: Function | undefined;
-
+    mounted(){
+        this.start()
+    }
 	start() {
 		Quagga.onDetected(this.onDet);
 		Quagga.onProcessed(this.onProcessed);
