@@ -1,5 +1,6 @@
 <template>
 	<div id="app">
+		<div class="pwa" v-if="deferredPrompt" @click="showPWA">앱 설치하기</div>
 		<router-view class="router" />
 	</div>
 </template>
@@ -8,9 +9,9 @@
 import { Vue, Component } from "vue-property-decorator";
 @Component
 export default class App extends Vue {
-	deferredPrompt: any;
+	deferredPrompt: any = false;
 
-	async created() {
+	async mounted() {
 		console.log("created");
 		window.addEventListener("beforeinstallprompt", (e: any) => {
 			e.preventDefault();
@@ -18,6 +19,9 @@ export default class App extends Vue {
 			console.log("installed");
 			e.prompt();
 		});
+	}
+	showPWA() {
+		this.deferredPrompt.prompt();
 	}
 }
 </script>
@@ -30,6 +34,18 @@ export default class App extends Vue {
 
 	display: flex;
 	justify-content: center;
+
+	.pwa {
+		position: fixed;
+		left: 0;
+		top: 0;
+
+		background-color: $primary-color;
+
+		padding: 10px;
+
+		border-radius: 0 0 10px 0;
+	}
 }
 .router {
 	height: 100%;
