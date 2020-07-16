@@ -128,7 +128,8 @@ import { ui, uiConfig, signIn, signOut } from "@/Auth";
 	}
 })
 export default class Home extends Vue {
-	userInformation: Object = {};
+	// FIXME: 타입 변경
+	userInformation: any = {};
 	isAuth: boolean = false;
 	isReloading: boolean = false;
 	isReloadingDelay: boolean = false;
@@ -154,7 +155,8 @@ export default class Home extends Vue {
 				this.userInformation = user;
 				if (user.photoURL === null) {
 					user.providerData.forEach(data => {
-						if (data?.photoURL !== null) this.userInformation.photoURL = data?.photoURL;
+						if (data?.photoURL !== null)
+							this.userInformation.photoURL = data?.photoURL;
 					});
 				}
 				this.isAuth = true;

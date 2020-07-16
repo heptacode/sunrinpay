@@ -75,6 +75,10 @@ button {
 		padding: 10px;
 	}
 
+	&:disabled {
+		background-color: $content-color;
+	}
+
 	&.btn-large {
 		padding: 10px 20%;
 	}

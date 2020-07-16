@@ -39,7 +39,7 @@ export default new Vuex.Store({
 					.where("uid", "==", firebase.auth().currentUser!.uid)
 					.get();
 				state.transactions = [];
-				querySnapshot.forEach(doc => {
+				querySnapshot.forEach((doc) => {
 					state.transactions.push(doc.data());
 					// console.log(doc.id, ": ", doc.data().timestamp.seconds);
 				});
@@ -152,6 +152,7 @@ export default new Vuex.Store({
 				return console.dir(err);
 			}
 		},
+		// FIXME: data.email 사용
 		async CHARGE({ commit, state }, data): Promise<boolean> {
 			event("action", "CHARGE", "charge", data);
 			const docRef = await db.collection("accounts").doc(firebase.auth().currentUser!.uid);

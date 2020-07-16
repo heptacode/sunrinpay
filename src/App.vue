@@ -1,5 +1,4 @@
 <template>
-	<!-- class="whitemode" -->
 	<div id="app">
 		<div class="pwa" v-if="deferredPrompt" @click="showPWA">앱 설치하기</div>
 		<router-view class="router" />
