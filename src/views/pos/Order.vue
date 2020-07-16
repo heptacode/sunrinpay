@@ -172,12 +172,24 @@ export default class Order extends Vue {
 		});
 		this.totalString = "0";
 	}
+
+	// FIXME : 전체 금액 계산
+	get calculateTotalPrice(): number {
+		return 10000;
+	}
+
+	async createOrder() {
+		await this.$store.dispatch("CREATE_ORDER", {
+			orderID: 101010, // FIXME : 임의로 생성
+			itemList: this.selectedList,
+			totalPrice: this.calculateTotalPrice,
+		});
+	}
 }
 </script>
 
 <style lang="scss" scoped>
-
-.input__price{
+.input__price {
 	margin-top: 25px;
 	width: 100%;
 }
