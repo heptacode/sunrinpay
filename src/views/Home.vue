@@ -36,10 +36,10 @@
 						<span v-if="1 /*userInformation.emailVerified*/" class="badge-unverified">미인증</span>
 					</p>
 				</div>
-				<button>
+				<!-- <button>
 					<i class="iconify" data-icon="mdi-theme-light-dark"></i>
 					다크 모드
-				</button>
+				</button> -->
 				<button @click="signOut">
 					<i class="iconify" data-icon="mdi-logout-variant"></i>
 					로그아웃
