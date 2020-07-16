@@ -1,23 +1,23 @@
 <template>
-	<div class="payment">
-		<QRcode class="payment__qrcode" :data="link"></QRcode>
-		<div class="payment__content">
+	<div class="orderrequest">
+		<QRcode class="orderrequest__qrcode" :data="link"></QRcode>
+		<div class="orderrequest__content">
 			<h2>Sunrin Pay 결제</h2>
 			<p>
 				QR 코드를 통해 접속하여,
 				<br />결제를 진행해주세요.
 			</p>
-			<p class="payment__content__expirationtime">
+			<p class="orderrequest__content__expirationtime">
 				<NumberCounter :text="String(getMinute)" defaultChar="0"></NumberCounter>:
 				<NumberCounter :text="String(getSecond)" defaultChar="0"></NumberCounter>
 			</p>
 		</div>
-		<div class="payment__actions">
-			<div class="payment__actions__btn" @click="resetOrder">
+		<div class="orderrequest__actions">
+			<div class="orderrequest__actions__btn" @click="resetOrder">
 				<i class="iconify" data-icon="mdi-close"></i>
 				<p>취소하기</p>
 			</div>
-			<div class="payment__actions__btn" @click="resetTimer">
+			<div class="orderrequest__actions__btn" @click="resetTimer">
 				<i class="iconify" data-icon="mdi-timer-sand-full"></i>
 				<p>시간 연장</p>
 			</div>
@@ -37,7 +37,7 @@ import { Vue, Component } from "vue-property-decorator";
 		NumberCounter,
 	},
 })
-export default class Payment extends Vue {
+export default class OrderRequest extends Vue {
 	time: number = 180;
 	link: string = "";
 	async created() {
@@ -51,8 +51,8 @@ export default class Payment extends Vue {
 			this.time--;
 		}, 1000);
 	}
-	get getSecond(): number {
-		return this.time % 60;
+	get getSecond(): string {
+		return String(this.time % 60 == 0 ? "0" + (this.time % 60) : this.time % 60);
 	}
 	get getMinute(): number {
 		return Math.floor(this.time / 60);
@@ -68,13 +68,13 @@ export default class Payment extends Vue {
 		await this.$store.dispatch("DELETE_ORDER", {
 			orderID: this.getOrderID,
 		});
-		this.$router.push("/");
+		this.$router.push("/pos/order");
 	}
 }
 </script>
 
 <style lang="scss" scoped>
-.payment {
+.orderrequest {
 	color: white;
 	background-color: $primary-color;
 
@@ -84,11 +84,11 @@ export default class Payment extends Vue {
 
 	padding: 20px;
 
-	.payment__qrcode {
+	.orderrequest__qrcode {
 		width: 100%;
 		max-width: 400px;
 	}
-	.payment__content {
+	.orderrequest__content {
 		height: 400px;
 
 		margin-left: 150px;
@@ -104,7 +104,7 @@ export default class Payment extends Vue {
 			margin-top: 10px;
 			white-space: nowrap;
 		}
-		p.payment__content__expirationtime {
+		p.orderrequest__content__expirationtime {
 			flex: 1;
 
 			display: flex;
@@ -114,7 +114,7 @@ export default class Payment extends Vue {
 			font-weight: bold;
 		}
 	}
-	.payment__actions {
+	.orderrequest__actions {
 		position: fixed;
 		bottom: 0;
 		left: 0;
@@ -126,7 +126,7 @@ export default class Payment extends Vue {
 		justify-content: center;
 		align-items: center;
 
-		.payment__actions__btn {
+		.orderrequest__actions__btn {
 			cursor: pointer;
 
 			padding: 10px;
@@ -147,11 +147,11 @@ export default class Payment extends Vue {
 	}
 }
 @media all and (max-aspect-ratio: 4/3) {
-	.payment {
-		.payment__qrcode {
+	.orderrequest {
+		.orderrequest__qrcode {
 			max-width: 350px;
 		}
-		.payment__content {
+		.orderrequest__content {
 			height: 350px;
 			font-size: 0.8rem;
 			margin-left: 50px;
@@ -159,16 +159,16 @@ export default class Payment extends Vue {
 	}
 }
 @media all and (max-aspect-ratio: 1/1) {
-	.payment {
+	.orderrequest {
 		overflow-y: auto !important;
 		padding: 40px;
 
 		flex-direction: column;
 		justify-content: space-between;
-		.payment__qrcode {
+		.orderrequest__qrcode {
 			margin-top: 20px;
 		}
-		.payment__content {
+		.orderrequest__content {
 			height: fit-content;
 			margin-left: 0;
 			font-size: 0.7rem;
@@ -177,16 +177,16 @@ export default class Payment extends Vue {
 			p {
 				text-align: center;
 			}
-			p.payment__content__expirationtime {
+			p.orderrequest__content__expirationtime {
 				flex: 0;
 				justify-content: center;
 			}
 		}
 
-		.payment__actions {
+		.orderrequest__actions {
 			position: relative;
 			height: auto;
-			.payment__actions__btn {
+			.orderrequest__actions__btn {
 				margin: 0 10px;
 			}
 		}
