@@ -2,7 +2,7 @@
 	<div class="signout">
 		<img
 			class="home__logo"
-			src="https://firebasestorage.googleapis.com/v0/b/sunrinpay.appspot.com/o/Logo%20Dark.svg?alt=media&token=efbdb91a-392e-40ce-85a9-479614eb2fb8"
+			src="https://firebasestorage.googleapis.com/v0/b/sunrinpay.appspot.com/o/LogoDark.png?alt=media&token=e8cef60d-6d5c-41b9-8204-dae9e02ef820"
 			alt="SunrinPay Logo"
 			width="250px"
 			draggable="false"
