@@ -20,7 +20,12 @@
 						</div>
 						<div class="order__viewpager__numpad__hr"></div>
 						<div class="order__viewpager__numpad__content">
-							<div v-for="idx in 9" :key="idx" class="order__viewpager__numpad__content__item" @click="appendTotalStr(idx)">{{ idx }}</div>
+							<div
+								v-for="idx in 9"
+								:key="idx"
+								class="order__viewpager__numpad__content__item"
+								@click="appendTotalStr(idx)"
+							>{{ idx }}</div>
 							<div class="order__viewpager__numpad__content__item"></div>
 							<div class="order__viewpager__numpad__content__item" @click="appendTotalStr(0)">0</div>
 							<div class="order__viewpager__numpad__content__item">
@@ -43,12 +48,18 @@
 						<p>×{{ item.quantity }}</p>
 						<button class="count__action count__action__plus" @click="plusItemCount(item)">+</button>
 					</div>
-					<p class="price">{{ Number(item.price).numberFormat() }}</p>
+					<p class="price">
+						{{ (Number(item.price) * ((100 - Number(item.discount || 0)) / 100)).numberFormat() }}
+						<span
+							v-if="item.discount"
+						>(-{{(Number(item.price) * (Number(item.discount || 0) / 100)).numberFormat()}})</span>
+					</p>
 					<span class="delete" @click="removeSelectItem(item)">
 						<i class="iconify" data-icon="mdi-delete-forever"></i>
 					</span>
 				</li>
 			</ul>
+			{{calculateTotalPrice}}
 			<PaymentRequireButton></PaymentRequireButton>
 		</div>
 	</div>
@@ -66,6 +77,7 @@ import NumberCounter from "vue-roller";
 import { Vue, Component, Watch, Prop } from "vue-property-decorator";
 
 import { db } from "@/DB";
+import createRandomNumber from "../../lib/createRandomNumber";
 
 @Component({
 	components: {
@@ -73,11 +85,11 @@ import { db } from "@/DB";
 		BarcodeScanner,
 		StockList,
 		PaymentRequireButton,
-		NumberCounter,
+		NumberCounter
 	},
 	firestore: {
-		list: db.collection("stock"),
-	},
+		list: db.collection("stock")
+	}
 })
 export default class Order extends Vue {
 	// 테스트 데이터 (상품 목록)
@@ -124,13 +136,16 @@ export default class Order extends Vue {
 	}
 	removeSelectItem(item: StockItem) {
 		let idx = this.selectedList.findIndex(i => i.name == item.name);
-		this.list.find(i => i.name == this.selectedList[idx].name)!.quantity += item.quantity;
+		this.list.find(i => i.name == this.selectedList[idx].name)!.quantity +=
+			item.quantity;
 		this.selectedList.splice(idx, 1);
 	}
 	onDetected(result: string) {
 		let idx = this.list.findIndex(item => item.barcode == result);
 		if (idx != -1) {
-			let beep = new Audio("https://firebasestorage.googleapis.com/v0/b/sunrinpay.appspot.com/o/beep.mp3?alt=media&token=935710df-2dce-4af9-bd4c-bcbfc425533d");
+			let beep = new Audio(
+				"https://firebasestorage.googleapis.com/v0/b/sunrinpay.appspot.com/o/beep.mp3?alt=media&token=935710df-2dce-4af9-bd4c-bcbfc425533d"
+			);
 			beep.play();
 			this.appendSelectedItem(this.list[idx]);
 		}
@@ -159,7 +174,10 @@ export default class Order extends Vue {
 		this.totalString = this.totalString + str;
 	}
 	removeTotalStr() {
-		this.totalString = this.totalString.substring(0, this.totalString.length - 1);
+		this.totalString = this.totalString.substring(
+			0,
+			this.totalString.length - 1
+		);
 	}
 	insert() {
 		let customPrice = Number(this.totalString);
@@ -168,21 +186,23 @@ export default class Order extends Vue {
 			price: customPrice,
 			quantity: 1,
 			discount: 0,
-			barcode: "",
+			barcode: ""
 		});
 		this.totalString = "0";
 	}
 
-	// FIXME : 전체 금액 계산
 	get calculateTotalPrice(): number {
-		return 10000;
+		return this.selectedList.reduce((t, { price, discount }) => {
+			discount = discount || 0;
+			return t + Number(price) * ((100 - Number(discount)) / 100);
+		}, 0);
 	}
 
 	async createOrder() {
 		await this.$store.dispatch("CREATE_ORDER", {
-			orderID: 101010, // FIXME : 임의로 생성
+			orderID: createRandomNumber(),
 			itemList: this.selectedList,
-			totalPrice: this.calculateTotalPrice,
+			totalPrice: this.calculateTotalPrice
 		});
 	}
 }
