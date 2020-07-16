@@ -67,6 +67,7 @@
 					<span v-else @click="toggleFlip">닫기</span>
 				</p>
 			</div>
+			<!-- TODO: 트랜잭션 클릭 시 영수증 인텐트 표시, $store.state.transactions로 영수증 내용 구성 -->
 			<div class="home__log">
 				<h2>송금 및 결제 내역</h2>
 				<ul class="home__log__list">
