@@ -302,8 +302,9 @@ export default class Home extends Vue {
 				border-radius: 50%;
 			}
 			button {
-				padding: 10px;
+				padding: 12px;
 				width: 100%;
+				padding-left: 20px;
 
 				background: none;
 
