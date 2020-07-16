@@ -5,6 +5,7 @@ import "firebase/analytics";
 import axios from "axios";
 
 import { db, log, transaction } from "@/DB";
+import { query } from "vue-analytics";
 
 const event = require("vue-analytics").event;
 
@@ -13,7 +14,7 @@ Vue.use(Vuex);
 export default new Vuex.Store({
 	state: {
 		balance: 0 as number,
-		transactions: {},
+		transactions: [] as any,
 	},
 	mutations: {},
 	actions: {
@@ -30,15 +31,19 @@ export default new Vuex.Store({
 				return false;
 			}
 		},
-		async GET_TRANSACTIONS({ commit, state }, data): Promise<boolean> {
+		async GET_TRANSACTIONS({ commit, state }, data): Promise<any> {
 			event("action", "GET_TRANSACTIONS", "getTransactions", data);
 			try {
 				let querySnapshot = await db
 					.collection("transactions")
 					.where("uid", "==", firebase.auth().currentUser!.uid)
 					.get();
-				// state.transactions = snapshot.data()!;
-				//console.log(querySnapshot);
+				state.transactions = [];
+				querySnapshot.forEach(doc => {
+					state.transactions.push(doc.data());
+					// console.log(doc.id, ": ", doc.data().timestamp.seconds);
+				});
+				// console.log(state.transactions[0].type);
 				return true;
 			} catch (err) {
 				await log("error", `GET_TRANSACTIONS : ${err}`);
@@ -111,11 +116,12 @@ export default new Vuex.Store({
 					await docRef.update({ balance: newBalance });
 					await transaction({
 						type: "일반 결제",
-						price: data.price,
+						data: data.transactionData,
+						totalPrice: data.totalPrice,
 					});
 					return true;
 				} catch (err) {
-					log("error", `결제 후 잔고 업데이트 실패 : ${err}`);
+					await log("error", `결제 후 잔고 업데이트 실패 : ${err}`);
 					return false;
 				}
 			} else {
@@ -137,7 +143,8 @@ export default new Vuex.Store({
 				if (result) {
 					await transaction({
 						type: "카카오페이 결제",
-						price: data.price,
+						data: data.transactionData,
+						totalPrice: data.totalPrice,
 					});
 				}
 				return result.data;
@@ -156,7 +163,7 @@ export default new Vuex.Store({
 				await docRef.update({ balance: newBalance });
 				await transaction({
 					data: "충전",
-					price: data.price,
+					totalPrice: data.totalPrice,
 				});
 				return true;
 			} catch (err) {

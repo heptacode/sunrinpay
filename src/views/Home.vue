@@ -18,13 +18,7 @@
 		<main v-if="isAuth">
 			<div class="home__title">
 				<h3>{{ userInformation.displayName }}</h3>
-				<img
-					:src="userInformation.photoURL"
-					width="32px"
-					height="32px"
-					draggable="false"
-					@click="isProfileOpen = !isProfileOpen"
-				/>
+				<img :src="userInformation.photoURL" width="32px" height="32px" draggable="false" @click="isProfileOpen = !isProfileOpen" />
 			</div>
 			<div v-if="isProfileOpen" class="home__profile" @click="$event.stopImmediatePropagation()">
 				<div>
@@ -43,11 +37,7 @@
 					로그아웃
 				</button>
 			</div>
-			<div
-				class="home__profile__background"
-				v-if="isProfileOpen"
-				@click="isProfileOpen = !isProfileOpen"
-			></div>
+			<div class="home__profile__background" v-if="isProfileOpen" @click="isProfileOpen = !isProfileOpen"></div>
 			<div class="home__account" :class="{ isFlip: isFlip, isFlipReverse: !isFlip && !isFirst }">
 				<div class="home__account__info" :class="{ unshown: isDelayFlip }">
 					내 지갑
@@ -65,7 +55,7 @@
 					</span>
 				</div>
 
-				<h3 class="home__account__money" :class="{ unshown: isDelayFlip }">{{ balance.numberFormat() }}원</h3>
+				<h3 class="home__account__money" :class="{ unshown: isDelayFlip }"><NumberCounter :text="String(balance)" :isNumberFormat="true" defaultChar="0"></NumberCounter>원</h3>
 
 				<div class="home__account__qr" :class="{ unshown: !isDelayFlip }">
 					<QRcode :data="'https://sunrinpay.com/sendmoney?account=' + userInformation.email" class="qr"></QRcode>
@@ -80,15 +70,15 @@
 			<div class="home__log">
 				<h2>송금 및 결제 내역</h2>
 				<ul class="home__log__list">
-					<li class="home__log__list__item" v-for="idx in 10" :key="idx">
+					<li class="home__log__list__item" v-for="idx in $store.state.transactions" :key="idx.timestamp.seconds">
 						<div class="left">
-							<h3>{{$store.transactions}}</h3>
-							<p>철근 530g 외 10개</p>
+							<h3>{{ $store.state.transactions[0].type }}</h3>
+							<p>{{ getTsp($store.state.transactions[0].timestamp) }}</p>
 						</div>
 						<div class="right">
 							<p class="result">
-								-1,800원
-								<br />내 지갑(*0240)
+								{{ $store.state.transactions[0].type == "충전" ? "+" + $store.state.transactions[0].totalPrice : $store.state.transactions[0].totalPrice }}원 <br />
+								내 지갑(*0240)
 							</p>
 						</div>
 					</li>
@@ -101,19 +91,25 @@
 
 <script lang="ts">
 import QRcode from "../components/QRcode.vue";
+import NumberCounter from "vue-roller";
 
 import { Vue, Component, Watch } from "vue-property-decorator";
 
 import firebase from "firebase/app";
 import "firebase/auth";
 
+import * as moment from "moment";
+import "moment-timezone";
+moment.tz.setDefault("Asia/Seoul");
+
 import { db, log } from "@/DB";
 import { ui, uiConfig, signIn, signOut } from "@/Auth";
 
 @Component({
 	components: {
-		QRcode
-	}
+		QRcode,
+		NumberCounter,
+	},
 })
 export default class Home extends Vue {
 	userInformation: Object = {};
@@ -131,21 +127,26 @@ export default class Home extends Vue {
 		firebase.auth().onAuthStateChanged(async user => {
 			if (user) {
 				await signIn(user);
-				this.balance = await this.$store.dispatch("GET_BALANCE");
+				this.balance = 0;
+				setTimeout(async () => (this.balance = await this.$store.dispatch("GET_BALANCE")), 1);
 				this.userInformation = user;
 				this.isAuth = true;
+				this.$store.dispatch("GET_TRANSACTIONS");
 			} else {
 				await ui.start("#firebaseui-auth-container", uiConfig);
 				this.isAuth = false;
 			}
 		});
+	}
 
-		this.$store.dispatch("GET_TRANSACTIONS");
+	getTsp(date: Date): string {
+		return moment(date.format("YYYY-MM-DD HH:mm:ss"));
 	}
 
 	async reload() {
+		this.balance = 0;
 		this.isReloading = this.isReloadingDelay = true;
-		this.balance = await this.$store.dispatch("GET_BALANCE");
+		setTimeout(async () => (this.balance = await this.$store.dispatch("GET_BALANCE")), 1);
 		this.isReloading = false;
 		setTimeout(() => (this.isReloadingDelay = false), 3000);
 	}
@@ -348,8 +349,9 @@ export default class Home extends Vue {
 				}
 			}
 			.home__account__money {
+				display: flex;
+				justify-content: center;
 				font-size: $normal-size;
-				text-align: center;
 			}
 			.home__account__action {
 				height: 1.5em;
