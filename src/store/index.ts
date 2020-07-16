@@ -8,16 +8,24 @@ import { db, log, transaction } from "@/DB";
 import { query } from "vue-analytics";
 
 const event: any = require("vue-analytics").event;
-let docRef: any = "";
+let docRef: any;
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
 	state: {
+		isAuth: false as boolean,
+		userInformation: {} as any,
 		balance: 0 as number,
 		transactions: [] as any,
 	},
 	mutations: {
+		setAuth(state, data) {
+			state.isAuth = data;
+		},
+		setUserInformation(state, data) {
+			state.userInformation = data;
+		},
 		setDocRef(state, data) {
 			docRef = db.collection("accounts").doc(firebase.auth().currentUser!.uid);
 		},

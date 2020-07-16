@@ -30,8 +30,9 @@
 		</div>
 		<div class="detailsmode__actions">
 			<PaymentButton class="detailsmode__actions__btn" paymentName="Kakao Pay" @click="checkoutWithKakaoPay"></PaymentButton>
-			<PaymentButton class="detailsmode__actions__btn"></PaymentButton>
+			<PaymentButton class="detailsmode__actions__btn" @click="checkout"></PaymentButton>
 		</div>
+		<p>{{ result }}</p>
 	</div>
 </template>
 
@@ -57,6 +58,8 @@ export default class Checkout extends Vue {
 	itemData: object = {};
 	totalPrice: string = "";
 
+	result: string = "";
+
 	async mounted() {
 		if (this.$route.query.orderID) {
 			let orderID = this.$route.query.orderID;
@@ -75,7 +78,7 @@ export default class Checkout extends Vue {
 	}
 
 	async checkout() {
-		await this.$store.dispatch("CHECKOUT", {
+		this.result = await this.$store.dispatch("CHECKOUT", {
 			orderID: this.orderID,
 		});
 	}

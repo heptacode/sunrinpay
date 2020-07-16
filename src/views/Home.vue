@@ -1,7 +1,7 @@
 <template>
 	<div class="home">
 		<img
-			v-if="!isAuth"
+			v-if="!$store.state.isAuth"
 			class="home__logo"
 			src="https://firebasestorage.googleapis.com/v0/b/sunrinpay.appspot.com/o/HomeLogo.png?alt=media&token=89218436-fd2e-411e-98cf-6ab865059b8e"
 			alt="SunrinPay Logo"
@@ -9,13 +9,13 @@
 			draggable="false"
 		/>
 		<!-- 로그인 UI -->
-		<div id="loader" :class="{ inactive: isAuth }">
+		<div id="loader" :class="{ inactive: $store.state.isAuth }">
 			<i class="iconify loading" data-icon="mdi-loading"></i>
 		</div>
-		<div id="firebaseui-auth-container" :class="{ inactive: isAuth }"></div>
+		<div id="firebaseui-auth-container" :class="{ inactive: $store.state.isAuth }"></div>
 
 		<!-- isAuth == true -->
-		<main v-if="isAuth">
+		<main v-if="$store.state.isAuth">
 			<div class="home__title">
 				<h3>{{ userInformation.displayName }}</h3>
 				<img :src="userInformation.photoURL" width="32px" height="32px" draggable="false" @click="isProfileOpen = !isProfileOpen" />
@@ -70,19 +70,13 @@
 			<div class="home__log">
 				<h2>송금 및 결제 내역</h2>
 				<ul class="home__log__list">
-					<li class="home__log__list__item" v-for="(i, idx) in $store.state.transactions" :key="i.timestamp.seconds">
+					<li class="home__log__list__item" v-for="(i, idx) in transactions" :key="i.timestamp.seconds">
 						<div class="left">
-							<h3>{{ $store.state.transactions[idx].type }}</h3>
-							<p>{{ formatDate($store.state.transactions[idx].timestamp.toDate()) }}</p>
+							<h3>{{ transactions[idx].type }}</h3>
+							<p>{{ formatDate(transactions[idx].timestamp.toDate()) }}</p>
 						</div>
 						<div class="right">
-							<p class="result">
-								{{
-									$store.state.transactions[idx].type == "충전"
-										? "+" + numberFormat($store.state.transactions[idx].totalPrice)
-										: numberFormat($store.state.transactions[0].totalPrice)
-								}}원 <br />내 지갑
-							</p>
+							<p class="result">{{ transactions[idx].type == "충전" ? "+" + numberFormat(transactions[idx].totalPrice) : numberFormat(transactions[0].totalPrice) }}원 <br />내 지갑</p>
 						</div>
 					</li>
 				</ul>
@@ -96,14 +90,13 @@
 import QRcode from "../components/QRcode.vue";
 import NumberCounter from "vue-roller";
 
-import { Vue, Component, Watch } from "vue-property-decorator";
-
 import firebase from "firebase/app";
 import "firebase/auth";
 
 import { db, log } from "@/DB";
-import { ui, uiConfig, signIn, signOut } from "@/Auth";
+import { ui, uiConfig, signOut } from "@/Auth";
 
+import { Vue, Component, Watch } from "vue-property-decorator";
 @Component({
 	components: {
 		QRcode,
@@ -113,6 +106,7 @@ import { ui, uiConfig, signIn, signOut } from "@/Auth";
 export default class Home extends Vue {
 	// FIXME: 타입 변경
 	userInformation: any = {};
+	transactions: any = {};
 	isAuth: boolean = false;
 	isReloading: boolean = false;
 	isReloadingDelay: boolean = false;
@@ -123,26 +117,15 @@ export default class Home extends Vue {
 	isDelayFlip: boolean = false;
 	balance: number = 0;
 
-	mounted() {
-		firebase.auth().onAuthStateChanged(async user => {
-			if (user) {
-				await signIn(user);
-				this.balance = 0;
-				this.$store.commit("setDocRef");
-				setTimeout(async () => (this.balance = await this.$store.dispatch("GET_BALANCE")), 1);
-				this.userInformation = user;
-				if (user.photoURL === null) {
-					user.providerData.forEach(data => {
-						if (data?.photoURL !== null) this.userInformation.photoURL = data?.photoURL;
-					});
-				}
-				this.isAuth = true;
-				this.$store.dispatch("GET_TRANSACTIONS");
-			} else {
-				await ui.start("#firebaseui-auth-container", uiConfig);
-				this.isAuth = false;
-			}
-		});
+	async mounted() {
+		this.userInformation = this.$store.state.userInformation;
+		this.balance = 0;
+		setTimeout(async () => (this.balance = await this.$store.dispatch("GET_BALANCE")), 1);
+		if (this.$store.state.isAuth) {
+			this.transactions = await this.$store.dispatch("GET_TRANSACTIONS");
+		} else {
+			await ui.start("#firebaseui-auth-container", uiConfig);
+		}
 	}
 
 	formatDate(date: Date): string {

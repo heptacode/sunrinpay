@@ -6,6 +6,11 @@
 </template>
 
 <script lang="ts">
+import firebase from "firebase/app";
+import "firebase/auth";
+
+import { ui, uiConfig, signIn, signOut } from "@/Auth";
+
 import { Vue, Component } from "vue-property-decorator";
 @Component
 export default class App extends Vue {
@@ -18,6 +23,24 @@ export default class App extends Vue {
 			this.deferredPrompt = e;
 			console.log("installed");
 			e.prompt();
+		});
+
+		firebase.auth().onAuthStateChanged(async user => {
+			if (user) {
+				await signIn(user);
+				this.$store.commit("setAuth", true);
+				console.log(this.$store.state.isAuth);
+				this.$store.commit("setUserInformation", user);
+				this.$store.commit("setDocRef");
+				await this.$store.dispatch("GET_BALANCE");
+				if (user.photoURL === null) {
+					user.providerData.forEach(data => {
+						if (data?.photoURL !== null) this.$store.state.userInformation.photoURL = data?.photoURL;
+					});
+				}
+			} else {
+				this.$store.commit("setAuth", false);
+			}
 		});
 	}
 	showPWA() {
