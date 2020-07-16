@@ -25,12 +25,28 @@ export default new Vuex.Store({
 		},
 		setUserInformation(state, data) {
 			state.userInformation = data;
+			event("mutation", "setUserInformation", "setUserInformation", data);
 		},
 		setDocRef(state, data) {
 			docRef = db.collection("accounts").doc(firebase.auth().currentUser!.uid);
+			event("mutation", "setDocRef", "setDocRef", data);
+		},
+		signOut(state, data) {
+			state.isAuth = false;
+			state.userInformation = {};
+			state.balance = 0;
+			state.transactions = [];
+			console.log("ssss");
+			event("mutation", "signOut", "signOut", data);
 		},
 	},
 	actions: {
+		async INIT({ commit, state }, data): Promise<boolean> {
+			event("action", "INIT", "init", data);
+			await !state.userInformation;
+			if (state.userInformation) return true;
+			else return false;
+		},
 		async GET_BALANCE({ commit, state }, data): Promise<boolean | number> {
 			event("action", "GET_BALANCE", "getBalance", data);
 			try {
