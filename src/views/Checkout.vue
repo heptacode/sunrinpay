@@ -47,6 +47,21 @@ import isMobile from "@/lib/isMobile";
 	},
 })
 export default class Checkout extends Vue {
+	orderID: string = "";
+	itemList: object = {};
+	totalPrice: string = "";
+
+	async mounted() {
+		this.itemList = await this.$store.dispatch("GET_ORDER", {
+			orderID: this.orderID,
+		});
+	}
+
+	async checkout() {
+		await this.$store.dispatch("CHECKOUT", {
+			orderID: this.orderID,
+		});
+	}
 	async checkoutWithKakaoPay() {
 		let res = await this.$store.dispatch("CHECKOUT_KAKAOPAY", {
 			item_name: "초코파이",

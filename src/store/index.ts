@@ -40,7 +40,7 @@ export default new Vuex.Store({
 				let querySnapshot = await db
 					.collection("transactions")
 					.where("uid", "==", firebase.auth().currentUser!.uid)
-					.orderBy("timestamp", "asc")
+					.orderBy("timestamp", "desc")
 					.get();
 				state.transactions = [];
 				querySnapshot.forEach(doc => {
@@ -76,7 +76,7 @@ export default new Vuex.Store({
 				});
 
 				// 받는 사람  도큐먼트 가져오기
-				let recipientDocRef = await db.collection("accounts").doc(recipientQuerySnapshot.docs[0].id);
+				let recipientDocRef = db.collection("accounts").doc(recipientQuerySnapshot.docs[0].id);
 				let recipientSnapshot = await recipientDocRef.get();
 
 				// 받는 사람 잔액 증감
@@ -101,7 +101,11 @@ export default new Vuex.Store({
 				await db
 					.collection("orders")
 					.doc(data.orderID)
-					.set({ id: data.orderID, itemList: data.itemList });
+					.set({
+						id: data.orderID,
+						itemList: data.itemList,
+						totalPrice: data.totalPrice,
+					});
 				return true;
 			} catch (err) {
 				await log("error", `CREATE_ORDER : ${err}`);
@@ -110,13 +114,17 @@ export default new Vuex.Store({
 		},
 		async CHECKOUT({ commit, state }, data): Promise<boolean | string> {
 			event("action", "CHECKOUT", "checkout", data);
+			let orderDocRef = db.collection("orders").doc(data.orderID);
+			let orderDocSnapshot = await orderDocRef.get();
+
 			let snapshot = await docRef.get();
-			let newBalance: number = snapshot.data()!.balance - data.price;
+			let newBalance: number = Number(snapshot.data()!.balance) - orderDocSnapshot.data()!.totalPrice;
 			if (newBalance >= 0) {
 				// 결제 가능
 				try {
 					await docRef.update({ balance: newBalance });
-					await transaction("일반 결제", data.transactionData, data.totalPrice);
+					await orderDocRef.delete();
+					await transaction("일반 결제", data.transactionData, orderDocSnapshot.data()!.totalPrice);
 					return true;
 				} catch (err) {
 					await log("error", `결제 후 잔고 업데이트 실패 : ${err}`);
@@ -156,7 +164,7 @@ export default new Vuex.Store({
 			if (!customerQuerySnapshot.docs[0]) return "계정이 존재하지 않습니다.";
 
 			// 소비자  도큐먼트 가져오기
-			let customerDocRef = await db.collection("accounts").doc(customerQuerySnapshot.docs[0].id);
+			let customerDocRef = db.collection("accounts").doc(customerQuerySnapshot.docs[0].id);
 			let customerSnapshot = await customerDocRef.get();
 
 			let newBalance: number = Number(customerSnapshot.data()!.balance) + Number(data.amount);
