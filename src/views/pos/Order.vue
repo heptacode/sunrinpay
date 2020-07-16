@@ -59,7 +59,6 @@
 					</span>
 				</li>
 			</ul>
-			{{calculateTotalPrice}}
 			<PaymentRequireButton></PaymentRequireButton>
 		</div>
 	</div>

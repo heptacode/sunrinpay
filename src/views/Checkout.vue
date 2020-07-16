@@ -4,15 +4,21 @@
 			<ul class="detailsmode__content__prices">
 				<div class="detailsmode__content__prices__item">
 					<p>금액</p>
-					<h2><NumberCounter text="12900" :isNumberFormat="true" defaultChar="0"></NumberCounter>원</h2>
+					<h2>
+						<NumberCounter text="12900" :isNumberFormat="true" defaultChar="0"></NumberCounter>원
+					</h2>
 				</div>
 				<div class="detailsmode__content__prices__item">
 					<p>할인된 금액</p>
-					<h2><NumberCounter text="900" :isNumberFormat="true" defaultChar="0"></NumberCounter>원</h2>
+					<h2>
+						<NumberCounter text="900" :isNumberFormat="true" defaultChar="0"></NumberCounter>원
+					</h2>
 				</div>
 				<div class="detailsmode__content__prices__item total">
 					<p>결제하실 금액</p>
-					<h2><NumberCounter :text="totalPrice.toString()" :isNumberFormat="true" defaultChar="0"></NumberCounter>원</h2>
+					<h2>
+						<NumberCounter :text="totalPrice.toString()" :isNumberFormat="true" defaultChar="0"></NumberCounter>원
+					</h2>
 				</div>
 			</ul>
 			<ul class="detailsmode__content__list">
@@ -20,16 +26,25 @@
 					<p class="name">(빙그레)메로나메론맛</p>
 					<p class="count">×1</p>
 					<p class="price">14,700원</p>
-				</li> -->
-				<li class="detailsmode__content__list__item" v-for="(i, idx) in itemData" :key="i.name">
-					<p class="name">{{ itemData[idx].name }}</p>
-					<p class="quantity">{{ itemData[idx].quantity }}</p>
-					<p class="price">{{ numberFormat(itemData[idx].price) }}원</p>
+				</li>-->
+				<li class="detailsmode__content__list__item" v-for="i in itemData" :key="i.name">
+					<p class="name">{{ i.name }}</p>
+					<p class="quantity">{{ i.quantity }}</p>
+					<p class="price">
+						{{ (Number(i.price) * ((100 - Number(i.discount || 0)) / 100)).numberFormat() }}
+						<span
+							v-if="i.discount"
+						>(-{{(Number(i.price) * (Number(i.discount || 0) / 100)).numberFormat()}})</span>
+					</p>
 				</li>
 			</ul>
 		</div>
 		<div class="detailsmode__actions">
-			<PaymentButton class="detailsmode__actions__btn" paymentName="Kakao Pay" @click="checkoutWithKakaoPay"></PaymentButton>
+			<PaymentButton
+				class="detailsmode__actions__btn"
+				paymentName="Kakao Pay"
+				@click="checkoutWithKakaoPay"
+			></PaymentButton>
 			<PaymentButton class="detailsmode__actions__btn"></PaymentButton>
 		</div>
 	</div>
@@ -48,8 +63,8 @@ import isMobile from "@/lib/isMobile";
 	components: {
 		PaymentButton,
 		CashButton,
-		NumberCounter,
-	},
+		NumberCounter
+	}
 })
 export default class Checkout extends Vue {
 	orderID: string = "";
@@ -63,25 +78,21 @@ export default class Checkout extends Vue {
 			this.orderID = orderID.toString();
 		}
 		let orderData = await this.$store.dispatch("GET_ORDER", {
-			orderID: this.orderID,
+			orderID: this.orderID
 		});
-		console.log(orderData);
 		this.itemData = orderData.itemData;
+		console.log(this.itemData);
 		this.totalPrice = orderData.totalPrice;
-	}
-
-	numberFormat(number: number): string {
-		return new Intl.NumberFormat().format(number);
 	}
 
 	async checkout() {
 		await this.$store.dispatch("CHECKOUT", {
-			orderID: this.orderID,
+			orderID: this.orderID
 		});
 	}
 	async checkoutWithKakaoPay() {
 		let res = await this.$store.dispatch("CHECKOUT_KAKAOPAY", {
-			orderID: this.orderID,
+			orderID: this.orderID
 		});
 		if (isMobile()) {
 			// 모바일
