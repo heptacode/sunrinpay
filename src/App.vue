@@ -16,21 +16,13 @@ import { Vue, Component } from "vue-property-decorator";
 export default class App extends Vue {
 	deferredPrompt: any = false;
 
-	async mounted() {
-		console.log("mounted");
-		window.addEventListener("beforeinstallprompt", (e: any) => {
-			e.preventDefault();
-			this.deferredPrompt = e;
-			console.log("installed");
-			e.prompt();
-		});
-
+	async created() {
 		firebase.auth().onAuthStateChanged(async user => {
 			if (user) {
-				await this.$store.commit("setAuth", true);
+				this.$store.commit("setAuth", true);
+				this.$store.commit("setDocRef");
+				this.$store.commit("setUserInformation", user);
 				await signIn(user);
-				await this.$store.commit("setDocRef");
-				await this.$store.commit("setUserInformation", user);
 				await this.$store.dispatch("GET_BALANCE");
 				await this.$store.dispatch("GET_TRANSACTIONS");
 				if (user.photoURL === null) {
@@ -41,6 +33,16 @@ export default class App extends Vue {
 			} else {
 				this.$store.commit("setAuth", false);
 			}
+		});
+	}
+
+	async mounted() {
+		console.log("mounted");
+		window.addEventListener("beforeinstallprompt", (e: any) => {
+			e.preventDefault();
+			this.deferredPrompt = e;
+			console.log("installed");
+			e.prompt();
 		});
 	}
 	showPWA() {
