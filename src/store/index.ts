@@ -41,7 +41,7 @@ export default new Vuex.Store({
 				//console.log(querySnapshot);
 				return true;
 			} catch (err) {
-				log("error", `GET_TRANSACTIONS : ${err}`);
+				await log("error", `GET_TRANSACTIONS : ${err}`);
 				return false;
 			}
 		},
@@ -95,7 +95,7 @@ export default new Vuex.Store({
 					.set({ id: data.orderID, itemList: data.itemList });
 				return true;
 			} catch (err) {
-				log("error", `CREATE_ORDER : ${err}`);
+				await log("error", `CREATE_ORDER : ${err}`);
 				return false;
 			}
 		},
@@ -109,7 +109,10 @@ export default new Vuex.Store({
 				// 결제 가능
 				try {
 					await docRef.update({ balance: newBalance });
-					await transaction({ price: data.price });
+					await transaction({
+						type: "일반 결제",
+						price: data.price,
+					});
 					return true;
 				} catch (err) {
 					log("error", `결제 후 잔고 업데이트 실패 : ${err}`);
@@ -117,7 +120,7 @@ export default new Vuex.Store({
 				}
 			} else {
 				// 결제 불가
-				log("info", `잔액 부족 : ${Math.abs(newBalance)}원`);
+				await log("info", `잔액 부족 : ${Math.abs(newBalance)}원`);
 				return `잔액이 ${Math.abs(newBalance)}원 부족합니다.`;
 			}
 		},
@@ -131,9 +134,34 @@ export default new Vuex.Store({
 					vat_amount: data.vat_amount,
 					tax_free_amount: data.tax_free_amount,
 				});
+				if (result) {
+					await transaction({
+						type: "카카오페이 결제",
+						price: data.price,
+					});
+				}
 				return result.data;
 			} catch (err) {
 				return console.dir(err);
+			}
+		},
+		async CHARGE({ commit, state }, data): Promise<boolean> {
+			event("action", "CHARGE", "charge", data);
+			const docRef = await db.collection("accounts").doc(firebase.auth().currentUser!.uid);
+
+			let snapshot = await docRef.get();
+			const newBalance = snapshot.data()!.balance + data.price;
+
+			try {
+				await docRef.update({ balance: newBalance });
+				await transaction({
+					data: "충전",
+					price: data.price,
+				});
+				return true;
+			} catch (err) {
+				await log("error", `충전 실패 : ${err}`);
+				return false;
 			}
 		},
 	},
