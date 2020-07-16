@@ -27,7 +27,7 @@
 		<div v-if="showRecipientInput" class="sendmoney__recipientInput">
 			<form action="javascript:void(0)" @submit="submitForm">
 				<input type="email" v-model="recipient" v-if="!this.$route.query.account" placeholder="받는 분 이메일 주소" :readonly="isLoading" required />
-				<button type="submit" :class="{ disabled: isLoading }">
+				<button type="submit" :disabled="isLoading">
 					<div v-if="!isLoading">승인</div>
 					<span v-else>
 						<i class="iconify loading" data-icon="mdi-loading"></i>
@@ -141,8 +141,8 @@ export default class SendMoney extends Vue {
 		if (!this.isLoading) {
 			this.isLoading = true;
 			this.result = await this.$store.dispatch("SEND_MONEY", {
-				amount: this.amount,
 				recipient: this.recipient,
+				amount: this.amount,
 			});
 			this.isLoading = false;
 		}
