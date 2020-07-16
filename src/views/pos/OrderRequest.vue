@@ -64,7 +64,7 @@ export default class OrderRequest extends Vue {
 		this.orders.forEach(doc => {
 			if (doc.orderID == this.getOrderID) ifOrderExists = true;
 		});
-		if (!ifOrderExists) this.$router.push("/pos/order");
+		if (!ifOrderExists) this.$router.replace("/pos/order");
 	}
 
 	get getSecond(): string {
@@ -84,7 +84,7 @@ export default class OrderRequest extends Vue {
 		await this.$store.dispatch("DELETE_ORDER", {
 			orderID: this.getOrderID,
 		});
-		this.$router.push("/pos/order");
+		this.$router.replace("/pos/order");
 	}
 }
 </script>
