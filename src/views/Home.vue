@@ -163,6 +163,7 @@ export default class Home extends Vue {
 	async reload() {
 		this.isReloading = this.isReloadingDelay = true;
 		await this.$store.dispatch("GET_BALANCE");
+		await this.$store.dispatch("GET_TRANSACTIONS");
 		this.isReloading = false;
 		setTimeout(() => (this.isReloadingDelay = false), 3000);
 	}
