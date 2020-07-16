@@ -126,10 +126,12 @@ export default class Home extends Vue {
 	isShowReceipt = false;
 	selectedReceipt = [];
 
-	async created() {
-		if (!this.$store.state.isAuth && !ui.isPendingRedirect()) {
-			await ui.start("#firebaseui-auth-container", uiConfig);
-		}
+	mounted() {
+		setTimeout(async () => {
+			if (!firebase.auth().currentUser && !this.$store.state.isAuth) {
+				await ui.start("#firebaseui-auth-container", uiConfig);
+			}
+		}, 1500);
 	}
 
 	get getIsAuth(): boolean {
