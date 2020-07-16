@@ -26,12 +26,12 @@ export async function transaction(_type: string, _data: object, _totalPrice: num
 		});
 		return true;
 	} catch (err) {
-		log("error", `트랜잭션 추가 실패 : ${err}`);
+		await log("error", `트랜잭션 추가 실패 : ${err}`);
 		return false;
 	}
 }
 
-export async function log(_type: string, _message: string): Promise<boolean> {
+export async function log(_type: string, _message: string): Promise<void> {
 	try {
 		await db.collection("logs").add({
 			a0_timestamp: firebase.firestore.FieldValue.serverTimestamp(),
@@ -47,11 +47,8 @@ export async function log(_type: string, _message: string): Promise<boolean> {
 			c0_type: _type,
 			c1_message: _message,
 		});
-		console.log(_message);
-		return true;
 	} catch (err) {
-		console.log(`Unexpected Error While Logging : ${err}`);
-		return false;
+		console.log(`Unexpected Error While Logging`);
 	}
 }
 
