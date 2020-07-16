@@ -1,27 +1,22 @@
 <template>
-	<div class="detailsmode">
-		<div class="detailsmode__content">
-			<ul class="detailsmode__content__prices">
-				<div class="detailsmode__content__prices__item">
+	<div class="checkout">
+		<div class="checkout__content">
+			<ul class="checkout__content__prices">
+				<div class="checkout__content__prices__item">
 					<p>금액</p>
 					<h2><NumberCounter text="12900" :isNumberFormat="true" defaultChar="0"></NumberCounter>원</h2>
 				</div>
-				<div class="detailsmode__content__prices__item">
+				<div class="checkout__content__prices__item">
 					<p>할인된 금액</p>
 					<h2><NumberCounter text="900" :isNumberFormat="true" defaultChar="0"></NumberCounter>원</h2>
 				</div>
-				<div class="detailsmode__content__prices__item total">
+				<div class="checkout__content__prices__item total">
 					<p>결제하실 금액</p>
-					<h2><NumberCounter :text="totalPrice.toString()" :isNumberFormat="true" defaultChar="0"></NumberCounter>원</h2>
+					<h2><NumberCounter :text="String(totalPrice)" :isNumberFormat="true" defaultChar="0"></NumberCounter>원</h2>
 				</div>
 			</ul>
-			<ul class="detailsmode__content__list">
-				<!-- <li class="detailsmode__content__list__item" v-for="(i, idx) in 10" :key="i">
-					<p class="name">(빙그레)메로나메론맛</p>
-					<p class="count">×1</p>
-					<p class="price">14,700원</p>
-				</li>-->
-				<li class="detailsmode__content__list__item" v-for="i in itemData" :key="i.name">
+			<ul class="checkout__content__list">
+				<li class="checkout__content__list__item" v-for="i in itemData" :key="i.name">
 					<p class="name">{{ i.name }}</p>
 					<p class="quantity">{{ i.quantity }}</p>
 					<p class="price">
@@ -31,9 +26,9 @@
 				</li>
 			</ul>
 		</div>
-		<div class="detailsmode__actions">
-			<PaymentButton class="detailsmode__actions__btn" paymentName="Kakao Pay" @click="checkoutWithKakaoPay"></PaymentButton>
-			<PaymentButton class="detailsmode__actions__btn" @click="checkout"></PaymentButton>
+		<div class="checkout__actions">
+			<PaymentButton class="checkout__actions__btn" paymentName="Kakao Pay" @click="checkoutWithKakaoPay"></PaymentButton>
+			<PaymentButton class="checkout__actions__btn" @click="checkout"></PaymentButton>
 		</div>
 		<p>{{ result }}</p>
 	</div>
@@ -63,17 +58,18 @@ export default class Checkout extends Vue {
 
 	result: string = "";
 
-	async mounted() {
-		if (this.$route.query.orderID) {
-			let orderID = this.$route.query.orderID;
-			this.orderID = orderID.toString();
-		}
+	async created() {
+		if (this.getOrderID) this.orderID = this.getOrderID;
 		let orderData = await this.$store.dispatch("GET_ORDER", {
 			orderID: this.orderID,
 		});
 		this.itemData = orderData.itemData;
 		console.log(this.itemData);
 		this.totalPrice = orderData.totalPrice;
+	}
+
+	get getOrderID(): string {
+		return this.$route.query.orderID as string;
 	}
 
 	async checkout() {
@@ -96,17 +92,17 @@ export default class Checkout extends Vue {
 </script>
 
 <style lang="scss" scoped>
-.detailsmode {
+.checkout {
 	padding: 80px;
 	display: flex;
 	flex-direction: column;
 
-	.detailsmode__content {
+	.checkout__content {
 		flex: 1;
 		display: flex;
 
 		overflow-y: hidden;
-		.detailsmode__content__prices {
+		.checkout__content__prices {
 			flex: 3;
 
 			position: relative;
@@ -126,7 +122,7 @@ export default class Checkout extends Vue {
 
 				background-color: $gray-text-color;
 			}
-			.detailsmode__content__prices__item {
+			.checkout__content__prices__item {
 				color: $gray-text-color;
 				p {
 					font-size: $small-normal-size;
@@ -137,7 +133,7 @@ export default class Checkout extends Vue {
 					font-size: $small-large-size;
 				}
 			}
-			.detailsmode__content__prices__item.total {
+			.checkout__content__prices__item.total {
 				color: $text-color;
 				p {
 					font-size: $normal-size;
@@ -147,11 +143,11 @@ export default class Checkout extends Vue {
 				}
 			}
 		}
-		.detailsmode__content__list {
+		.checkout__content__list {
 			flex: 7;
 			margin-left: 20px;
 			overflow-y: scroll;
-			.detailsmode__content__list__item {
+			.checkout__content__list__item {
 				font-size: $small-normal-size;
 				width: 100%;
 
@@ -179,12 +175,12 @@ export default class Checkout extends Vue {
 			}
 		}
 	}
-	.detailsmode__actions {
+	.checkout__actions {
 		display: flex;
 		height: 160px;
 
 		margin-top: 80px;
-		.detailsmode__actions__btn {
+		.checkout__actions__btn {
 			flex: 1;
 			height: 100%;
 			&:nth-child(1) {
@@ -194,22 +190,22 @@ export default class Checkout extends Vue {
 	}
 }
 @media all and (max-aspect-ratio: 4/3) {
-	.detailsmode {
+	.checkout {
 		padding: 60px;
-		.detailsmode__content {
-			.detailsmode__content__prices {
+		.checkout__content {
+			.checkout__content__prices {
 				flex: 5;
 			}
-			.detailsmode__content__list {
+			.checkout__content__list {
 				flex: 5;
-				.detailsmode__content__list__item {
+				.checkout__content__list__item {
 					font-size: 1rem;
 				}
 			}
 		}
-		.detailsmode__actions {
+		.checkout__actions {
 			font-size: 0.9rem;
-			.detailsmode__actions__btn {
+			.checkout__actions__btn {
 				&:nth-child(1) {
 					margin-right: 20px;
 				}
@@ -219,10 +215,10 @@ export default class Checkout extends Vue {
 }
 
 @media all and (max-aspect-ratio: 1/1) {
-	.detailsmode {
-		.detailsmode__content {
+	.checkout {
+		.checkout__content {
 			flex-direction: column-reverse;
-			.detailsmode__content__prices {
+			.checkout__content__prices {
 				flex: 1;
 
 				align-items: center;
@@ -233,10 +229,10 @@ export default class Checkout extends Vue {
 				&::after {
 					display: none;
 				}
-				.detailsmode__content__prices__item {
+				.checkout__content__prices__item {
 					display: none;
 				}
-				.detailsmode__content__prices__item.total {
+				.checkout__content__prices__item.total {
 					display: flex;
 					justify-content: space-between;
 					align-items: center;
@@ -250,14 +246,14 @@ export default class Checkout extends Vue {
 					text-align: center;
 				}
 			}
-			.detailsmode__content__list {
+			.checkout__content__list {
 				margin-left: 0;
 				margin-bottom: 20px;
 			}
 		}
-		.detailsmode__actions {
+		.checkout__actions {
 			font-size: 0.75rem;
-			.detailsmode__actions__btn {
+			.checkout__actions__btn {
 				&:nth-child(1) {
 					margin-right: 30px;
 				}
@@ -266,12 +262,12 @@ export default class Checkout extends Vue {
 	}
 }
 @media all and (max-aspect-ratio: 3/4) {
-	.detailsmode {
-		.detailsmode__actions {
+	.checkout {
+		.checkout__actions {
 			height: auto;
 			flex-direction: column-reverse;
 			margin-top: 30px;
-			.detailsmode__actions__btn {
+			.checkout__actions__btn {
 				padding: 10px 0;
 				&:nth-child(1) {
 					margin-right: 0;
