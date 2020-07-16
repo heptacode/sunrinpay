@@ -14,6 +14,15 @@
 		</div>
 		<div id="firebaseui-auth-container" :class="{ inactive: getIsAuth }"></div>
 
+		<div class="medal">
+			<img
+				v-if="!getIsAuth"
+				src="https://firebasestorage.googleapis.com/v0/b/sunrinpay.appspot.com/o/medal_commits.png?alt=media&token=d137b412-fe11-4181-88c6-74fa9e8c2d60"
+				alt="Medal for GitHub 300+ Commits"
+				width="40px"
+				draggable="false"
+			/>
+		</div>
 		<main v-if="getIsAuth">
 			<div class="home__title">
 				<h3>{{ getUserInformation.displayName }}</h3>
@@ -192,6 +201,22 @@ export default class Home extends Vue {
 
 	padding: 40px;
 	overflow-y: scroll;
+
+	.medal {
+		position: absolute;
+		right: 5px;
+		bottom: 0;
+		justify-content: flex-end;
+		transform-origin: center;
+		transition-duration: 0.3s;
+		cursor: pointer;
+		z-index: 10;
+		&:active {
+			transform: scale(6.5);
+			right: 100px;
+			bottom: 115px;
+		}
+	}
 
 	.inactive {
 		display: none;
