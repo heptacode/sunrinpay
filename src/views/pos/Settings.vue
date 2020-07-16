@@ -5,23 +5,25 @@
 				<div class="setting__content__title">
 					<div>
 						<h2>
-							<input class="editable" type="text" value="선린인터넷고등학교 매점" ref="name" v-model="name" @change="update('name')" />
+							<input class="editable" type="text" value="선린인터넷고등학교 매점" ref="name" v-model="setting.name" @change="update('name')" />
 						</h2>
 						<p>
-							<input class="editable" type="text" value="서울특별시 용산구 원효로97길 33-4" ref="address" v-model="address" @change="update('address')" />
+							<input class="editable" type="text" value="서울특별시 용산구 원효로97길 33-4" ref="address" v-model="setting.address" @change="update('address')" />
 						</p>
 					</div>
 					<div>
 						<i class="iconify" data-icon="mdi-edit"></i>
 					</div>
 				</div>
-				<div class="setting__content__map">대충 지도</div>
+				<div class="setting__content__map">
+					<img src="https://firebasestorage.googleapis.com/v0/b/sunrinpay.appspot.com/o/map.png?alt=media&token=ab11fd7f-edc9-4760-b6e7-fb74f100583c" alt="" width="100%" draggable="false" />
+				</div>
 				<h3>영업 시간</h3>
 
-				<div class="setting__content__time" ref="timeset">
-					<p v-for="(item, idx) in timeset" :key="idx">
-						<input type="text" v-model="item.range" @change="update('timeset')" />
-						<input type="text" v-model="item.time" @change="update('timeset')" />
+				<div class="setting__content__time" ref="operationHours">
+					<p v-for="(item, idx) in setting.operationHours" :key="idx">
+						<input type="text" v-model="item.range" placeholder="요일" @change="update('operationHours')" />
+						<input type="text" v-model="item.time" placeholder="시간대" @change="update('operationHours')" />
 						<span @click="removeTimesetItem(idx)" class="remove">
 							<i class="iconify" data-icon="mdi-delete"></i>
 						</span>
@@ -30,20 +32,19 @@
 				</div>
 			</div>
 			<div class="setting__content__v">
-				<h3>매출 관리 지갑</h3>
+				<h3>사업자 정보</h3>
 				<div class="setting__content__account">
-					<QRcode data="test" class="qr"></QRcode>
 					<div>
 						<h2>
-							<input class="editable" type="text" value="+123456789 (사업자)" />
+							<input class="editable" type="text" ref="manager" v-model="setting.manager" placeholder="대표자명" @change="update('manager')" />
+							<input class="editable" type="text" ref="regNo" v-model="setting.regNo" placeholder="사업자등록번호" @change="update('regNo')" />
 						</h2>
-						<p>잔액 123456789원</p>
 					</div>
 				</div>
 				<h3>재고 관리 모드</h3>
 				<div class="setting__content__stock">
 					<label>
-						<input type="radio" name="stock" value="detailed" v-model="mode" />
+						<input type="radio" name="stock" value="detailed" v-model="setting.mode" />
 						<span></span>
 						<div class="content">
 							<h4>상세 모드 (기본)</h4>
@@ -51,7 +52,7 @@
 						</div>
 					</label>
 					<label>
-						<input type="radio" name="stock" value="simple" v-model="mode" />
+						<input type="radio" name="stock" value="simple" v-model="setting.mode" />
 						<span></span>
 						<div class="content">
 							<h4>간편 모드</h4>
@@ -76,41 +77,48 @@
 </template>
 
 <script lang="ts">
+import { db } from "@/DB";
+
 import { Vue, Component, Watch } from "vue-property-decorator";
-import QRcode from "../../components/QRcode.vue";
 
 @Component({
-	components: {
-		QRcode,
+	firestore: {
+		setting: db.collection("settings").doc("settings"),
 	},
 })
 export default class Setting extends Vue {
-	name: string = "";
-	address: string = "";
+	setting: any = {};
+	// name: string = "";
+	// address: string = "";
+	// regNo: string = "";
 
-	mode: string = "detailed";
-	timeset: { range: string; time: string }[] = [];
+	// mode: string = "detailed";
+	// operationHours: { range: string; time: string }[] = [];
+
+	@Watch("setting")
+	onSettingChanged(next: any[], prev: any[]) {
+		console.log(this.setting);
+	}
 
 	@Watch("mode")
 	changeMode() {
 		this.update("mode");
 	}
-	@Watch("timeset")
+	@Watch("operationHours")
 	changeTimeset() {
-		this.update("timeset");
+		this.update("operationHours");
 	}
 	async created() {
-		let data = await this.$store.dispatch("GET_SETTING");
-		this.name = data.name;
-		this.address = data.address;
-		this.mode = data.mode;
-		this.timeset = data.timeset;
+		this.setting = await this.$store.dispatch("GET_SETTING");
+		// this.name = data.name;
+		// this.address = data.address;
+		// this.mode = data.mode;
+		// this.timeset = data.timeset;
 	}
 	async update(_key: string) {
-		console.log(_key);
 		let result = await this.$store.dispatch("UPDATE_SETTING", {
 			key: _key,
-			value: this[_key],
+			value: this.setting[_key],
 		});
 		if (result) {
 			let el: any = this.$refs[_key];
@@ -122,13 +130,15 @@ export default class Setting extends Vue {
 	}
 
 	addTimesetItem() {
-		this.timeset.push({
-			range: "요일",
-			time: "시간대",
+		this.setting.operationHours.push({
+			range: "",
+			time: "",
 		});
+		this.update("operationHours");
 	}
 	removeTimesetItem(idx: number) {
-		this.timeset.splice(idx, 1);
+		this.setting.operationHours.splice(idx, 1);
+		this.update("operationHours");
 	}
 }
 </script>
