@@ -28,7 +28,7 @@
 									<i class="iconify" data-icon="mdi-backspace"></i>
 								</span>
 							</div>
-							<button @click="insert">입력</button>
+							<button @click="insert" class="input__price">입력</button>
 						</div>
 					</div>
 				</template>
@@ -176,6 +176,12 @@ export default class Order extends Vue {
 </script>
 
 <style lang="scss" scoped>
+
+.input__price{
+	margin-top: 25px;
+	width: 100%;
+}
+
 .order {
 	display: flex;
 
