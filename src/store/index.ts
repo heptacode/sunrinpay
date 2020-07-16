@@ -130,6 +130,8 @@ export default new Vuex.Store({
 					await docRef.update({ balance: newBalance });
 					await orderDocRef.delete();
 					await transaction("일반 결제", orderDocSnapshot.data()!.itemData, orderDocSnapshot.data()!.totalPrice);
+					this.dispatch("GET_BALANCE");
+					this.dispatch("GET_TRANSACTIONS");
 					return true;
 				} else {
 					// 결제 불가
@@ -141,7 +143,7 @@ export default new Vuex.Store({
 				return false;
 			}
 		},
-		async CHECKOUT_KAKAOPAY({ commit, state }, data) {
+		async CHECKOUT_KAKAOPAY({ commit, state }, data): Promise<any> {
 			event("action", "CHECKOUT_KAKAOPAY", "checkout_kakaopay", data);
 			try {
 				let orderDocRef = db.collection("orders").doc(data.orderID);
@@ -154,12 +156,13 @@ export default new Vuex.Store({
 					vat_amount: 0,
 					tax_free_amount: 0,
 				});
-				if (result) {
+				if (result.data.next_redirect_pc_url) {
 					await transaction("카카오페이 결제", orderDocSnapshot.data()!.itemData, orderDocSnapshot.data()!.totalPrice);
 				}
 				return result.data;
 			} catch (err) {
-				return console.dir(err);
+				await log("error", `카카오페이 결제 실패 : ${err}`);
+				return false;
 			}
 		},
 		async CHARGE({ commit, state }, data): Promise<string> {

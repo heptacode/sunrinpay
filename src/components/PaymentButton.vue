@@ -1,7 +1,7 @@
 <template>
 	<button class="paymentbtn" v-on="$listeners">
-		<h2 class="paymentbtn__title">{{paymentName}} 결제</h2>
-		<p class="paymentbtn__content">pay 호환</p>
+		<h2 class="paymentbtn__title">{{ paymentName }} 결제</h2>
+		<!-- <p class="paymentbtn__content">pay 호환</p> -->
 	</button>
 </template>
 

@@ -28,16 +28,21 @@
 <script lang="ts">
 import QRcode from "@/components/QRcode.vue";
 import NumberCounter from "vue-roller";
+import { db } from "@/DB";
 
-import { Vue, Component } from "vue-property-decorator";
+import { Vue, Component, Watch } from "vue-property-decorator";
 
 @Component({
 	components: {
 		QRcode,
 		NumberCounter,
 	},
+	firestore: {
+		orders: db.collection("orders"),
+	},
 })
 export default class OrderRequest extends Vue {
+	orders: any = [];
 	time: number = 180;
 	link: string = "";
 	async created() {
@@ -52,6 +57,16 @@ export default class OrderRequest extends Vue {
 			if (this.time <= 0) clearInterval(countDown);
 		}, 1000);
 	}
+
+	@Watch("orders")
+	onOrdersChanged(next: any[], prev: any[]) {
+		let ifOrderExists = false;
+		this.orders.forEach(doc => {
+			if (doc.orderID == this.getOrderID) ifOrderExists = true;
+		});
+		if (!ifOrderExists) this.$router.push("/pos/order");
+	}
+
 	get getSecond(): string {
 		return String(this.time % 60 == 0 ? "0" + (this.time % 60) : this.time % 60);
 	}

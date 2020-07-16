@@ -64,7 +64,6 @@ export default class Checkout extends Vue {
 			orderID: this.orderID,
 		});
 		this.itemData = orderData.itemData;
-		console.log(this.itemData);
 		this.totalPrice = orderData.totalPrice;
 	}
 
@@ -78,6 +77,7 @@ export default class Checkout extends Vue {
 		});
 		if (this.result) this.$router.push("/");
 	}
+
 	async checkoutWithKakaoPay() {
 		let res = await this.$store.dispatch("CHECKOUT_KAKAOPAY", {
 			orderID: this.orderID,
