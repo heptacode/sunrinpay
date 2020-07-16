@@ -1,7 +1,7 @@
 <template>
 	<div class="home">
 		<img
-			v-if="!$store.state.isAuth"
+			v-if="!getIsAuth"
 			class="home__logo"
 			src="https://firebasestorage.googleapis.com/v0/b/sunrinpay.appspot.com/o/HomeLogo.png?alt=media&token=89218436-fd2e-411e-98cf-6ab865059b8e"
 			alt="SunrinPay Logo"
@@ -9,22 +9,21 @@
 			draggable="false"
 		/>
 		<!-- 로그인 UI -->
-		<div id="loader" :class="{ inactive: $store.state.isAuth }">
+		<div id="loader" :class="{ inactive: getIsAuth }">
 			<span><i class="iconify loading" data-icon="mdi-loading"></i></span>
 		</div>
-		<div id="firebaseui-auth-container" :class="{ inactive: $store.state.isAuth }"></div>
+		<div id="firebaseui-auth-container" :class="{ inactive: getIsAuth }"></div>
 
-		<!-- isAuth == true -->
-		<main v-if="$store.state.isAuth">
+		<main v-if="getIsAuth">
 			<div class="home__title">
-				<h3>{{ $store.state.userInformation.displayName }}</h3>
-				<img :src="$store.state.userInformation.photoURL" width="32px" height="32px" draggable="false" @click="isProfileOpen = !isProfileOpen" />
+				<h3>{{ getUserInformation.displayName }}</h3>
+				<img :src="getUserInformation.photoURL" width="32px" height="32px" draggable="false" @click="isProfileOpen = !isProfileOpen" />
 			</div>
 			<div v-if="isProfileOpen" class="home__profile" @click="$event.stopImmediatePropagation()">
 				<div>
-					<img :src="$store.state.userInformation.photoURL" width="40px" height="40px" draggable="false" />
+					<img :src="getUserInformation.photoURL" width="40px" height="40px" draggable="false" />
 					<p>
-						<span class="email">{{ $store.state.userInformation.email }}</span>
+						<span class="email">{{ getUserInformation.email }}</span>
 						<span v-if="1 /*userInformation.emailVerified*/" class="badge-unverified">미인증</span>
 					</p>
 				</div>
@@ -55,14 +54,14 @@
 					</span>
 				</div>
 
-				<h3 class="home__account__money" :class="{ unshown: isDelayFlip }"><NumberCounter :text="$store.state.balance.toString()" :isNumberFormat="true" defaultChar="0"></NumberCounter>원</h3>
+				<h3 class="home__account__money" :class="{ unshown: isDelayFlip }"><NumberCounter :text="String(getBalance)" :isNumberFormat="true" defaultChar="0"></NumberCounter>원</h3>
 
 				<div class="home__account__qr" :class="{ unshown: !isDelayFlip }">
-					<QRcode :data="'https://sunrinpay.com/sendmoney?account=' + $store.state.userInformation.email" class="qr"></QRcode>
+					<QRcode :data="'https://sunrinpay.com/sendmoney?account=' + getUserInformation.email" class="qr"></QRcode>
 				</div>
 
 				<p class="home__account__action">
-					<router-link :to="{ name: 'sendmoney' }">송금하기</router-link>
+					<router-link :to="{ name: 'SendMoney' }">송금하기</router-link>
 					<span v-if="!isFlip" @click="toggleFlip">내 QR 보기</span>
 					<span v-else @click="toggleFlip">닫기</span>
 				</p>
@@ -70,20 +69,19 @@
 			<div class="home__log">
 				<h2>송금 및 결제 내역</h2>
 				<ul class="home__log__list">
-					<li class="home__log__list__item" v-for="i in $store.state.transactions" :key="i.timestamp.seconds" @click="showReceiptIntent(i)">
+					<li class="home__log__list__item" v-for="i in getTransactions" :key="i.timestamp.seconds" @click="showReceiptIntent(i)">
 						<div class="left">
 							<h3>{{ i.type }}</h3>
 							<p>{{ formatDate(i.timestamp.toDate()) }}</p>
 						</div>
 						<div class="right">
-							<p class="result">{{ i.type == "충전" ? "+" + numberFormat(i.totalPrice) : numberFormat($store.state.transactions[0].totalPrice) }}원 <br />내 지갑</p>
+							<p class="result">{{ i.type == "충전" ? "+" + numberFormat(i.totalPrice) : numberFormat(getTransactions[0].totalPrice) }}원 <br />내 지갑</p>
 						</div>
 					</li>
 				</ul>
 			</div>
 		</main>
 		<Receipt v-if="isShowReceipt" :data="selectedReceipt" @close="isShowReceipt = false"></Receipt>
-		<!-- /isAuth == true -->
 	</div>
 </template>
 
@@ -108,7 +106,6 @@ import Receipt from "../components/intent/ReceiptIntent.vue";
 	},
 })
 export default class Home extends Vue {
-	isAuth: boolean = false;
 	isReloading: boolean = false;
 	isReloadingDelay: boolean = false;
 	isProfileOpen: boolean = false;
@@ -120,10 +117,26 @@ export default class Home extends Vue {
 	isShowReceipt = false;
 	selectedReceipt = [];
 
-	async mounted() {
+	async created() {
 		if (!this.$store.state.isAuth && !ui.isPendingRedirect()) {
 			await ui.start("#firebaseui-auth-container", uiConfig);
 		}
+	}
+
+	get getIsAuth(): boolean {
+		return this.$store.state.isAuth;
+	}
+
+	get getUserInformation(): object {
+		return this.$store.state.userInformation;
+	}
+
+	get getBalance(): number {
+		return this.$store.state.balance;
+	}
+
+	get getTransactions(): object {
+		return this.$store.state.transactions;
 	}
 
 	formatDate(date: Date): string {
