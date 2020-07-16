@@ -20,7 +20,7 @@ import CashButton from "@/components/CashButton.vue";
 import NumberCounter from "vue-roller";
 
 import { Vue, Component } from "vue-property-decorator";
-import isMobile from "../lib/isMobile";
+import isMobile from "../../lib/isMobile";
 
 @Component({
 	components: {
