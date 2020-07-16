@@ -10,21 +10,21 @@
 		/>
 		<!-- 로그인 UI -->
 		<div id="loader" :class="{ inactive: $store.state.isAuth }">
-			<i class="iconify loading" data-icon="mdi-loading"></i>
+			<span><i class="iconify loading" data-icon="mdi-loading"></i></span>
 		</div>
 		<div id="firebaseui-auth-container" :class="{ inactive: $store.state.isAuth }"></div>
 
 		<!-- isAuth == true -->
 		<main v-if="$store.state.isAuth">
 			<div class="home__title">
-				<h3>{{ userInformation.displayName }}</h3>
-				<img :src="userInformation.photoURL" width="32px" height="32px" draggable="false" @click="isProfileOpen = !isProfileOpen" />
+				<h3>{{ $store.state.userInformation.displayName }}</h3>
+				<img :src="$store.state.userInformation.photoURL" width="32px" height="32px" draggable="false" @click="isProfileOpen = !isProfileOpen" />
 			</div>
 			<div v-if="isProfileOpen" class="home__profile" @click="$event.stopImmediatePropagation()">
 				<div>
-					<img :src="userInformation.photoURL" width="40px" height="40px" draggable="false" />
+					<img :src="$store.state.userInformation.photoURL" width="40px" height="40px" draggable="false" />
 					<p>
-						<span class="email">{{ userInformation.email }}</span>
+						<span class="email">{{ $store.state.userInformation.email }}</span>
 						<span v-if="1 /*userInformation.emailVerified*/" class="badge-unverified">미인증</span>
 					</p>
 				</div>
@@ -55,10 +55,10 @@
 					</span>
 				</div>
 
-				<h3 class="home__account__money" :class="{ unshown: isDelayFlip }"><NumberCounter :text="String(balance)" :isNumberFormat="true" defaultChar="0"></NumberCounter>원</h3>
+				<h3 class="home__account__money" :class="{ unshown: isDelayFlip }"><NumberCounter :text="$store.state.balance.toString()" :isNumberFormat="true" defaultChar="0"></NumberCounter>원</h3>
 
 				<div class="home__account__qr" :class="{ unshown: !isDelayFlip }">
-					<QRcode :data="'https://sunrinpay.com/sendmoney?account=' + userInformation.email" class="qr"></QRcode>
+					<QRcode :data="'https://sunrinpay.com/sendmoney?account=' + $store.state.userInformation.email" class="qr"></QRcode>
 				</div>
 
 				<p class="home__account__action">
@@ -70,13 +70,19 @@
 			<div class="home__log">
 				<h2>송금 및 결제 내역</h2>
 				<ul class="home__log__list">
-					<li class="home__log__list__item" v-for="(i, idx) in transactions" :key="i.timestamp.seconds">
+					<li class="home__log__list__item" v-for="(i, idx) in $store.state.transactions" :key="i.timestamp.seconds">
 						<div class="left">
-							<h3>{{ transactions[idx].type }}</h3>
-							<p>{{ formatDate(transactions[idx].timestamp.toDate()) }}</p>
+							<h3>{{ $store.state.transactions[idx].type }}</h3>
+							<p>{{ formatDate($store.state.transactions[idx].timestamp.toDate()) }}</p>
 						</div>
 						<div class="right">
-							<p class="result">{{ transactions[idx].type == "충전" ? "+" + numberFormat(transactions[idx].totalPrice) : numberFormat(transactions[0].totalPrice) }}원 <br />내 지갑</p>
+							<p class="result">
+								{{
+									$store.state.transactions[idx].type == "충전"
+										? "+" + numberFormat($store.state.transactions[idx].totalPrice)
+										: numberFormat($store.state.transactions[0].totalPrice)
+								}}원 <br />내 지갑
+							</p>
 						</div>
 					</li>
 				</ul>
@@ -104,9 +110,6 @@ import { Vue, Component, Watch } from "vue-property-decorator";
 	},
 })
 export default class Home extends Vue {
-	// FIXME: 타입 변경
-	userInformation: any = {};
-	transactions: any = {};
 	isAuth: boolean = false;
 	isReloading: boolean = false;
 	isReloadingDelay: boolean = false;
@@ -115,15 +118,9 @@ export default class Home extends Vue {
 
 	isFlip: boolean = false;
 	isDelayFlip: boolean = false;
-	balance: number = 0;
 
 	async mounted() {
-		this.userInformation = this.$store.state.userInformation;
-		this.balance = 0;
-		setTimeout(async () => (this.balance = await this.$store.dispatch("GET_BALANCE")), 1);
-		if (this.$store.state.isAuth) {
-			this.transactions = await this.$store.dispatch("GET_TRANSACTIONS");
-		} else {
+		if (!this.$store.state.isAuth && !ui.isPendingRedirect()) {
 			await ui.start("#firebaseui-auth-container", uiConfig);
 		}
 	}
@@ -138,7 +135,7 @@ export default class Home extends Vue {
 
 	async reload() {
 		this.isReloading = this.isReloadingDelay = true;
-		setTimeout(async () => (this.balance = await this.$store.dispatch("GET_BALANCE")), 1);
+		await this.$store.dispatch("GET_BALANCE");
 		this.isReloading = false;
 		setTimeout(() => (this.isReloadingDelay = false), 3000);
 	}
@@ -153,6 +150,7 @@ export default class Home extends Vue {
 
 	async signOut() {
 		await signOut();
+		await ui.start("#firebaseui-auth-container", uiConfig);
 	}
 }
 </script>

@@ -38,7 +38,7 @@ export default new Vuex.Store({
 				state.balance = snapshot.data()!.balance;
 				return state.balance;
 			} catch (err) {
-				log("error", `CREATE_ORDER : ${err}`);
+				log("error", `GET_BALANCE : ${err}`);
 				return false;
 			}
 		},
@@ -129,7 +129,20 @@ export default new Vuex.Store({
 					.get();
 				return orderDocSnapshot.data();
 			} catch (err) {
-				await log("error", `CREATE_ORDER : ${err}`);
+				await log("error", `GET_ORDER : ${err}`);
+				return false;
+			}
+		},
+		async DELETE_ORDER({ commit, state }, data): Promise<boolean> {
+			event("action", "DELETE_ORDER", "deleteOrder", data);
+			try {
+				await db
+					.collection("orders")
+					.doc(data.orderID)
+					.delete();
+				return true;
+			} catch (err) {
+				await log("error", `DELETE_ORDER : ${err}`);
 				return false;
 			}
 		},

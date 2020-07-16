@@ -27,12 +27,12 @@ export default class App extends Vue {
 
 		firebase.auth().onAuthStateChanged(async user => {
 			if (user) {
+				await this.$store.commit("setAuth", true);
 				await signIn(user);
-				this.$store.commit("setAuth", true);
-				console.log(this.$store.state.isAuth);
-				this.$store.commit("setUserInformation", user);
-				this.$store.commit("setDocRef");
+				await this.$store.commit("setDocRef");
+				await this.$store.commit("setUserInformation", user);
 				await this.$store.dispatch("GET_BALANCE");
+				await this.$store.dispatch("GET_TRANSACTIONS");
 				if (user.photoURL === null) {
 					user.providerData.forEach(data => {
 						if (data?.photoURL !== null) this.$store.state.userInformation.photoURL = data?.photoURL;
