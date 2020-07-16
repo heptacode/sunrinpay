@@ -1,5 +1,5 @@
 <template>
-	<button class="backbutton">
+	<button class="backbutton" v-on="$listeners">
 		<i class="iconify" data-icon="mdi-arrow-back"></i>
 	</button>
 </template>

@@ -1,5 +1,8 @@
 <template>
 	<div class="receipt">
+		<div class="receipt__close" @click="close">
+			<BackButton></BackButton>
+		</div>
 		<div class="receipt__wrap">
 			<div class="receipt__title">
 				<img src="../../assets/Sunrin Pay Logo.svg" class="receipt__title__image" />
@@ -11,34 +14,29 @@
 			</div>
 			<hr />
 			<div class="receipt__list">
-				<div class="receipt__list__item" v-for="item in list" :key="item.name">
+				<div class="receipt__list__item" v-for="item in data.data" :key="item.name">
 					<div>
-						<p>{{item.name}}</p>
+						<p>{{ item.name }}</p>
 						<p>123456789</p>
 					</div>
 					<div class="quantity">
-						<p>X{{item.quantity}}</p>
+						<p>X{{ item.quantity }}</p>
 						<p v-if="item.discount">할인 적용</p>
 					</div>
 					<div>
-						<p class="line" v-if="item.discount">{{item.quantity * item.price}}</p>
-						<p>{{(item.quantity * item.price)*((100-item.discount)/100)}}</p>
+						<p class="line" v-if="item.discount">{{ item.quantity * item.price }}</p>
+						<p>{{ item.quantity * item.price * ((100 - item.discount) / 100) }}</p>
 					</div>
 				</div>
 			</div>
 			<div class="receipt__total">
 				<h3>결제 금액</h3>
-				<p>10,000</p>
+				<p>{{ data.totalPrice }}</p>
 			</div>
 			<hr />
 			<div class="receipt__result">
-				<p>
-					<img src="../../assets/Sunrin Pay Logo.svg" /> 결제 내역
-				</p>
-				<p>
-					Andy0414(pjh8667@gmail.com)
-					<br />Sunrin Pay 지갑으로 대금 지불
-				</p>
+				<p><img src="../../assets/Sunrin Pay Logo.svg" /> 결제 내역</p>
+				<p>{{ getUser.displayName }}({{ getUser.email }}) <br />Sunrin Pay 지갑으로 대금 지불</p>
 			</div>
 		</div>
 	</div>
@@ -47,15 +45,28 @@
 <script lang="ts">
 import QRcode from "../components/QRcode.vue";
 import NumberCounterVue from "vue-roller";
+import firebase from "firebase/app";
 
-import { Vue, Component } from "vue-property-decorator";
+import { Vue, Component, Prop } from "vue-property-decorator";
+import BackButton from "../BackButton.vue";
 
-@Component
+@Component({
+	components: {
+		BackButton,
+	},
+})
 export default class Receipt extends Vue {
+	@Prop({ type: Object }) data: any;
 	list = [
 		{ name: "할인가", price: 10000, discount: 10, quantity: 3 },
-		{ name: "정가", price: 10000, discount: 0, quantity: 3 }
+		{ name: "정가", price: 10000, discount: 0, quantity: 3 },
 	];
+	get getUser() {
+		return this.$store.state.userInformation;
+	}
+	close() {
+		this.$emit("close", false);
+	}
 }
 </script>
 
@@ -71,6 +82,15 @@ export default class Receipt extends Vue {
 
 	display: flex;
 	justify-content: center;
+
+	padding: 20px;
+
+	.receipt__close {
+		position: fixed;
+		right: 20px;
+		bottom: 20px;
+	}
+
 	.receipt__wrap {
 		width: 100%;
 		max-width: 720px;
@@ -79,7 +99,6 @@ export default class Receipt extends Vue {
 		display: flex;
 		.receipt__title__image {
 			width: 100px;
-			margin-right: 20px;
 		}
 		div {
 			padding: 20px;

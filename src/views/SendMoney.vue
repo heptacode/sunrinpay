@@ -1,10 +1,7 @@
 <template>
 	<div class="sendmoney">
 		<header>
-			<!-- TODO : 버튼 적용 -->
-			<router-link to="/" class="login__back">
-				<i class="iconify" data-icon="mdi-chevron-left"></i>
-			</router-link>
+			<BackButton class="sendmoney__back" @click="$router.push('/')"></BackButton>
 			<div class="sendmoney__contentbox">
 				<h2>{{ this.$route.query.account ? this.$route.query.account + "님에게 " : "" }}송금하기</h2>
 				<p><NumberCounter :text="getTotal" :isNumberFormat="true" defaultChar="0"></NumberCounter>원</p>
@@ -97,11 +94,13 @@ import QRcode from "../components/QRcode.vue";
 import NumberCounter from "vue-roller";
 
 import { Vue, Component } from "vue-property-decorator";
+import BackButton from "../components/BackButton.vue";
 
 @Component({
 	components: {
 		QRcode,
 		NumberCounter,
+		BackButton,
 	},
 })
 export default class SendMoney extends Vue {
@@ -188,6 +187,11 @@ export default class SendMoney extends Vue {
 .sendmoney {
 	max-width: 720px;
 	text-align: center;
+	.sendmoney__back{
+		position: fixed;
+		left: 10px;
+		top: 0;
+	}
 	.sendmoney__contentbox {
 		margin-top: 30px;
 		h3 {

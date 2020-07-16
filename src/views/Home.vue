@@ -67,28 +67,22 @@
 					<span v-else @click="toggleFlip">닫기</span>
 				</p>
 			</div>
-			<!-- TODO: 트랜잭션 클릭 시 영수증 인텐트 표시, $store.state.transactions로 영수증 내용 구성 -->
 			<div class="home__log">
 				<h2>송금 및 결제 내역</h2>
 				<ul class="home__log__list">
-					<li class="home__log__list__item" v-for="(i, idx) in $store.state.transactions" :key="i.timestamp.seconds">
+					<li class="home__log__list__item" v-for="i in $store.state.transactions" :key="i.timestamp.seconds" @click="showReceiptIntent(i)">
 						<div class="left">
-							<h3>{{ $store.state.transactions[idx].type }}</h3>
-							<p>{{ formatDate($store.state.transactions[idx].timestamp.toDate()) }}</p>
+							<h3>{{ i.type }}</h3>
+							<p>{{ formatDate(i.timestamp.toDate()) }}</p>
 						</div>
 						<div class="right">
-							<p class="result">
-								{{
-									$store.state.transactions[idx].type == "충전"
-										? "+" + numberFormat($store.state.transactions[idx].totalPrice)
-										: numberFormat($store.state.transactions[0].totalPrice)
-								}}원 <br />내 지갑
-							</p>
+							<p class="result">{{ i.type == "충전" ? "+" + numberFormat(i.totalPrice) : numberFormat($store.state.transactions[0].totalPrice) }}원 <br />내 지갑</p>
 						</div>
 					</li>
 				</ul>
 			</div>
 		</main>
+		<Receipt v-if="isShowReceipt" :data="selectedReceipt" @close="isShowReceipt = false"></Receipt>
 		<!-- /isAuth == true -->
 	</div>
 </template>
@@ -104,10 +98,13 @@ import { db, log } from "@/DB";
 import { ui, uiConfig, signOut } from "@/Auth";
 
 import { Vue, Component, Watch } from "vue-property-decorator";
+import Receipt from "../components/intent/ReceiptIntent.vue";
+
 @Component({
 	components: {
 		QRcode,
 		NumberCounter,
+		Receipt,
 	},
 })
 export default class Home extends Vue {
@@ -119,6 +116,9 @@ export default class Home extends Vue {
 
 	isFlip: boolean = false;
 	isDelayFlip: boolean = false;
+
+	isShowReceipt = false;
+	selectedReceipt = [];
 
 	async mounted() {
 		if (!this.$store.state.isAuth && !ui.isPendingRedirect()) {
@@ -152,6 +152,13 @@ export default class Home extends Vue {
 	async signOut() {
 		await signOut();
 		await ui.start("#firebaseui-auth-container", uiConfig);
+	}
+
+	showReceiptIntent(data) {
+		if (data.data) {
+			this.selectedReceipt = data;
+			this.isShowReceipt = true;
+		}
 	}
 }
 </script>
