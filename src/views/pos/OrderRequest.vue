@@ -47,8 +47,9 @@ export default class OrderRequest extends Vue {
 		this.link = `https://sunrinpay.com/checkout?orderID=${this.getOrderID}`;
 	}
 	mounted() {
-		setInterval(() => {
+		let countDown = setInterval(() => {
 			this.time--;
+			if (this.time <= 0) clearInterval(countDown);
 		}, 1000);
 	}
 	get getSecond(): string {
