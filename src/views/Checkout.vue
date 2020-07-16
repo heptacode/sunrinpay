@@ -12,14 +12,19 @@
 				</div>
 				<div class="detailsmode__content__prices__item total">
 					<p>결제하실 금액</p>
-					<h2><NumberCounter text="12000" :isNumberFormat="true" defaultChar="0"></NumberCounter>원</h2>
+					<h2><NumberCounter :text="totalPrice.toString()" :isNumberFormat="true" defaultChar="0"></NumberCounter>원</h2>
 				</div>
 			</ul>
 			<ul class="detailsmode__content__list">
-				<li class="detailsmode__content__list__item" v-for="(i, idx) in 10" :key="i">
+				<!-- <li class="detailsmode__content__list__item" v-for="(i, idx) in 10" :key="i">
 					<p class="name">(빙그레)메로나메론맛</p>
 					<p class="count">×1</p>
 					<p class="price">14,700원</p>
+				</li> -->
+				<li class="detailsmode__content__list__item" v-for="(i, idx) in itemData" :key="i.name">
+					<p class="name">{{ itemData[idx].name }}</p>
+					<p class="quantity">{{ itemData[idx].quantity }}</p>
+					<p class="price">{{ numberFormat(itemData[idx].price) }}원</p>
 				</li>
 			</ul>
 		</div>
@@ -49,7 +54,7 @@ import isMobile from "@/lib/isMobile";
 export default class Checkout extends Vue {
 	orderID: string = "";
 
-	itemList: object = {};
+	itemData: object = {};
 	totalPrice: string = "";
 
 	async mounted() {
@@ -60,8 +65,13 @@ export default class Checkout extends Vue {
 		let orderData = await this.$store.dispatch("GET_ORDER", {
 			orderID: this.orderID,
 		});
-		this.itemList = orderData.itemList;
+		console.log(orderData);
+		this.itemData = orderData.itemData;
 		this.totalPrice = orderData.totalPrice;
+	}
+
+	numberFormat(number: number): string {
+		return new Intl.NumberFormat().format(number);
 	}
 
 	async checkout() {
@@ -154,7 +164,7 @@ export default class Checkout extends Vue {
 					white-space: nowrap;
 					text-overflow: ellipsis;
 				}
-				.count {
+				.quantity {
 					flex: 1;
 				}
 				.price {

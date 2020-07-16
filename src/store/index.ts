@@ -119,7 +119,7 @@ export default new Vuex.Store({
 					.collection("orders")
 					.doc(data.orderID)
 					.get();
-				return orderDocSnapshot;
+				return orderDocSnapshot.data();
 			} catch (err) {
 				await log("error", `CREATE_ORDER : ${err}`);
 				return false;
