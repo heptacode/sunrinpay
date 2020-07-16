@@ -52,8 +52,6 @@ export const uiConfig = {
 ui.disableAutoSignIn();
 
 export async function signIn(user: any): Promise<any> {
-	console.log("LOGIN");
-
 	let idToken = await user.getIdToken();
 	// 사용자 문서 존재 여부 확인
 	try {
@@ -77,10 +75,9 @@ export async function signIn(user: any): Promise<any> {
 						idToken: idToken,
 						lastLogin: firebase.firestore.FieldValue.serverTimestamp(),
 					});
-				console.log("User updated!");
 				return true;
 			} catch (err) {
-				log("error", `기존 사용자 문서 업데이트 실패 : ${err}`);
+				await log("error", `기존 사용자 문서 업데이트 실패 : ${err}`);
 				return false;
 			}
 		} else {
@@ -101,25 +98,24 @@ export async function signIn(user: any): Promise<any> {
 						lastLogin: firebase.firestore.FieldValue.serverTimestamp(),
 						balance: 0,
 					});
-				console.log("User added!");
 				return true;
 			} catch (err) {
-				log("error", `신규 사용자 문서 추가 실패 : ${err}`);
+				await log("error", `신규 사용자 문서 추가 실패 : ${err}`);
 				return false;
 			}
 		}
 	} catch (err) {
-		log("error", `accounts 컬렉션 가져오기 실패 : ${err}`);
+		await log("error", `accounts 컬렉션 가져오기 실패 : ${err}`);
+		return false;
 	}
 }
 
 export async function signOut(): Promise<boolean> {
 	try {
 		await firebase.auth().signOut();
-		console.log("Sign out successful.");
 		return true;
 	} catch (err) {
-		log("error", `로그아웃 실패 : ${err}`);
+		await log("error", `로그아웃 실패 : ${err}`);
 		return false;
 	}
 }
