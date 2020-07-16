@@ -3,7 +3,7 @@
 		<header>
 			<BackButton class="sendmoney__back" @click="$router.push('/')"></BackButton>
 			<div class="sendmoney__contentbox">
-				<h2>{{ this.$route.query.account ? this.$route.query.account + "님에게 " : "" }}송금하기</h2>
+				<h2>{{ getRecipient ? getRecipient + "님에게 " : "" }}송금하기</h2>
 				<p><NumberCounter :text="getTotal" :isNumberFormat="true" defaultChar="0"></NumberCounter>원</p>
 			</div>
 		</header>
@@ -20,12 +20,12 @@
 			</div>
 			<button type="button" @click="showRecipientInput = true" class="send__money__btn">송금하기</button>
 			<br />
-			<button type="button" v-if="!this.$route.query.account" @click="showBankList(true)" class="send__toss__btn">Toss로 보내기</button>
+			<button type="button" v-if="!getRecipient" @click="showBankList(true)" class="send__toss__btn">Toss로 보내기</button>
 		</div>
 
 		<div v-if="showRecipientInput" class="sendmoney__recipientInput">
 			<form action="javascript:void(0)" @submit="submitForm">
-				<input type="email" v-model="recipient" v-if="!this.$route.query.account" placeholder="받는 분 이메일 주소" :readonly="isLoading" required />
+				<input type="email" v-model="recipient" v-if="!getRecipient" placeholder="받는 분 이메일 주소" :readonly="isLoading" required />
 				<button type="submit" :disabled="isLoading">
 					<div v-if="!isLoading">승인</div>
 					<span v-else>
@@ -117,17 +117,19 @@ export default class SendMoney extends Vue {
 	totalString: string = "";
 	openToss: boolean = false;
 
-	mounted() {
-		if (this.$route.query.account) {
-			let account = this.$route.query.account;
-			this.recipient = account.toString();
-		}
+	created() {
+		if (this.getRecipient) this.recipient = this.getRecipient;
 	}
-	get getTotal() {
+
+	get getRecipient(): string {
+		return this.$route.query.account as string;
+	}
+
+	get getTotal(): string {
 		return this.totalString;
 	}
 
-	get amount() {
+	get getAmount(): number {
 		return Number(this.totalString);
 	}
 
@@ -143,7 +145,7 @@ export default class SendMoney extends Vue {
 			this.isLoading = true;
 			this.result = await this.$store.dispatch("SEND_MONEY", {
 				recipient: this.recipient,
-				amount: this.amount,
+				amount: this.getAmount,
 			});
 			this.isLoading = false;
 		}
@@ -159,8 +161,8 @@ export default class SendMoney extends Vue {
 	}
 
 	submitTossForm() {
-		if (!this.openToss) this.qrData = `supertoss://send?amount=${this.amount}&bank=${this.bank}&accountNo=${this.accountNo}`;
-		else window.open(`supertoss://send?amount=${this.amount}&bank=${this.bank}&accountNo=${this.accountNo}`);
+		if (!this.openToss) this.qrData = `supertoss://send?amount=${this.getAmount}&bank=${this.bank}&accountNo=${this.accountNo}`;
+		else window.open(`supertoss://send?amount=${this.getAmount}&bank=${this.bank}&accountNo=${this.accountNo}`);
 	}
 }
 </script>
@@ -187,7 +189,7 @@ export default class SendMoney extends Vue {
 .sendmoney {
 	max-width: 720px;
 	text-align: center;
-	.sendmoney__back{
+	.sendmoney__back {
 		position: fixed;
 		left: 10px;
 		top: 0;
