@@ -70,15 +70,20 @@
 			<div class="home__log">
 				<h2>송금 및 결제 내역</h2>
 				<ul class="home__log__list">
-					<li class="home__log__list__item" v-for="idx in $store.state.transactions" :key="idx.timestamp.seconds">
+					<li class="home__log__list__item" v-for="(i, idx) in $store.state.transactions" :key="i.timestamp.seconds">
 						<div class="left">
-							<h3>{{ $store.state.transactions[0].type }}</h3>
-							<p>{{ getTsp($store.state.transactions[0].timestamp) }}</p>
+							<h3>{{ $store.state.transactions[idx].type }}</h3>
+							<p>{{ formatDate($store.state.transactions[idx].timestamp.toDate()) }}</p>
 						</div>
 						<div class="right">
 							<p class="result">
-								{{ $store.state.transactions[0].type == "충전" ? "+" + $store.state.transactions[0].totalPrice : $store.state.transactions[0].totalPrice }}원 <br />
-								내 지갑(*0240)
+								{{
+									$store.state.transactions[idx].type == "충전"
+										? "+" + numberFormat($store.state.transactions[idx].totalPrice)
+										: numberFormat($store.state.transactions[0].totalPrice)
+								}}원
+								<br />
+								내 지갑
 							</p>
 						</div>
 					</li>
@@ -97,10 +102,6 @@ import { Vue, Component, Watch } from "vue-property-decorator";
 
 import firebase from "firebase/app";
 import "firebase/auth";
-
-import * as moment from "moment";
-import "moment-timezone";
-moment.tz.setDefault("Asia/Seoul");
 
 import { db, log } from "@/DB";
 import { ui, uiConfig, signIn, signOut } from "@/Auth";
@@ -139,8 +140,12 @@ export default class Home extends Vue {
 		});
 	}
 
-	getTsp(date: Date): string {
-		return moment(date.format("YYYY-MM-DD HH:mm:ss"));
+	formatDate(date: Date): string {
+		return `${date.getMonth() + 1}.${date.getDate()} ${date.getHours() > 9 ? date.getHours() : "0" + date.getHours()}:${date.getMinutes() > 9 ? date.getMinutes() : "0" + date.getMinutes()}`;
+	}
+
+	numberFormat(number: number): string {
+		return new Intl.NumberFormat().format(number);
 	}
 
 	async reload() {
