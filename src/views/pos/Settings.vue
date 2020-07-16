@@ -5,10 +5,10 @@
 				<div class="setting__content__title">
 					<div>
 						<h2>
-							<input class="editable" type="text" value="선린인터넷고등학교 매점" ref="name" v-model="setting.name" @change="update('name')" />
+							<input class="editable" type="text" value="선린인터넷고등학교 매점" ref="name" v-model="setting.name" placeholder="점포명" @change="update('name')" />
 						</h2>
 						<p>
-							<input class="editable" type="text" value="서울특별시 용산구 원효로97길 33-4" ref="address" v-model="setting.address" @change="update('address')" />
+							<input class="editable" type="text" value="서울특별시 용산구 원효로97길 33-4" ref="address" v-model="setting.address" placeholder="주소" @change="update('address')" />
 						</p>
 					</div>
 					<div>
@@ -96,10 +96,7 @@ export default class Setting extends Vue {
 	// operationHours: { range: string; time: string }[] = [];
 
 	@Watch("setting")
-	onSettingChanged(next: any[], prev: any[]) {
-		console.log(this.setting);
-	}
-
+	onSettingChanged(next: any[], prev: any[]) {}
 	@Watch("mode")
 	changeMode() {
 		this.update("mode");
