@@ -38,7 +38,7 @@ export default new Vuex.Store({
 				state.balance = snapshot.data()!.balance;
 				return state.balance;
 			} catch (err) {
-				log("error", `GET_BALANCE : ${err}`);
+				await log("error", `GET_BALANCE : ${err}`);
 				return false;
 			}
 		},
@@ -97,7 +97,7 @@ export default new Vuex.Store({
 				await transaction(`송금 : ${data.recipient}`, {}, data.amount);
 				return `${data.recipient}님에게 ${data.amount}원을 보냈습니다.`;
 			} catch (err) {
-				log("error", `SEND_MONEY : ${err}`);
+				await log("error", `SEND_MONEY : ${err}`);
 				return "오류가 발생하였습니다.";
 			}
 		},
@@ -225,6 +225,7 @@ export default new Vuex.Store({
 					});
 				return true;
 			} catch (err) {
+				await log("error", `UPDATE_ITEM : ${err}`);
 				return false;
 			}
 		},
@@ -236,6 +237,7 @@ export default new Vuex.Store({
 					.get();
 				return settingsDocSnapshot.data();
 			} catch (err) {
+				await log("error", `GET_SETTING : ${err}`);
 				return false;
 			}
 		},
@@ -249,7 +251,7 @@ export default new Vuex.Store({
 					});
 				return true;
 			} catch (err) {
-				console.log(err);
+				await log("error", `UPDATE_SETTING : ${err}`);
 				return false;
 			}
 		},
