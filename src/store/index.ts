@@ -178,6 +178,7 @@ export default new Vuex.Store({
 					.collection("orders")
 					.doc(data.orderID)
 					.set({
+						timestamp: firebase.firestore.FieldValue.serverTimestamp(),
 						orderID: data.orderID,
 						itemData: data.itemData,
 						totalPrice: data.totalPrice,
