@@ -152,6 +152,11 @@ export default class Home extends Vue {
 					1
 				);
 				this.userInformation = user;
+				if (user.photoURL === null) {
+					user.providerData.forEach(data => {
+						if (data?.photoURL !== null) this.userInformation.photoURL = data?.photoURL;
+					});
+				}
 				this.isAuth = true;
 				this.$store.dispatch("GET_TRANSACTIONS");
 			} else {
