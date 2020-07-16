@@ -8,13 +8,13 @@ import Sitemap from "@/views/Sitemap.vue";
 import SignOut from "@/views/SignOut.vue";
 
 // Customer
-import SimpleCheckout from "@/views/SimpleCheckout.vue";
+// import SimpleCheckout from "@/views/SimpleCheckout.vue";
 import Checkout from "@/views/Checkout.vue";
-import Payment from "@/views/Payment.vue";
-import PaymentClear from "@/views/Payment-Clear.vue";
-import PaymentError from "@/views/Payment-Error.vue";
-import SimpleUserPayment from "@/views/SimpleUserPayment.vue";
-import DetailsUserPayment from "@/views/DetailsUserPayment.vue";
+// import Payment from "@/views/Payment.vue";
+// import PaymentClear from "@/views/Payment-Clear.vue";
+// import PaymentError from "@/views/Payment-Error.vue";
+// import SimpleUserPayment from "@/views/SimpleUserPayment.vue";
+// import DetailsUserPayment from "@/views/DetailsUserPayment.vue";
 import SendMoney from "@/views/SendMoney.vue";
 
 // Pos
@@ -49,41 +49,41 @@ const routes: Array<RouteConfig> = [
 	},
 
 	// Customer
-	{
-		path: "/simplecheckout",
-		name: "simplecheckout",
-		component: SimpleCheckout,
-	},
+	// {
+	// 	path: "/simplecheckout",
+	// 	name: "simplecheckout",
+	// 	component: SimpleCheckout,
+	// },
 	{
 		path: "/checkout",
 		name: "checkout",
 		component: Checkout,
 	},
-	{
-		path: "/payment",
-		name: "payment",
-		component: Payment,
-	},
-	{
-		path: "/payment-clear",
-		name: "payment-clear",
-		component: PaymentClear,
-	},
-	{
-		path: "/payment-error",
-		name: "payment-error",
-		component: PaymentError,
-	},
-	{
-		path: "/simple-payment",
-		name: "simple-payment",
-		component: SimpleUserPayment,
-	},
-	{
-		path: "/details-payment",
-		name: "details-payment",
-		component: DetailsUserPayment,
-	},
+	// {
+	// 	path: "/payment",
+	// 	name: "payment",
+	// 	component: Payment,
+	// },
+	// {
+	// 	path: "/payment-clear",
+	// 	name: "payment-clear",
+	// 	component: PaymentClear,
+	// },
+	// {
+	// 	path: "/payment-error",
+	// 	name: "payment-error",
+	// 	component: PaymentError,
+	// },
+	// {
+	// 	path: "/simple-payment",
+	// 	name: "simple-payment",
+	// 	component: SimpleUserPayment,
+	// },
+	// {
+	// 	path: "/details-payment",
+	// 	name: "details-payment",
+	// 	component: DetailsUserPayment,
+	// },
 	{
 		path: "/sendmoney",
 		name: "sendmoney",
