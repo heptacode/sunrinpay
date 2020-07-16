@@ -190,8 +190,8 @@ export default class Order extends Vue {
 		this.orderID = createRandomNumber();
 		await this.$store.dispatch("CREATE_ORDER", {
 			orderID: this.orderID,
-			itemList: this.selectedList,
-			totalPrice: this.calculateTotalPrice
+			itemData: this.selectedList,
+			totalPrice: this.calculateTotalPrice,
 		});
 	}
 }
