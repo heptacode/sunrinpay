@@ -51,7 +51,7 @@ export default new Vuex.Store({
 					.orderBy("timestamp", "desc")
 					.get();
 				state.transactions = [];
-				querySnapshot.forEach(doc => {
+				querySnapshot.forEach((doc) => {
 					state.transactions.push(doc.data());
 				});
 				return true;
@@ -230,7 +230,7 @@ export default new Vuex.Store({
 			try {
 				let settingsDocSnapshot = await db
 					.collection("settings")
-					.doc("settings")
+					.doc("aegWkgfq4qOH5lRqNF7z")
 					.get();
 				return settingsDocSnapshot.data();
 			} catch (err) {
@@ -241,12 +241,13 @@ export default new Vuex.Store({
 			try {
 				await db
 					.collection("settings")
-					.doc("settings")
+					.doc("aegWkgfq4qOH5lRqNF7z")
 					.update({
 						[data.key]: data.value,
 					});
 				return true;
 			} catch (err) {
+				console.log(err)
 				return false;
 			}
 		},

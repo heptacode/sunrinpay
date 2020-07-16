@@ -14,7 +14,6 @@
 				<button type="submit">생성하기</button>
 			</div>
 		</form>
-		<!-- TODO: 디자인 필요 -->
 	</div>
 </template>
 

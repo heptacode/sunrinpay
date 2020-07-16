@@ -102,7 +102,6 @@ export default class StockManagement extends Vue {
 	}
 	async addItem(preData: { name: string }) {
 		this.isShowCreateStock = false;
-		// TODO: INTENT로 추가할 상품 정보 입력받기
 		let data = await db.collection("stock").add({
 			name: preData.name,
 			barcode: "",
@@ -110,7 +109,7 @@ export default class StockManagement extends Vue {
 			price: 1000,
 			discount: 0,
 		});
-		this.selectedItem = this.list[this.list.findIndex(item => item.id == data.id)];
+		this.selectedItem = this.list[this.list.findIndex((item) => item.id == data.id)];
 	}
 	async updateItem(_key: string) {
 		let result = await this.$store.dispatch("UPDATE_ITEM", {

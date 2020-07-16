@@ -1,6 +1,5 @@
 <template>
 	<div class="barcodescanner">
-		<!-- FIXME: START 버튼 없애기 -->
 		<BarcodeScanner :onDetected="onDetected"></BarcodeScanner>
 	</div>
 </template>

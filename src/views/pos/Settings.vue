@@ -5,10 +5,10 @@
 				<div class="setting__content__title">
 					<div>
 						<h2>
-							<input class="editable" type="text" value="선린인터넷고등학교 매점" />
+							<input class="editable" type="text" value="선린인터넷고등학교 매점" ref="name" v-model="name" @change="update('name')" />
 						</h2>
 						<p>
-							<input class="editable" type="text" value="서울특별시 용산구 원효로97길 33-4" />
+							<input class="editable" type="text" value="서울특별시 용산구 원효로97길 33-4" ref="address" v-model="address" @change="update('address')" />
 						</p>
 					</div>
 					<div>
@@ -18,22 +18,15 @@
 				<div class="setting__content__map">대충 지도</div>
 				<h3>영업 시간</h3>
 
-				<div class="setting__content__time">
-					<p>
-						<span>월~금</span>
-						<span>07:30~16:00</span>
-						<span>
+				<div class="setting__content__time" ref="timeset">
+					<p v-for="(item, idx) in timeset" :key="idx">
+						<input type="text" v-model="item.range" @change="update('timeset')" />
+						<input type="text" v-model="item.time" @change="update('timeset')" />
+						<span @click="removeTimesetItem(idx)" class="remove">
 							<i class="iconify" data-icon="mdi-delete"></i>
 						</span>
 					</p>
-					<p>
-						<span>월~금</span>
-						<span>07:30~16:00</span>
-						<span>
-							<i class="iconify" data-icon="mdi-delete"></i>
-						</span>
-					</p>
-					<p class="add">+ 영업 시간 추가하기</p>
+					<p class="add" @click="addTimesetItem">+ 영업 시간 추가하기</p>
 				</div>
 			</div>
 			<div class="setting__content__v">
@@ -50,7 +43,7 @@
 				<h3>재고 관리 모드</h3>
 				<div class="setting__content__stock">
 					<label>
-						<input type="radio" name="stock" value="detailed" />
+						<input type="radio" name="stock" value="detailed" v-model="mode" />
 						<span></span>
 						<div class="content">
 							<h4>상세 모드 (기본)</h4>
@@ -58,7 +51,7 @@
 						</div>
 					</label>
 					<label>
-						<input type="radio" name="stock" value="simple" />
+						<input type="radio" name="stock" value="simple" v-model="mode" />
 						<span></span>
 						<div class="content">
 							<h4>간편 모드</h4>
@@ -83,7 +76,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component } from "vue-property-decorator";
+import { Vue, Component, Watch } from "vue-property-decorator";
 import QRcode from "../../components/QRcode.vue";
 
 @Component({
@@ -93,17 +86,64 @@ import QRcode from "../../components/QRcode.vue";
 })
 export default class Setting extends Vue {
 	// TODO: v-model, ref를 적절하게 달고, StockManagement를참고하여 업데이트 성공 시 background-color 전환 트랜지션 적용
+	name: string = "";
+	address: string = "";
+
+	mode: string = "detailed";
+	timeset: { range: string; time: string }[] = [];
+
+	@Watch("mode")
+	changeMode() {
+		this.update("mode");
+	}
+	@Watch("timeset")
+	changeTimeset() {
+		this.update("timeset");
+	}
+	async created() {
+		let data = await this.$store.dispatch("GET_SETTING");
+		this.name = data.name;
+		this.address = data.address;
+		this.mode = data.mode;
+		this.timeset = data.timeset;
+	}
 	async update(_key: string) {
+		console.log(_key);
 		let result = await this.$store.dispatch("UPDATE_SETTING", {
 			key: _key,
+			value: this[_key],
 		});
 		if (result) {
+			let el: any = this.$refs[_key];
+			if (el) {
+				el.classList.add("update__success");
+				setTimeout(() => el.classList.remove("update__success"), 1000);
+			}
 		}
+	}
+
+	addTimesetItem() {
+		this.timeset.push({
+			range: "요일",
+			time: "시간대",
+		});
+	}
+	removeTimesetItem(idx: number) {
+		this.timeset.splice(idx, 1);
 	}
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
+.update__success {
+	background-color: rgba(60, 134, 123, 0.5) !important;
+}
+.update__error {
+	background-color: rgba(194, 40, 28, 0.5) !important;
+}
+input {
+	transition-duration: 0.3s;
+}
 .setting {
 	padding: 30px;
 	.setting__content {
@@ -157,6 +197,7 @@ export default class Setting extends Vue {
 			height: 300px;
 		}
 		.setting__content__time {
+			transition-duration: 0.3s;
 			p {
 				display: flex;
 				justify-content: space-between;
@@ -166,8 +207,16 @@ export default class Setting extends Vue {
 
 				font-size: $small-up-size;
 			}
+			.remove {
+				cursor: pointer;
+			}
 			.add {
 				color: $gray-text-color;
+				cursor: pointer;
+			}
+
+			input {
+				border-bottom: none;
 			}
 		}
 		.setting__content__account {
