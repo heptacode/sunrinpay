@@ -215,6 +215,19 @@ export default new Vuex.Store({
 				return "오류가 발생하였습니다.";
 			}
 		},
+		async UPDATE_ITEM({ commit, state }, data): Promise<boolean> {
+			try {
+				await db
+					.collection("stock")
+					.doc(data.item.id)
+					.update({
+						[data.key]: data.item?.[data.key],
+					});
+				return true;
+			} catch (err) {
+				return false;
+			}
+		},
 	},
 	modules: {},
 });

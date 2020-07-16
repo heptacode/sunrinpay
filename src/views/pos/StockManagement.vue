@@ -10,19 +10,9 @@
 				<i class="iconify cube" data-icon="mdi-cube-outline"></i>
 			</h3>
 			<h2 class="stockmanagement__stockedit__name">
-				<input
-					type="text"
-					class="editable name"
-					v-model="selectedItem.name"
-					@change="updateItem('name')"
-				/>
+				<input type="text" class="editable name" v-model="selectedItem.name" ref="name" @change="updateItem('name')" />
 				<i class="iconify multiply" data-icon="mdi-close"></i>
-				<input
-					type="text"
-					class="editable quantity"
-					v-model="selectedItem.quantity"
-					@change="updateItem('quantity')"
-				/>
+				<input type="text" class="editable quantity" v-model="selectedItem.quantity" ref="quantity" @change="updateItem('quantity')" />
 			</h2>
 			<div class="stockmanagement__stockedit__barcode">
 				<h3>
@@ -31,12 +21,7 @@
 				</h3>
 
 				<div>
-					<input
-						type="text"
-						class="editable"
-						v-model="selectedItem.barcode"
-						@change="updateItem('barcode')"
-					/>
+					<input type="text" class="editable" v-model="selectedItem.barcode" ref="barcode" @change="updateItem('barcode')" />
 					<button @click="toggleBarcodeScanner">
 						<i class="iconify" data-icon="mdi-barcode-scan"></i>
 					</button>
@@ -48,25 +33,18 @@
 						단가
 						<i class="iconify" data-icon="mdi-currency-krw"></i>
 					</h3>
-					<input type="text" class="editable" v-model="selectedItem.price" @change="updateItem('price')" />원
+					<input type="text" class="editable" v-model="selectedItem.price" ref="price" @change="updateItem('price')" />원
 				</div>
 				<div>
 					<h3>
 						할인율
 						<i class="iconify" data-icon="mdi-sale"></i>
 					</h3>
-					<input
-						type="text"
-						class="editable"
-						v-model="selectedItem.discount"
-						max="100"
-						min="0"
-						@change="updateItem('discount')"
-					/>%
+					<input type="text" class="editable" v-model="selectedItem.discount" ref="discount" max="100" min="0" @change="updateItem('discount')" />%
 				</div>
 				<div>
 					<h3>판매가</h3>
-					<span>{{ (selectedItem.price * ((100-Number(selectedItem.discount || 0))/100)).numberFormat() }}원</span>
+					<span>{{ (selectedItem.price * ((100 - Number(selectedItem.discount || 0)) / 100)).numberFormat() }}원</span>
 				</div>
 			</div>
 			<SalesChart></SalesChart>
@@ -91,11 +69,11 @@ import CreateStock from "../../components/intent/CreateStockIntent.vue";
 		StockList,
 		SalesChart,
 		BarcodeScannerIntent,
-		CreateStock
+		CreateStock,
 	},
 	firestore: {
-		list: db.collection("stock")
-	}
+		list: db.collection("stock"),
+	},
 })
 export default class StockManagement extends Vue {
 	list: StockItem[] = [];
@@ -130,19 +108,23 @@ export default class StockManagement extends Vue {
 			barcode: "",
 			quantity: 1,
 			price: 1000,
-			discount: 0
+			discount: 0,
 		});
-		this.selectedItem = this.list[
-			this.list.findIndex(item => item.id == data.id)
-		];
+		this.selectedItem = this.list[this.list.findIndex(item => item.id == data.id)];
 	}
-	async updateItem(key: string) {
-		await db
-			.collection("stock")
-			.doc(this.selectedItem?.id)
-			.update({
-				[key]: this.selectedItem?.[key]
-			});
+	async updateItem(_key: string) {
+		let result = await this.$store.dispatch("UPDATE_ITEM", {
+			item: this.selectedItem,
+			key: _key,
+		});
+		if (result) {
+			let el: any = this.$refs[_key];
+			el.classList.add("update__success");
+			setTimeout(() => el.classList.remove("update__success"), 1000);
+		} else {
+			let el: any = this.$refs[_key];
+			el.classList.add("update__error");
+		}
 	}
 }
 </script>
@@ -184,10 +166,19 @@ export default class StockManagement extends Vue {
 		display: flex;
 		flex-direction: column;
 		justify-content: space-between;
+		input {
+			transition-duration: 0.3s;
+		}
 		h3 {
 			font-size: $small-size;
 			color: $gray-text-color;
 			font-weight: normal !important;
+		}
+		.update__success {
+			background-color: rgba(60, 134, 123, 0.5);
+		}
+		.update__error {
+			background-color: rgba(194, 40, 28, 0.5);
 		}
 		.stockmanagement__stockedit__title {
 			font-weight: bold;
