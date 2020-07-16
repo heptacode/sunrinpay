@@ -15,17 +15,14 @@ export const db = firebase
 	})
 	.firestore();
 
-export async function transaction(_data: object): Promise<boolean> {
+export async function transaction(_type: string, _data: object, _totalPrice: number): Promise<boolean> {
 	try {
 		await db.collection("transactions").add({
-			a0_timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-			a1_year: new Date().getFullYear(),
-			a2_month: new Date().getMonth() + 1,
-			a3_date: new Date().getDate(),
-			a4_hour: new Date().getHours(),
-			a5_minute: new Date().getMinutes(),
-			b0_uid: firebase.auth().currentUser?.uid,
-			c0_data: _data,
+			timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+			uid: firebase.auth().currentUser?.uid,
+			type: _type,
+			data: _data,
+			totalPrice: _totalPrice,
 		});
 		return true;
 	} catch (err) {

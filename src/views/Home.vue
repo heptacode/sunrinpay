@@ -18,13 +18,7 @@
 		<main v-if="isAuth">
 			<div class="home__title">
 				<h3>{{ userInformation.displayName }}</h3>
-				<img
-					:src="userInformation.photoURL"
-					width="32px"
-					height="32px"
-					draggable="false"
-					@click="isProfileOpen = !isProfileOpen"
-				/>
+				<img :src="userInformation.photoURL" width="32px" height="32px" draggable="false" @click="isProfileOpen = !isProfileOpen" />
 			</div>
 			<div v-if="isProfileOpen" class="home__profile" @click="$event.stopImmediatePropagation()">
 				<div>
@@ -43,11 +37,7 @@
 					로그아웃
 				</button>
 			</div>
-			<div
-				class="home__profile__background"
-				v-if="isProfileOpen"
-				@click="isProfileOpen = !isProfileOpen"
-			></div>
+			<div class="home__profile__background" v-if="isProfileOpen" @click="isProfileOpen = !isProfileOpen"></div>
 			<div class="home__account" :class="{ isFlip: isFlip, isFlipReverse: !isFlip && !isFirst }">
 				<div class="home__account__info" :class="{ unshown: isDelayFlip }">
 					내 지갑
@@ -65,9 +55,7 @@
 					</span>
 				</div>
 
-				<h3 class="home__account__money" :class="{ unshown: isDelayFlip }">
-					<NumberCounter :text="String(balance)" :isNumberFormat="true" defaultChar="0"></NumberCounter>원
-				</h3>
+				<h3 class="home__account__money" :class="{ unshown: isDelayFlip }"><NumberCounter :text="String(balance)" :isNumberFormat="true" defaultChar="0"></NumberCounter>원</h3>
 
 				<div class="home__account__qr" :class="{ unshown: !isDelayFlip }">
 					<QRcode :data="'https://sunrinpay.com/sendmoney?account=' + userInformation.email" class="qr"></QRcode>
@@ -82,11 +70,7 @@
 			<div class="home__log">
 				<h2>송금 및 결제 내역</h2>
 				<ul class="home__log__list">
-					<li
-						class="home__log__list__item"
-						v-for="(i, idx) in $store.state.transactions"
-						:key="i.timestamp.seconds"
-					>
+					<li class="home__log__list__item" v-for="(i, idx) in $store.state.transactions" :key="i.timestamp.seconds">
 						<div class="left">
 							<h3>{{ $store.state.transactions[idx].type }}</h3>
 							<p>{{ formatDate($store.state.transactions[idx].timestamp.toDate()) }}</p>
@@ -94,11 +78,10 @@
 						<div class="right">
 							<p class="result">
 								{{
-								$store.state.transactions[idx].type == "충전"
-								? "+" + numberFormat($store.state.transactions[idx].totalPrice)
-								: numberFormat($store.state.transactions[0].totalPrice)
-								}}원
-								<br />내 지갑
+									$store.state.transactions[idx].type == "충전"
+										? "+" + numberFormat($store.state.transactions[idx].totalPrice)
+										: numberFormat($store.state.transactions[0].totalPrice)
+								}}원 <br />내 지갑
 							</p>
 						</div>
 					</li>
@@ -124,8 +107,8 @@ import { ui, uiConfig, signIn, signOut } from "@/Auth";
 @Component({
 	components: {
 		QRcode,
-		NumberCounter
-	}
+		NumberCounter,
+	},
 })
 export default class Home extends Vue {
 	// FIXME: 타입 변경
@@ -145,18 +128,12 @@ export default class Home extends Vue {
 			if (user) {
 				await signIn(user);
 				this.balance = 0;
-				setTimeout(
-					async () =>
-						(this.balance = await this.$store.dispatch(
-							"GET_BALANCE"
-						)),
-					1
-				);
+				this.$store.commit("setDocRef");
+				setTimeout(async () => (this.balance = await this.$store.dispatch("GET_BALANCE")), 1);
 				this.userInformation = user;
 				if (user.photoURL === null) {
 					user.providerData.forEach(data => {
-						if (data?.photoURL !== null)
-							this.userInformation.photoURL = data?.photoURL;
+						if (data?.photoURL !== null) this.userInformation.photoURL = data?.photoURL;
 					});
 				}
 				this.isAuth = true;
@@ -169,11 +146,7 @@ export default class Home extends Vue {
 	}
 
 	formatDate(date: Date): string {
-		return `${date.getMonth() + 1}.${date.getDate()} ${
-			date.getHours() > 9 ? date.getHours() : "0" + date.getHours()
-		}:${
-			date.getMinutes() > 9 ? date.getMinutes() : "0" + date.getMinutes()
-		}`;
+		return `${date.getMonth() + 1}.${date.getDate()} ${date.getHours() > 9 ? date.getHours() : "0" + date.getHours()}:${date.getMinutes() > 9 ? date.getMinutes() : "0" + date.getMinutes()}`;
 	}
 
 	numberFormat(number: number): string {
@@ -182,11 +155,7 @@ export default class Home extends Vue {
 
 	async reload() {
 		this.isReloading = this.isReloadingDelay = true;
-		setTimeout(
-			async () =>
-				(this.balance = await this.$store.dispatch("GET_BALANCE")),
-			1
-		);
+		setTimeout(async () => (this.balance = await this.$store.dispatch("GET_BALANCE")), 1);
 		this.isReloading = false;
 		setTimeout(() => (this.isReloadingDelay = false), 3000);
 	}

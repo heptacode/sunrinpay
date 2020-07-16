@@ -1,9 +1,15 @@
 <template>
 	<div class="charge">
-		<form action="javascript:void(0)" @submit="chargeMoney">
-			<input type="text" placeholder="email" v-model="email" :disabled="isLoading" />
-			<input type="text" placeholder="money" v-model="money" :disabled="isLoading" />
-			<button type="submit" :disabled="isLoading">충전</button>
+		<form action="javascript:void(0)" @submit="submitForm">
+			<input type="email" v-model="email" placeholder="소비자 이메일" :disabled="isLoading" required autofocus />
+			<input type="tel" v-model="amount" placeholder="금액" :disabled="isLoading" required />
+			<button type="submit" :disabled="isLoading">
+				<div v-if="!isLoading">승인</div>
+				<span v-else>
+					<i class="iconify loading" data-icon="mdi-loading"></i>
+				</span>
+			</button>
+			<p>{{ result }}</p>
 		</form>
 	</div>
 </template>
@@ -14,23 +20,33 @@ import { Vue, Component, Watch } from "vue-property-decorator";
 @Component
 export default class Charge extends Vue {
 	email: string = "";
-	money: string = "";
+	amount: number = 0;
 	isLoading: boolean = false;
 
-	async chargeMoney() {
-		this.isLoading = true;
-		try {
-			await this.$store.dispatch("CHARGE", {
+	result: string = "";
+
+	async submitForm() {
+		if (!this.isLoading) {
+			this.isLoading = true;
+			this.result = await this.$store.dispatch("CHARGE", {
 				email: this.email,
-				price: this.money
+				amount: this.amount,
 			});
-		} catch (err) {}
-		this.isLoading = false;
+			this.isLoading = false;
+		}
 	}
 }
 </script>
 
 <style lang="scss" scoped>
+@keyframes loading {
+	from {
+		transform: rotate(0deg);
+	}
+	to {
+		transform: rotate(360deg);
+	}
+}
 .charge {
 	max-width: 480px;
 	display: flex;
@@ -42,6 +58,10 @@ export default class Charge extends Vue {
 	}
 	input {
 		margin-bottom: 20px;
+	}
+	.loading {
+		font-size: 40px;
+		animation: loading 0.5s linear infinite;
 	}
 }
 </style>
