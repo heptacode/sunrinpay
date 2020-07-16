@@ -413,12 +413,15 @@ export default class Home extends Vue {
 			}
 			.home__log__list {
 				.home__log__list__item {
+					cursor: pointer;
+
 					display: flex;
 					justify-content: space-between;
 
 					padding: 10px 0;
 
 					border-bottom: 1px solid #fcfeff;
+
 					.left {
 						flex: 1;
 						text-overflow: ellipsis;

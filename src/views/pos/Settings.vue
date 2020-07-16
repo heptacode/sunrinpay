@@ -85,7 +85,6 @@ import QRcode from "../../components/QRcode.vue";
 	},
 })
 export default class Setting extends Vue {
-	// TODO: v-model, ref를 적절하게 달고, StockManagement를참고하여 업데이트 성공 시 background-color 전환 트랜지션 적용
 	name: string = "";
 	address: string = "";
 
