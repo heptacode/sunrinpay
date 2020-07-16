@@ -23,7 +23,7 @@ import { signOut } from "@/Auth";
 export default class SignOut extends Vue {
 	loading: boolean = true;
 
-	async mounted() {
+	async created() {
 		if (await signOut()) {
 			this.loading = false;
 			setTimeout(() => this.$router.push("/"), 5000);
