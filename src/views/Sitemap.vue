@@ -66,6 +66,7 @@
 				<h2>back btn</h2>
 				<BackButton></BackButton>
 			</div>
+			<Receipt></Receipt>
 		</div>
 	</div>
 </template>
@@ -80,6 +81,7 @@ import QRScannerIntent from "../components/intent/QRScannerIntent.vue";
 
 import { Vue, Component, Watch } from "vue-property-decorator";
 import BackButton from "../components/BackButton.vue";
+import Receipt from "../components/intent/ReceiptIntent.vue";
 
 @Component({
 	components: {
@@ -89,7 +91,8 @@ import BackButton from "../components/BackButton.vue";
 		BarcodeScanner,
 		ViewPager,
 		SalesChart,
-		BackButton
+		BackButton,
+		Receipt
 	}
 })
 export default class Home extends Vue {

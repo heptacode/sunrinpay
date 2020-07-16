@@ -11,30 +11,18 @@
 			</div>
 			<hr />
 			<div class="receipt__list">
-				<div class="receipt__list__item">
+				<div class="receipt__list__item" v-for="item in list" :key="item.name">
 					<div>
-						<p>(빙그레)메로나맛메론맛</p>
+						<p>{{item.name}}</p>
 						<p>123456789</p>
 					</div>
-					<div>
-						<p>X1</p>
-						<p>할인 적용</p>
+					<div class="quantity">
+						<p>X{{item.quantity}}</p>
+						<p v-if="item.discount">할인 적용</p>
 					</div>
 					<div>
-						<p class="line">14,700</p>
-						<p>14,100</p>
-					</div>
-				</div>
-				<div class="receipt__list__item">
-					<div>
-						<p>(빙그레)메로나맛메론맛</p>
-						<p>123456789</p>
-					</div>
-					<div>
-						<p>X1</p>
-					</div>
-					<div>
-						<p>14,700</p>
+						<p class="line" v-if="item.discount">{{item.quantity * item.price}}</p>
+						<p>{{(item.quantity * item.price)*((100-item.discount)/100)}}</p>
 					</div>
 				</div>
 			</div>
@@ -44,10 +32,12 @@
 			</div>
 			<hr />
 			<div class="receipt__result">
-				<p><img src="../../assets/Sunrin Pay Logo.svg" /> 결제 내역</p>
 				<p>
-					Andy0414(pjh8667@gmail.com)<br />
-					Sunrin Pay 지갑으로 대금 지불
+					<img src="../../assets/Sunrin Pay Logo.svg" /> 결제 내역
+				</p>
+				<p>
+					Andy0414(pjh8667@gmail.com)
+					<br />Sunrin Pay 지갑으로 대금 지불
 				</p>
 			</div>
 		</div>
@@ -61,7 +51,12 @@ import NumberCounterVue from "vue-roller";
 import { Vue, Component } from "vue-property-decorator";
 
 @Component
-export default class Receipt extends Vue {}
+export default class Receipt extends Vue {
+	list = [
+		{ name: "할인가", price: 10000, discount: 10, quantity: 3 },
+		{ name: "정가", price: 10000, discount: 0, quantity: 3 }
+	];
+}
 </script>
 
 <style lang="scss" scoped>
@@ -103,6 +98,7 @@ export default class Receipt extends Vue {}
 			justify-content: space-between;
 			width: 100%;
 			margin-top: 20px;
+
 			div {
 				display: flex;
 				flex-direction: column;
@@ -121,9 +117,14 @@ export default class Receipt extends Vue {}
 						text-decoration: line-through;
 					}
 				}
+
 				p:nth-child(2) {
 					font-weight: bold;
 				}
+			}
+			.quantity p {
+				display: flex;
+				justify-content: center !important;
 			}
 		}
 	}
