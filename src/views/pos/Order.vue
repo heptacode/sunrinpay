@@ -38,7 +38,7 @@
 			<ul class="order__content__list">
 				<li class="order__content__list__item" v-for="item in selectedList" :key="item.name">
 					<p class="name">{{ item.name }}</p>
-					<div class="count">
+					<div v-if="item.barcode" class="count">
 						<button class="count__action count__action__minous" @click="minousItemCount(item)">-</button>
 						<p>×{{ item.quantity }}</p>
 						<button class="count__action count__action__plus" @click="plusItemCount(item)">+</button>
@@ -95,27 +95,11 @@ export default class Order extends Vue {
 
 	orderID: string = "";
 
-	created() {
-		// 테스트 데이터
-		// this.list.push({
-		// 	name: "마스크",
-		// 	count: 5,
-		// 	price: 1500,
-		// 	barcode: "8809453880519",
-		// });
-		// this.list.push({
-		// 	name: "박종훈 학생증",
-		// 	count: 4,
-		// 	price: 500,
-		// 	barcode: "S2180146",
-		// });
-	}
-
 	@Watch("list")
 	onListChanged(next: any[], prev: any[]) {}
 
 	appendSelectedItem(item: StockItem) {
-		let idx = this.selectedList.findIndex((i) => i.name == item.name);
+		let idx = this.selectedList.findIndex(i => i.name == item.name);
 		if (item.quantity > 0) {
 			item.quantity--;
 
@@ -129,12 +113,12 @@ export default class Order extends Vue {
 		}
 	}
 	removeSelectItem(item: StockItem) {
-		let idx = this.selectedList.findIndex((i) => i.name == item.name);
-		this.list.find((i) => i.name == this.selectedList[idx].name)!.quantity += item.quantity;
+		let idx = this.selectedList.findIndex(i => i.name == item.name);
+		this.list.find(i => i.name == this.selectedList[idx].name)!.quantity += item.quantity;
 		this.selectedList.splice(idx, 1);
 	}
 	onDetected(result: string) {
-		let idx = this.list.findIndex((item) => item.barcode == result);
+		let idx = this.list.findIndex(item => item.barcode == result);
 		if (idx != -1) {
 			let beep = new Audio("https://firebasestorage.googleapis.com/v0/b/sunrinpay.appspot.com/o/beep.mp3?alt=media&token=935710df-2dce-4af9-bd4c-bcbfc425533d");
 			beep.play();
@@ -143,7 +127,7 @@ export default class Order extends Vue {
 	}
 
 	plusItemCount(item: StockItem) {
-		let idx = this.list.findIndex((i) => i.name == item.name);
+		let idx = this.list.findIndex(i => i.name == item.name);
 		let original = this.list[idx];
 		if (original.quantity > 0) {
 			original.quantity--;
@@ -151,7 +135,7 @@ export default class Order extends Vue {
 		}
 	}
 	minousItemCount(item: StockItem) {
-		let idx = this.list.findIndex((i) => i.name == item.name);
+		let idx = this.list.findIndex(i => i.name == item.name);
 		let original = this.list[idx];
 		original.quantity++;
 		item.quantity--;
@@ -194,7 +178,7 @@ export default class Order extends Vue {
 			totalPrice: this.calculateTotalPrice,
 		});
 		this.$router.push({
-			name: "payment",
+			name: "OrderRequest",
 			query: {
 				orderID: this.orderID,
 			},
@@ -311,6 +295,7 @@ export default class Order extends Vue {
 			.order__content__list__item {
 				display: flex;
 				justify-content: space-between;
+				align-items: center;
 				font-size: $small-up-size;
 
 				padding: 10px;
