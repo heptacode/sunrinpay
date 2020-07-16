@@ -106,11 +106,9 @@ export default new Vuex.Store({
 					balance: recipientSnapshot.data()!.balance + data.amount,
 				});
 
-				// state 잔액 갱신
-				snapshot = await docRef.get();
-				state.balance = snapshot.data()!.balance;
-
 				await transaction(`송금 : ${data.recipient}`, {}, data.amount);
+				this.dispatch("GET_BALANCE");
+				this.dispatch("GET_TRANSACTIONS");
 				return `${data.recipient}님에게 ${data.amount}원을 보냈습니다.`;
 			} catch (err) {
 				await log("error", `SEND_MONEY : ${err}`);
