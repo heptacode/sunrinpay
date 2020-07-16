@@ -100,6 +100,8 @@ export default class Order extends Vue {
 
 	totalString: string = "";
 
+	orderID: string = "";
+
 	created() {
 		// 테스트 데이터
 		// this.list.push({
@@ -198,8 +200,9 @@ export default class Order extends Vue {
 	}
 
 	async createOrder() {
+		this.orderID = createRandomNumber();
 		await this.$store.dispatch("CREATE_ORDER", {
-			orderID: createRandomNumber(),
+			orderID: this.orderID,
 			itemList: this.selectedList,
 			totalPrice: this.calculateTotalPrice
 		});

@@ -2,14 +2,20 @@
 	<div class="simplemode">
 		<div class="simplemode__content">
 			<p>결제하실 금액</p>
-			<h2><NumberCounter text="25565" :isNumberFormat="true" defaultChar="0"></NumberCounter>원</h2>
+			<h2>
+				<NumberCounter text="25565" :isNumberFormat="true" defaultChar="0"></NumberCounter>원
+			</h2>
 		</div>
 		<div class="simplemode__content2">
 			<p>어떤 수단을 이용하시겠어요?</p>
 		</div>
 		<div class="simplemode__actions">
 			<PaymentButton class="simplemode__actions__btn" @click="test"></PaymentButton>
-			<PaymentButton class="simplemode__actions__btn" paymentName="Kakao Pay" @click="checkoutWithKakaoPay"></PaymentButton>
+			<PaymentButton
+				class="simplemode__actions__btn"
+				paymentName="Kakao Pay"
+				@click="checkoutWithKakaoPay"
+			></PaymentButton>
 		</div>
 	</div>
 </template>
@@ -20,14 +26,14 @@ import CashButton from "@/components/CashButton.vue";
 import NumberCounter from "vue-roller";
 
 import { Vue, Component } from "vue-property-decorator";
-import isMobile from "../lib/isMobile";
+import isMobile from "../../lib/isMobile";
 
 @Component({
 	components: {
 		PaymentButton,
 		CashButton,
-		NumberCounter,
-	},
+		NumberCounter
+	}
 })
 export default class SimpleCheckout extends Vue {
 	test() {
@@ -37,7 +43,7 @@ export default class SimpleCheckout extends Vue {
 			.dispatch("CHECKOUT", {
 				idToken:
 					"eyJhbGciOiJSUzI1NiIsImtpZCI6IjdkNTU0ZjBjMTJjNjQ3MGZiMTg1MmY3OWRiZjY0ZjhjODQzYmIxZDciLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiSHl1bndvbyBLaW0iLCJwaWN0dXJlIjoiaHR0cHM6Ly9saDMuZ29vZ2xldXNlcmNvbnRlbnQuY29tL2EtL0FPaDE0R2o5elBhN1JSSUMyN3FsQzBGQUdaSFBycHBBMnVDSEdDSE1EeVZBQ3ciLCJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vc3VucmlucGF5IiwiYXVkIjoic3VucmlucGF5IiwiYXV0aF90aW1lIjoxNTkzMTMyNjE1LCJ1c2VyX2lkIjoiQWNRRnF0b1VlUWJBbklMcmxIUWZkbHFPeUZPMiIsInN1YiI6IkFjUUZxdG9VZVFiQW5JTHJsSFFmZGxxT3lGTzIiLCJpYXQiOjE1OTMxMzI2MTUsImV4cCI6MTU5MzEzNjIxNSwiZW1haWwiOiJyYXlraW0wNjIxQGdtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7Imdvb2dsZS5jb20iOlsiMTA2MzY4OTYxNDk2NDgwMjk2NTMwIl0sImZhY2Vib29rLmNvbSI6WyIxMzcxNTE3MDAzMjM3MjEyIl0sImVtYWlsIjpbInJheWtpbTA2MjFAZ21haWwuY29tIl19LCJzaWduX2luX3Byb3ZpZGVyIjoiZ29vZ2xlLmNvbSJ9fQ.DD6Dmr2B0CUUZ9uXLFP_9T_kREaeKJrLx9JP2rxIlurAtlnDRuEc73giZ9okUecxABz2GHmOioy3P91iREhea6KJcf3YyOjKoknO-8H20aozkJaUML8Wn5gs_ScvMMaG0P_Q9UGX1N2wtbLM-SQgh7Sfrg-haulFmEiQoXdEs2shj3SIFVS8qJjG2Pye6VI-U0II7vVnfXgq-7UZIVRfSMgrS2Q1BX6pdON3Cv9FO-AJDVoOI5srxuCgIq1osGWFaU_puw1iZaQ7Vhd52t4X_65wGR0pVDVxyc7dxJiXvgJNWB6R_-JxI-egDk8rTVLavwS3bd5vkxsNAIC-qrXcbQ",
-				price: 1000,
+				price: 1000
 			})
 			.then(res => console.log(res))
 			.catch(err => console.log(err));
@@ -49,7 +55,7 @@ export default class SimpleCheckout extends Vue {
 			total_amount: 2200,
 			vat_amount: 0,
 			tax_free_amount: 0,
-			price: 1000,
+			price: 1000
 		});
 		if (isMobile()) {
 			// 모바일
