@@ -37,7 +37,7 @@
 				<p><img src="https://firebasestorage.googleapis.com/v0/b/sunrinpay.appspot.com/o/ReceiptLogo.svg?alt=media&token=657c8dbc-1718-484a-a374-21daa7b396ca" /> 결제 내역</p>
 				<p>
 					{{ getUser.displayName }}({{ getUser.email }}) <br />{{
-						data.type == "충전" ? "Sunrin Pay 지갑에 잔액 추가됨" : data.type == "결제" ? "Sunrin Pay 지갑으로 지불함" : "카카오페이를 통해 결제됨"
+						data.type == "충전" ? "Sunrin Pay 지갑에 잔액 추가됨" : data.type == "일반 결제" ? "Sunrin Pay 지갑으로 지불함" : "카카오페이를 통해 결제됨"
 					}}
 				</p>
 			</div>
