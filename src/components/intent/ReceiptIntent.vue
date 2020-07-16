@@ -5,11 +5,11 @@
 		</div>
 		<div class="receipt__wrap">
 			<div class="receipt__title">
-				<img src="../../assets/Sunrin Pay Logo.svg" class="receipt__title__image" />
+				<img src="https://firebasestorage.googleapis.com/v0/b/sunrinpay.appspot.com/o/ReceiptLogo.svg?alt=media&token=657c8dbc-1718-484a-a374-21daa7b396ca" class="receipt__title__image" />
 				<div>
-					<h1>선린인터넷고등학교 매점</h1>
-					<p>서울특별시 뭐시기</p>
-					<p>사업자 123456789</p>
+					<h1>{{ setting.name }}</h1>
+					<p>{{ setting.address }}</p>
+					<p>{{ setting.manager }} {{ setting.regNo }}</p>
 				</div>
 			</div>
 			<hr />
@@ -17,7 +17,6 @@
 				<div class="receipt__list__item" v-for="item in data.data" :key="item.name">
 					<div>
 						<p>{{ item.name }}</p>
-						<p>123456789</p>
 					</div>
 					<div class="quantity">
 						<p>X{{ item.quantity }}</p>
@@ -30,32 +29,42 @@
 				</div>
 			</div>
 			<div class="receipt__total">
-				<h3>결제 금액</h3>
-				<p>{{ data.totalPrice }}</p>
+				<h3>{{ data.type == "충전" ? "충전 금액" : "결제 금액" }}</h3>
+				<p>{{ data.type == "충전" ? "+" + numberFormat(data.totalPrice) : numberFormat(data.totalPrice) }}</p>
 			</div>
 			<hr />
 			<div class="receipt__result">
-				<p><img src="../../assets/Sunrin Pay Logo.svg" /> 결제 내역</p>
-				<p>{{ getUser.displayName }}({{ getUser.email }}) <br />Sunrin Pay 지갑으로 대금 지불</p>
+				<p><img src="https://firebasestorage.googleapis.com/v0/b/sunrinpay.appspot.com/o/ReceiptLogo.svg?alt=media&token=657c8dbc-1718-484a-a374-21daa7b396ca" /> 결제 내역</p>
+				<p>
+					{{ getUser.displayName }}({{ getUser.email }}) <br />{{
+						data.type == "충전" ? "Sunrin Pay 지갑에 잔액 추가됨" : data.type == "결제" ? "Sunrin Pay 지갑으로 지불함" : "카카오페이를 통해 결제됨"
+					}}
+				</p>
 			</div>
 		</div>
 	</div>
 </template>
 
 <script lang="ts">
-import QRcode from "../components/QRcode.vue";
-import NumberCounterVue from "vue-roller";
-import firebase from "firebase/app";
-
-import { Vue, Component, Prop } from "vue-property-decorator";
 import BackButton from "../BackButton.vue";
+import { db } from "@/DB";
+
+import { Vue, Component, Watch, Prop } from "vue-property-decorator";
 
 @Component({
 	components: {
 		BackButton,
 	},
+	firestore: {
+		setting: db.collection("settings").doc("settings"),
+	},
 })
 export default class Receipt extends Vue {
+	setting: object = {};
+
+	@Watch("setting")
+	onSettingChanged(next: any[], prev: any[]) {}
+
 	@Prop({ type: Object }) data: any;
 	list = [
 		{ name: "할인가", price: 10000, discount: 10, quantity: 3 },
@@ -63,6 +72,10 @@ export default class Receipt extends Vue {
 	];
 	get getUser() {
 		return this.$store.state.userInformation;
+	}
+
+	numberFormat(number: number): string {
+		return new Intl.NumberFormat().format(number);
 	}
 	close() {
 		this.$emit("close", false);
@@ -115,6 +128,7 @@ export default class Receipt extends Vue {
 		.receipt__list__item {
 			display: flex;
 			justify-content: space-between;
+			align-items: center;
 			width: 100%;
 			margin-top: 20px;
 
