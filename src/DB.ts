@@ -53,7 +53,7 @@ export async function log(_type: string, _message: string): Promise<boolean> {
 		console.log(_message);
 		return true;
 	} catch (err) {
-		console.log("Unexpected Error While Logging");
+		console.log(`Unexpected Error While Logging : ${err}`);
 		return false;
 	}
 }

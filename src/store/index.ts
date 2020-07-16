@@ -5,6 +5,7 @@ import "firebase/analytics";
 import axios from "axios";
 
 import { db, log, transaction } from "@/DB";
+import { query } from "vue-analytics";
 
 const event = require("vue-analytics").event;
 
@@ -13,7 +14,7 @@ Vue.use(Vuex);
 export default new Vuex.Store({
 	state: {
 		balance: 0 as number,
-		transactions: {},
+		transactions: [] as any,
 	},
 	mutations: {},
 	actions: {
@@ -30,18 +31,22 @@ export default new Vuex.Store({
 				return false;
 			}
 		},
-		async GET_TRANSACTIONS({ commit, state }, data): Promise<boolean> {
+		async GET_TRANSACTIONS({ commit, state }, data): Promise<any> {
 			event("action", "GET_TRANSACTIONS", "getTransactions", data);
 			try {
 				let querySnapshot = await db
 					.collection("transactions")
 					.where("uid", "==", firebase.auth().currentUser!.uid)
 					.get();
-				// state.transactions = snapshot.data()!;
-				//console.log(querySnapshot);
+				state.transactions = [];
+				querySnapshot.forEach(doc => {
+					state.transactions.push(doc.data());
+					// console.log(doc.id, ": ", doc.data().timestamp.seconds);
+				});
+				// console.log(state.transactions[0].type);
 				return true;
 			} catch (err) {
-				log("error", `GET_TRANSACTIONS : ${err}`);
+				await log("error", `GET_TRANSACTIONS : ${err}`);
 				return false;
 			}
 		},
@@ -95,7 +100,7 @@ export default new Vuex.Store({
 					.set({ id: data.orderID, itemList: data.itemList });
 				return true;
 			} catch (err) {
-				log("error", `CREATE_ORDER : ${err}`);
+				await log("error", `CREATE_ORDER : ${err}`);
 				return false;
 			}
 		},
@@ -109,15 +114,19 @@ export default new Vuex.Store({
 				// 결제 가능
 				try {
 					await docRef.update({ balance: newBalance });
-					await transaction({ price: data.price });
+					await transaction({
+						type: "일반 결제",
+						data: data.transactionData,
+						totalPrice: data.totalPrice,
+					});
 					return true;
 				} catch (err) {
-					log("error", `결제 후 잔고 업데이트 실패 : ${err}`);
+					await log("error", `결제 후 잔고 업데이트 실패 : ${err}`);
 					return false;
 				}
 			} else {
 				// 결제 불가
-				log("info", `잔액 부족 : ${Math.abs(newBalance)}원`);
+				await log("info", `잔액 부족 : ${Math.abs(newBalance)}원`);
 				return `잔액이 ${Math.abs(newBalance)}원 부족합니다.`;
 			}
 		},
@@ -131,9 +140,35 @@ export default new Vuex.Store({
 					vat_amount: data.vat_amount,
 					tax_free_amount: data.tax_free_amount,
 				});
+				if (result) {
+					await transaction({
+						type: "카카오페이 결제",
+						data: data.transactionData,
+						totalPrice: data.totalPrice,
+					});
+				}
 				return result.data;
 			} catch (err) {
 				return console.dir(err);
+			}
+		},
+		async CHARGE({ commit, state }, data): Promise<boolean> {
+			event("action", "CHARGE", "charge", data);
+			const docRef = await db.collection("accounts").doc(firebase.auth().currentUser!.uid);
+
+			let snapshot = await docRef.get();
+			const newBalance = snapshot.data()!.balance + data.price;
+
+			try {
+				await docRef.update({ balance: newBalance });
+				await transaction({
+					data: "충전",
+					totalPrice: data.totalPrice,
+				});
+				return true;
+			} catch (err) {
+				await log("error", `충전 실패 : ${err}`);
+				return false;
 			}
 		},
 	},
