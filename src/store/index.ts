@@ -51,7 +51,7 @@ export default new Vuex.Store({
 					.orderBy("timestamp", "desc")
 					.get();
 				state.transactions = [];
-				querySnapshot.forEach((doc) => {
+				querySnapshot.forEach(doc => {
 					state.transactions.push(doc.data());
 				});
 				return true;
@@ -99,49 +99,6 @@ export default new Vuex.Store({
 			} catch (err) {
 				log("error", `SEND_MONEY : ${err}`);
 				return "오류가 발생하였습니다.";
-			}
-		},
-		async CREATE_ORDER({ commit, state }, data): Promise<boolean> {
-			event("action", "CREATE_ORDER", "createOrder", data);
-			try {
-				await db
-					.collection("orders")
-					.doc(data.orderID)
-					.set({
-						id: data.orderID,
-						itemData: data.itemData,
-						totalPrice: data.totalPrice,
-					});
-				return true;
-			} catch (err) {
-				await log("error", `CREATE_ORDER : ${err}`);
-				return false;
-			}
-		},
-		async GET_ORDER({ commit, state }, data): Promise<any> {
-			event("action", "GET_ORDER", "getOrder", data);
-			try {
-				let orderDocSnapshot = await db
-					.collection("orders")
-					.doc(data.orderID)
-					.get();
-				return orderDocSnapshot.data();
-			} catch (err) {
-				await log("error", `GET_ORDER : ${err}`);
-				return false;
-			}
-		},
-		async DELETE_ORDER({ commit, state }, data): Promise<boolean> {
-			event("action", "DELETE_ORDER", "deleteOrder", data);
-			try {
-				await db
-					.collection("orders")
-					.doc(data.orderID)
-					.delete();
-				return true;
-			} catch (err) {
-				await log("error", `DELETE_ORDER : ${err}`);
-				return false;
 			}
 		},
 		async CHECKOUT({ commit, state }, data): Promise<boolean | string> {
@@ -213,6 +170,50 @@ export default new Vuex.Store({
 				return "오류가 발생하였습니다.";
 			}
 		},
+
+		async CREATE_ORDER({ commit, state }, data): Promise<boolean> {
+			event("action", "CREATE_ORDER", "createOrder", data);
+			try {
+				await db
+					.collection("orders")
+					.doc(data.orderID)
+					.set({
+						orderID: data.orderID,
+						itemData: data.itemData,
+						totalPrice: data.totalPrice,
+					});
+				return true;
+			} catch (err) {
+				await log("error", `CREATE_ORDER : ${err}`);
+				return false;
+			}
+		},
+		async GET_ORDER({ commit, state }, data): Promise<any> {
+			event("action", "GET_ORDER", "getOrder", data);
+			try {
+				let orderDocSnapshot = await db
+					.collection("orders")
+					.doc(data.orderID)
+					.get();
+				return orderDocSnapshot.data();
+			} catch (err) {
+				await log("error", `GET_ORDER : ${err}`);
+				return false;
+			}
+		},
+		async DELETE_ORDER({ commit, state }, data): Promise<boolean> {
+			event("action", "DELETE_ORDER", "deleteOrder", data);
+			try {
+				await db
+					.collection("orders")
+					.doc(data.orderID)
+					.delete();
+				return true;
+			} catch (err) {
+				await log("error", `DELETE_ORDER : ${err}`);
+				return false;
+			}
+		},
 		async UPDATE_ITEM({ commit, state }, data): Promise<boolean> {
 			try {
 				await db
@@ -230,7 +231,7 @@ export default new Vuex.Store({
 			try {
 				let settingsDocSnapshot = await db
 					.collection("settings")
-					.doc("aegWkgfq4qOH5lRqNF7z")
+					.doc("settings")
 					.get();
 				return settingsDocSnapshot.data();
 			} catch (err) {
@@ -241,13 +242,13 @@ export default new Vuex.Store({
 			try {
 				await db
 					.collection("settings")
-					.doc("aegWkgfq4qOH5lRqNF7z")
+					.doc("settings")
 					.update({
 						[data.key]: data.value,
 					});
 				return true;
 			} catch (err) {
-				console.log(err)
+				console.log(err);
 				return false;
 			}
 		},
