@@ -10,7 +10,7 @@ import SignOut from "@/views/SignOut.vue";
 // Customer
 // import SimpleCheckout from "@/views/SimpleCheckout.vue";
 import Checkout from "@/views/Checkout.vue";
-// import Payment from "@/views/Payment.vue";
+import Payment from "@/views/Payment.vue";
 // import PaymentClear from "@/views/Payment-Clear.vue";
 // import PaymentError from "@/views/Payment-Error.vue";
 // import SimpleUserPayment from "@/views/SimpleUserPayment.vue";
@@ -59,11 +59,11 @@ const routes: Array<RouteConfig> = [
 		name: "checkout",
 		component: Checkout,
 	},
-	// {
-	// 	path: "/payment",
-	// 	name: "payment",
-	// 	component: Payment,
-	// },
+	{
+		path: "/payment",
+		name: "payment",
+		component: Payment,
+	},
 	// {
 	// 	path: "/payment-clear",
 	// 	name: "payment-clear",

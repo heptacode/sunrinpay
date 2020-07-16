@@ -52,7 +52,7 @@
 					</span>
 				</li>
 			</ul>
-			<PaymentRequireButton></PaymentRequireButton>
+			<PaymentRequireButton @click="createOrder"></PaymentRequireButton>
 		</div>
 	</div>
 </template>
@@ -115,7 +115,7 @@ export default class Order extends Vue {
 	onListChanged(next: any[], prev: any[]) {}
 
 	appendSelectedItem(item: StockItem) {
-		let idx = this.selectedList.findIndex(i => i.name == item.name);
+		let idx = this.selectedList.findIndex((i) => i.name == item.name);
 		if (item.quantity > 0) {
 			item.quantity--;
 
@@ -129,12 +129,12 @@ export default class Order extends Vue {
 		}
 	}
 	removeSelectItem(item: StockItem) {
-		let idx = this.selectedList.findIndex(i => i.name == item.name);
-		this.list.find(i => i.name == this.selectedList[idx].name)!.quantity += item.quantity;
+		let idx = this.selectedList.findIndex((i) => i.name == item.name);
+		this.list.find((i) => i.name == this.selectedList[idx].name)!.quantity += item.quantity;
 		this.selectedList.splice(idx, 1);
 	}
 	onDetected(result: string) {
-		let idx = this.list.findIndex(item => item.barcode == result);
+		let idx = this.list.findIndex((item) => item.barcode == result);
 		if (idx != -1) {
 			let beep = new Audio("https://firebasestorage.googleapis.com/v0/b/sunrinpay.appspot.com/o/beep.mp3?alt=media&token=935710df-2dce-4af9-bd4c-bcbfc425533d");
 			beep.play();
@@ -143,7 +143,7 @@ export default class Order extends Vue {
 	}
 
 	plusItemCount(item: StockItem) {
-		let idx = this.list.findIndex(i => i.name == item.name);
+		let idx = this.list.findIndex((i) => i.name == item.name);
 		let original = this.list[idx];
 		if (original.quantity > 0) {
 			original.quantity--;
@@ -151,7 +151,7 @@ export default class Order extends Vue {
 		}
 	}
 	minousItemCount(item: StockItem) {
-		let idx = this.list.findIndex(i => i.name == item.name);
+		let idx = this.list.findIndex((i) => i.name == item.name);
 		let original = this.list[idx];
 		original.quantity++;
 		item.quantity--;
@@ -192,6 +192,12 @@ export default class Order extends Vue {
 			orderID: this.orderID,
 			itemData: this.selectedList,
 			totalPrice: this.calculateTotalPrice,
+		});
+		this.$router.push({
+			name: "payment",
+			query: {
+				orderID: this.orderID,
+			},
 		});
 	}
 }

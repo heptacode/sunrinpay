@@ -1,6 +1,6 @@
 <template>
 	<div class="payment">
-		<QRcode class="payment__qrcode" data="https://github.com/"></QRcode>
+		<QRcode class="payment__qrcode" :data="link"></QRcode>
 		<div class="payment__content">
 			<h2>Sunrin Pay 결제</h2>
 			<p>
@@ -8,16 +8,16 @@
 				<br />결제를 진행해주세요.
 			</p>
 			<p class="payment__content__expirationtime">
-				<NumberCounter :text="getMinute" defaultChar="0"></NumberCounter>:
-				<NumberCounter :text="getSecond" defaultChar="0"></NumberCounter>
+				<NumberCounter :text="String(getMinute)" defaultChar="0"></NumberCounter>:
+				<NumberCounter :text="String(getSecond)" defaultChar="0"></NumberCounter>
 			</p>
 		</div>
 		<div class="payment__actions">
-			<div class="payment__actions__btn">
+			<div class="payment__actions__btn" @click="resetOrder">
 				<i class="iconify" data-icon="mdi-close"></i>
 				<p>취소하기</p>
 			</div>
-			<div class="payment__actions__btn">
+			<div class="payment__actions__btn" @click="resetTimer">
 				<i class="iconify" data-icon="mdi-timer-sand-full"></i>
 				<p>시간 연장</p>
 			</div>
@@ -39,18 +39,36 @@ import { Vue, Component } from "vue-property-decorator";
 })
 export default class Payment extends Vue {
 	time: number = 180;
-
+	link: string = "";
+	async created() {
+		// let data = await this.$store.dispatch("GET_ORDER", {
+		// 	orderID: this.getOrderID,
+		// });
+		this.link = `https://sunrinpay.com/checkout?orderID=${this.getOrderID}`;
+	}
 	mounted() {
 		setInterval(() => {
 			this.time--;
 		}, 1000);
 	}
-
 	get getSecond(): number {
 		return this.time % 60;
 	}
 	get getMinute(): number {
 		return Math.floor(this.time / 60);
+	}
+	get getOrderID(): string {
+		return this.$route.query.orderID as string;
+	}
+
+	resetTimer() {
+		this.time = 180;
+	}
+	async resetOrder() {
+		await this.$store.dispatch("DELETE_ORDER", {
+			orderID: this.getOrderID,
+		});
+		this.$router.push("/");
 	}
 }
 </script>
@@ -109,6 +127,8 @@ export default class Payment extends Vue {
 		align-items: center;
 
 		.payment__actions__btn {
+			cursor: pointer;
+
 			padding: 10px;
 			margin: 0 60px;
 
