@@ -20,8 +20,9 @@
 					</span>
 				</div>
 			</div>
-			<button type="button" v-if="!this.$route.query.account" @click="showBankList(true)">Toss로 송금</button>&nbsp;
-			<button type="button" @click="showRecipientInput = true">송금하기</button>
+			<button type="button" @click="showRecipientInput = true" class="send__money__btn">송금하기</button>
+			<br>
+			<button type="button" v-if="!this.$route.query.account" @click="showBankList(true)" class="send__toss__btn">Toss로 보내기</button>
 		</div>
 
 		<div v-if="showRecipientInput" class="sendmoney__recipientInput">
@@ -41,7 +42,7 @@
 		<!-- Toss 송금 -->
 		<div class="sendmoney__bank" :class="{ active: isShowBankList }">
 			<div class="sendmoney__bank__title">은행 선택</div>
-			<span @click="selectBank('NH농협')"><i class="iconify" data-icon="mdi-bank"></i>NH 농협</span>
+			<span @click="selectBank('NH농협')"><i class="iconify" data-icon="mdi-bank"></i>NH농협</span>
 			<span @click="selectBank('KB국민')"><i class="iconify" data-icon="mdi-bank"></i>KB국민</span>
 			<span @click="selectBank('신한')"><i class="iconify" data-icon="mdi-bank"></i>신한</span>
 			<span @click="selectBank('우리')"><i class="iconify" data-icon="mdi-bank"></i>우리</span>
@@ -61,7 +62,7 @@
 			<span @click="selectBank('부산')"><i class="iconify" data-icon="mdi-bank"></i>부산</span>
 			<span @click="selectBank('수협')"><i class="iconify" data-icon="mdi-bank"></i>수협</span>
 			<span @click="selectBank('제주')"><i class="iconify" data-icon="mdi-bank"></i>제주</span>
-			<span @click="selectBank('저축은행')"><i class="iconify" data-icon="mdi-bank"></i>저축은행</span>
+			<span @click="selectBank('저축은행')"><i class="iconify" data-icon="mdi-bank"></i>저축</span>
 			<span @click="selectBank('신림조합')"><i class="iconify" data-icon="mdi-bank"></i>신림조합</span>
 			<span @click="selectBank('케이뱅크')"><i class="iconify" data-icon="mdi-bank"></i>케이뱅크</span>
 			<span @click="selectBank('카카오뱅크')"><i class="iconify" data-icon="mdi-bank"></i>카카오뱅크</span>
@@ -80,8 +81,8 @@
 				</div>
 				<input type="tel" v-model="accountNo" placeholder="계좌번호" minlength="6" required @keydown="qrData = ''" />
 				<div v-if="accountNo">
-					<button type="submit" @click="openToss = false">QR 생성</button>&nbsp;
-					<button type="submit" @click="openToss = true">Toss 앱에서 열기</button>
+					<button type="submit" @click="openToss = false" style="margin-right:5px">QR 코드 생성</button>
+					<button type="submit" @click="openToss = true" style="margin-left:5px">Toss 앱에서 열기</button>
 				</div>
 				<br /><br />
 				<QRcode v-if="qrData && accountNo" :data="qrData" class="qr"></QRcode>
@@ -172,6 +173,16 @@ export default class SendMoney extends Vue {
 	to {
 		transform: rotate(360deg);
 	}
+}
+
+.send__toss__btn{
+	background:$gray-text-color;
+	width:100%;
+	max-width:50%;
+}
+.send__money__btn{
+	width:100%;
+	max-width:50%;	
 }
 .sendmoney {
 	max-width: 720px;
