@@ -113,6 +113,10 @@ input[type="text"] {
 	border-bottom: 1px solid $text-color;
 	color: $text-color;
 
+	&.firebaseui-id-name {
+		color: black !important;
+	}
+
 	&:disabled {
 		background-color: $content-color;
 		cursor: not-allowed;
@@ -131,13 +135,14 @@ input[type="email"] {
 	border-bottom: 1px solid $text-color;
 	color: $text-color;
 
+	&.firebaseui-id-email {
+		color: black !important;
+	}
+
 	&:disabled {
 		background-color: $content-color;
 		cursor: not-allowed;
 	}
-}
-.firebaseui-id-email {
-	color: black !important;
 }
 
 input[type="tel"] {
