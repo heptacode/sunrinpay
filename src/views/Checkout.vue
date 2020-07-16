@@ -16,7 +16,7 @@
 				</div>
 			</ul>
 			<ul class="detailsmode__content__list">
-				<li class="detailsmode__content__list__item" v-for="idx in 10" :key="idx">
+				<li class="detailsmode__content__list__item" v-for="(i, idx) in 10" :key="i">
 					<p class="name">(빙그레)메로나메론맛</p>
 					<p class="count">×1</p>
 					<p class="price">14,700원</p>
@@ -48,13 +48,20 @@ import isMobile from "@/lib/isMobile";
 })
 export default class Checkout extends Vue {
 	orderID: string = "";
+
 	itemList: object = {};
 	totalPrice: string = "";
 
 	async mounted() {
-		this.itemList = await this.$store.dispatch("GET_ORDER", {
+		if (this.$route.query.orderID) {
+			let orderID = this.$route.query.orderID;
+			this.orderID = orderID.toString();
+		}
+		let orderData = await this.$store.dispatch("GET_ORDER", {
 			orderID: this.orderID,
 		});
+		this.itemList = orderData.itemList;
+		this.totalPrice = orderData.totalPrice;
 	}
 
 	async checkout() {
@@ -64,12 +71,7 @@ export default class Checkout extends Vue {
 	}
 	async checkoutWithKakaoPay() {
 		let res = await this.$store.dispatch("CHECKOUT_KAKAOPAY", {
-			item_name: "초코파이",
-			quantity: 1,
-			total_amount: 2200,
-			vat_amount: 0,
-			tax_free_amount: 0,
-			price: 1000,
+			orderID: this.orderID,
 		});
 		if (isMobile()) {
 			// 모바일
