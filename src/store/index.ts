@@ -39,7 +39,7 @@ export default new Vuex.Store({
 					.where("uid", "==", firebase.auth().currentUser!.uid)
 					.get();
 				state.transactions = [];
-				querySnapshot.forEach((doc) => {
+				querySnapshot.forEach(doc => {
 					state.transactions.push(doc.data());
 					// console.log(doc.id, ": ", doc.data().timestamp.seconds);
 				});
@@ -152,16 +152,23 @@ export default new Vuex.Store({
 				return console.dir(err);
 			}
 		},
-		// FIXME: data.email 사용
-		async CHARGE({ commit, state }, data): Promise<boolean> {
+		async CHARGE({ commit, state }, data): Promise<boolean | string> {
 			event("action", "CHARGE", "charge", data);
-			const docRef = await db.collection("accounts").doc(firebase.auth().currentUser!.uid);
+			let recipientQuerySnapshot = await db
+				.collection("accounts")
+				.where("email", "==", data.email)
+				.get();
 
-			let snapshot = await docRef.get();
-			const newBalance = snapshot.data()!.balance + data.price;
+			if (!recipientQuerySnapshot.docs[0]) return "계정이 존재하지 않습니다.";
+
+			// 받는 사람  도큐먼트 가져오기
+			let recipientDocRef = await db.collection("accounts").doc(recipientQuerySnapshot.docs[0].id);
+			let recipientSnapshot = await recipientDocRef.get();
+
+			const newBalance = recipientSnapshot.data()!.balance + data.price;
 
 			try {
-				await docRef.update({ balance: newBalance });
+				await recipientDocRef.update({ balance: newBalance });
 				await transaction({
 					data: "충전",
 					totalPrice: data.totalPrice,
