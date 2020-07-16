@@ -22,6 +22,7 @@ import PoS from "@/views/pos/PoS.vue";
 import Order from "@/views/pos/Order.vue";
 import StockManagement from "@/views/pos/StockManagement.vue";
 import Setting from "@/views/pos/Settings.vue";
+import Charge from "@/views/pos/Charge.vue";
 
 Vue.use(VueRouter);
 
@@ -109,6 +110,11 @@ const routes: Array<RouteConfig> = [
 		path: "/pos/setting",
 		name: "Setting",
 		component: Setting,
+	},
+	{
+		path: "/pos/charge",
+		name: "Charge",
+		component: Charge,
 	},
 ];
 
