@@ -33,7 +33,9 @@
 			<h2>결제 수단 선택</h2>
 			<PaymentSelected v-model="paymentResult"></PaymentSelected>
 		</div>
-		<button class="detailsuserpayment__ok">결제하기</button>
+		<div class="detailsuserpayment__button__container">
+			<button class="detailsuserpayment__ok">결제하기</button>
+		</div>
 	</div>
 </template>
 
@@ -153,17 +155,27 @@ export default class DetailsUserPayment extends Vue {
 			}
 		}
 	}
+	.detailsuserpayment__button__container{
+		//left: 25px;
+		width: 100%;
+		position: fixed;
+		left: 0;
+		bottom: 0;
+		background-color:$background-color;
+		-webkit-box-shadow: 0px -4px 20px -1px rgba(0,0,0,0.25); 
+		box-shadow: 0px -4px 20px -1px rgba(0,0,0,0.25);
+		display: flex;
+		overflow: hidden;
+		padding: 15px 20px;
+
+	}
 	.detailsuserpayment__ok {
+		flex: 1;
 		border-radius: 8px;
 		padding: 10px;
-
 		font-size: $small-size;
 		font-weight: bold;
-
-		position: fixed;
-		left: 25px;
-		bottom: 25px;
-		width: calc(100% - 50px);
 	}
+
 }
 </style>
