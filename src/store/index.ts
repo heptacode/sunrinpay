@@ -53,9 +53,7 @@ export default new Vuex.Store({
 				state.transactions = [];
 				querySnapshot.forEach(doc => {
 					state.transactions.push(doc.data());
-					// console.log(doc.id, ": ", doc.data().timestamp.seconds);
 				});
-				// console.log(state.transactions[0].type);
 				return true;
 			} catch (err) {
 				await log("error", `GET_TRANSACTIONS : ${err}`);
@@ -222,6 +220,30 @@ export default new Vuex.Store({
 					.doc(data.item.id)
 					.update({
 						[data.key]: data.item?.[data.key],
+					});
+				return true;
+			} catch (err) {
+				return false;
+			}
+		},
+		async GET_SETTING({ commit, state }, data): Promise<any> {
+			try {
+				let settingsDocSnapshot = await db
+					.collection("settings")
+					.doc("settings")
+					.get();
+				return settingsDocSnapshot.data();
+			} catch (err) {
+				return false;
+			}
+		},
+		async UPDATE_SETTING({ commit, state }, data): Promise<boolean> {
+			try {
+				await db
+					.collection("settings")
+					.doc("settings")
+					.update({
+						[data.key]: data.value,
 					});
 				return true;
 			} catch (err) {
