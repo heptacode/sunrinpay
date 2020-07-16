@@ -75,7 +75,7 @@ export default class Checkout extends Vue {
 		this.result = await this.$store.dispatch("CHECKOUT", {
 			orderID: this.orderID,
 		});
-		if (this.result) this.$router.push("/");
+		if (this.result) this.$router.replace("/");
 	}
 
 	async checkoutWithKakaoPay() {
