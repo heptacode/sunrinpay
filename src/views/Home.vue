@@ -17,7 +17,7 @@
 		<div class="medal">
 			<img
 				v-if="!getIsAuth"
-				src="https://firebasestorage.googleapis.com/v0/b/sunrinpay.appspot.com/o/medal_commits.png?alt=media&token=d137b412-fe11-4181-88c6-74fa9e8c2d60"
+				src="https://firebasestorage.googleapis.com/v0/b/sunrinpay.appspot.com/o/medal_commits.PNG?alt=media&token=309b6bd9-57c4-40a0-a920-14d81e9c030f"
 				alt="Medal for GitHub 300+ Commits"
 				width="40px"
 				draggable="false"
