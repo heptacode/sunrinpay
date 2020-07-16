@@ -1,6 +1,7 @@
 <template>
 	<div class="sendmoney">
 		<header>
+			<!-- TODO : 버튼 적용 -->
 			<router-link to="/" class="login__back">
 				<i class="iconify" data-icon="mdi-chevron-left"></i>
 			</router-link>
@@ -21,7 +22,7 @@
 				</div>
 			</div>
 			<button type="button" @click="showRecipientInput = true" class="send__money__btn">송금하기</button>
-			<br>
+			<br />
 			<button type="button" v-if="!this.$route.query.account" @click="showBankList(true)" class="send__toss__btn">Toss로 보내기</button>
 		</div>
 
@@ -175,14 +176,14 @@ export default class SendMoney extends Vue {
 	}
 }
 
-.send__toss__btn{
-	background:$gray-text-color;
-	width:100%;
-	max-width:50%;
+.send__toss__btn {
+	background: $gray-text-color;
+	width: 100%;
+	max-width: 50%;
 }
-.send__money__btn{
-	width:100%;
-	max-width:50%;	
+.send__money__btn {
+	width: 100%;
+	max-width: 50%;
 }
 .sendmoney {
 	max-width: 720px;
