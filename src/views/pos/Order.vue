@@ -52,7 +52,6 @@
 					</span>
 				</li>
 			</ul>
-			{{ calculateTotalPrice }}
 			<PaymentRequireButton></PaymentRequireButton>
 		</div>
 	</div>
@@ -93,6 +92,8 @@ export default class Order extends Vue {
 	currentConsonant: string = "";
 
 	totalString: string = "";
+
+	orderID: string = "";
 
 	created() {
 		// 테스트 데이터
@@ -186,10 +187,11 @@ export default class Order extends Vue {
 	}
 
 	async createOrder() {
+		this.orderID = createRandomNumber();
 		await this.$store.dispatch("CREATE_ORDER", {
-			orderID: createRandomNumber(),
-			itemData: this.selectedList,
-			totalPrice: this.calculateTotalPrice,
+			orderID: this.orderID,
+			itemList: this.selectedList,
+			totalPrice: this.calculateTotalPrice
 		});
 	}
 }

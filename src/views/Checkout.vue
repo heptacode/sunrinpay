@@ -20,11 +20,14 @@
 					<p class="name">(빙그레)메로나메론맛</p>
 					<p class="count">×1</p>
 					<p class="price">14,700원</p>
-				</li> -->
-				<li class="detailsmode__content__list__item" v-for="(i, idx) in itemData" :key="i.name">
-					<p class="name">{{ itemData[idx].name }}</p>
-					<p class="quantity">{{ itemData[idx].quantity }}</p>
-					<p class="price">{{ numberFormat(itemData[idx].price) }}원</p>
+				</li>-->
+				<li class="detailsmode__content__list__item" v-for="i in itemData" :key="i.name">
+					<p class="name">{{ i.name }}</p>
+					<p class="quantity">{{ i.quantity }}</p>
+					<p class="price">
+						{{ (Number(i.price) * ((100 - Number(i.discount || 0)) / 100)).numberFormat() }}
+						<span v-if="i.discount">(-{{ (Number(i.price) * (Number(i.discount || 0) / 100)).numberFormat() }})</span>
+					</p>
 				</li>
 			</ul>
 		</div>
@@ -68,13 +71,9 @@ export default class Checkout extends Vue {
 		let orderData = await this.$store.dispatch("GET_ORDER", {
 			orderID: this.orderID,
 		});
-		console.log(orderData);
 		this.itemData = orderData.itemData;
+		console.log(this.itemData);
 		this.totalPrice = orderData.totalPrice;
-	}
-
-	numberFormat(number: number): string {
-		return new Intl.NumberFormat().format(number);
 	}
 
 	async checkout() {
