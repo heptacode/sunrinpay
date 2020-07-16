@@ -103,7 +103,7 @@ export default new Vuex.Store({
 					.doc(data.orderID)
 					.set({
 						id: data.orderID,
-						itemList: data.itemList,
+						itemData: data.itemData,
 						totalPrice: data.totalPrice,
 					});
 				return true;
@@ -112,42 +112,58 @@ export default new Vuex.Store({
 				return false;
 			}
 		},
+		async GET_ORDER({ commit, state }, data): Promise<any> {
+			event("action", "GET_ORDER", "getOrder", data);
+			try {
+				let orderDocSnapshot = await db
+					.collection("orders")
+					.doc(data.orderID)
+					.get();
+				return orderDocSnapshot;
+			} catch (err) {
+				await log("error", `CREATE_ORDER : ${err}`);
+				return false;
+			}
+		},
 		async CHECKOUT({ commit, state }, data): Promise<boolean | string> {
 			event("action", "CHECKOUT", "checkout", data);
-			let orderDocRef = db.collection("orders").doc(data.orderID);
-			let orderDocSnapshot = await orderDocRef.get();
+			try {
+				let orderDocRef = db.collection("orders").doc(data.orderID);
+				let orderDocSnapshot = await orderDocRef.get();
 
-			let snapshot = await docRef.get();
-			let newBalance: number = Number(snapshot.data()!.balance) - orderDocSnapshot.data()!.totalPrice;
-			if (newBalance >= 0) {
-				// 결제 가능
-				try {
+				let snapshot = await docRef.get();
+				let newBalance: number = Number(snapshot.data()!.balance) - orderDocSnapshot.data()!.totalPrice;
+				if (newBalance >= 0) {
+					// 결제 가능
 					await docRef.update({ balance: newBalance });
 					await orderDocRef.delete();
-					await transaction("일반 결제", data.transactionData, orderDocSnapshot.data()!.totalPrice);
+					await transaction("일반 결제", orderDocSnapshot.data()!.itemData, orderDocSnapshot.data()!.totalPrice);
 					return true;
-				} catch (err) {
-					await log("error", `결제 후 잔고 업데이트 실패 : ${err}`);
-					return false;
+				} else {
+					// 결제 불가
+					await log("info", `잔액 부족 : ${Math.abs(newBalance)}원`);
+					return `잔액이 ${Math.abs(newBalance)}원 부족합니다.`;
 				}
-			} else {
-				// 결제 불가
-				await log("info", `잔액 부족 : ${Math.abs(newBalance)}원`);
-				return `잔액이 ${Math.abs(newBalance)}원 부족합니다.`;
+			} catch (err) {
+				await log("error", `결제 실패 : ${err}`);
+				return false;
 			}
 		},
 		async CHECKOUT_KAKAOPAY({ commit, state }, data) {
 			event("action", "CHECKOUT_KAKAOPAY", "checkout_kakaopay", data);
 			try {
+				let orderDocRef = db.collection("orders").doc(data.orderID);
+				let orderDocSnapshot = await orderDocRef.get();
+
 				let result = await axios.post("https://kl9h2eg0hk.execute-api.ap-northeast-2.amazonaws.com/default/relayPayment", {
-					item_name: data.item_name,
-					quantity: data.quantity,
-					total_amount: data.total_amount,
-					vat_amount: data.vat_amount,
-					tax_free_amount: data.tax_free_amount,
+					item_name: `주문번호 [${data.orderID}]`,
+					quantity: 1,
+					total_amount: orderDocSnapshot.data()!.itemData,
+					vat_amount: 0,
+					tax_free_amount: 0,
 				});
 				if (result) {
-					await transaction("카카오페이 결제", data.transactionData, data.totalPrice);
+					await transaction("카카오페이 결제", orderDocSnapshot.data()!.itemData, orderDocSnapshot.data()!.totalPrice);
 				}
 				return result.data;
 			} catch (err) {
@@ -156,20 +172,20 @@ export default new Vuex.Store({
 		},
 		async CHARGE({ commit, state }, data): Promise<string> {
 			event("action", "CHARGE", "charge", data);
-			let customerQuerySnapshot = await db
-				.collection("accounts")
-				.where("email", "==", data.email)
-				.get();
-
-			if (!customerQuerySnapshot.docs[0]) return "계정이 존재하지 않습니다.";
-
-			// 소비자  도큐먼트 가져오기
-			let customerDocRef = db.collection("accounts").doc(customerQuerySnapshot.docs[0].id);
-			let customerSnapshot = await customerDocRef.get();
-
-			let newBalance: number = Number(customerSnapshot.data()!.balance) + Number(data.amount);
-
 			try {
+				let customerQuerySnapshot = await db
+					.collection("accounts")
+					.where("email", "==", data.email)
+					.get();
+
+				if (!customerQuerySnapshot.docs[0]) return "계정이 존재하지 않습니다.";
+
+				// 소비자  도큐먼트 가져오기
+				let customerDocRef = db.collection("accounts").doc(customerQuerySnapshot.docs[0].id);
+				let customerSnapshot = await customerDocRef.get();
+
+				let newBalance: number = Number(customerSnapshot.data()!.balance) + Number(data.amount);
+
 				await customerDocRef.update({ balance: newBalance });
 				await transaction("충전", {}, data.amount);
 				return `${data.email}님의 계정에 ${data.amount}원을 충전하여 ${newBalance}원이 되었습니다.`;
