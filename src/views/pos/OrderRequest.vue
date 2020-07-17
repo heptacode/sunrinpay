@@ -35,11 +35,11 @@ import { Vue, Component, Watch } from "vue-property-decorator";
 @Component({
 	components: {
 		QRcode,
-		NumberCounter,
+		NumberCounter
 	},
 	firestore: {
-		orders: db.collection("orders"),
-	},
+		orders: db.collection("orders")
+	}
 })
 export default class OrderRequest extends Vue {
 	orders: any = [];
@@ -64,11 +64,14 @@ export default class OrderRequest extends Vue {
 		this.orders.forEach(doc => {
 			if (doc.orderID == this.getOrderID) ifOrderExists = true;
 		});
-		if (!ifOrderExists) this.$router.replace("/pos/order");
+		if (!ifOrderExists)
+			this.$router.replace({ name: "Order" }).catch(() => {});
 	}
 
 	get getSecond(): string {
-		return String(this.time % 60 == 0 ? "0" + (this.time % 60) : this.time % 60);
+		return String(
+			this.time % 60 == 0 ? "0" + (this.time % 60) : this.time % 60
+		);
 	}
 	get getMinute(): number {
 		return Math.floor(this.time / 60);
@@ -82,9 +85,9 @@ export default class OrderRequest extends Vue {
 	}
 	async resetOrder() {
 		await this.$store.dispatch("DELETE_ORDER", {
-			orderID: this.getOrderID,
+			orderID: this.getOrderID
 		});
-		this.$router.replace("/pos/order");
+		this.$router.replace({ name: "Order" }).catch(() => {});
 	}
 }
 </script>
