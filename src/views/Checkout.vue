@@ -4,15 +4,21 @@
 			<ul class="checkout__content__prices">
 				<div class="checkout__content__prices__item">
 					<p>금액</p>
-					<h2><NumberCounter text="12900" :isNumberFormat="true" defaultChar="0"></NumberCounter>원</h2>
+					<h2>
+						<NumberCounter :text="String(originalPrice)" :isNumberFormat="true" defaultChar="0"></NumberCounter>원
+					</h2>
 				</div>
 				<div class="checkout__content__prices__item">
 					<p>할인된 금액</p>
-					<h2><NumberCounter text="900" :isNumberFormat="true" defaultChar="0"></NumberCounter>원</h2>
+					<h2>
+						<NumberCounter :text="String(discountPrice)" :isNumberFormat="true" defaultChar="0"></NumberCounter>원
+					</h2>
 				</div>
 				<div class="checkout__content__prices__item total">
 					<p>결제하실 금액</p>
-					<h2><NumberCounter :text="String(totalPrice)" :isNumberFormat="true" defaultChar="0"></NumberCounter>원</h2>
+					<h2>
+						<NumberCounter :text="String(totalPrice)" :isNumberFormat="true" defaultChar="0"></NumberCounter>원
+					</h2>
 				</div>
 			</ul>
 			<ul class="checkout__content__list">
@@ -21,13 +27,19 @@
 					<p class="quantity">{{ i.quantity }}</p>
 					<p class="price">
 						{{ (Number(i.price) * ((100 - Number(i.discount || 0)) / 100)).numberFormat() }}
-						<span v-if="i.discount">(-{{ (Number(i.price) * (Number(i.discount || 0) / 100)).numberFormat() }})</span>
+						<span
+							v-if="i.discount"
+						>(-{{ (Number(i.price) * (Number(i.discount || 0) / 100)).numberFormat() }})</span>
 					</p>
 				</li>
 			</ul>
 		</div>
 		<div class="checkout__actions">
-			<PaymentButton class="checkout__actions__btn" paymentName="Kakao Pay" @click="checkoutWithKakaoPay"></PaymentButton>
+			<PaymentButton
+				class="checkout__actions__btn"
+				paymentName="Kakao Pay"
+				@click="checkoutWithKakaoPay"
+			></PaymentButton>
 			<PaymentButton class="checkout__actions__btn" @click="checkout"></PaymentButton>
 		</div>
 		<p>{{ result }}</p>
@@ -42,28 +54,42 @@ import NumberCounter from "vue-roller";
 import { Vue, Component } from "vue-property-decorator";
 
 import isMobile from "@/lib/isMobile";
+import { StockItem } from "../schema";
 
 @Component({
 	components: {
 		PaymentButton,
 		CashButton,
-		NumberCounter,
-	},
+		NumberCounter
+	}
 })
 export default class Checkout extends Vue {
 	orderID: string = "";
 
-	itemData: object = {};
-	totalPrice: string = "";
+	itemData: StockItem[] = [];
+	originalPrice: number = 0;
+	discountPrice: number = 0;
+	totalPrice: number = 0;
 
 	result: string = "";
 
 	async created() {
 		if (this.getOrderID) this.orderID = this.getOrderID;
 		let orderData = await this.$store.dispatch("GET_ORDER", {
-			orderID: this.orderID,
+			orderID: this.orderID
 		});
 		this.itemData = orderData.itemData;
+		console.log();
+
+		this.originalPrice = this.itemData.reduce(
+			(t, { price }) => t + Number(price),
+			0
+		);
+		this.discountPrice = this.itemData.reduce(
+			(t, { price, discount }) =>
+				t + Number(price) * ((discount || 0) / 100),
+			0
+		);
 		this.totalPrice = orderData.totalPrice;
 	}
 
@@ -73,16 +99,16 @@ export default class Checkout extends Vue {
 
 	async checkout() {
 		this.result = await this.$store.dispatch("CHECKOUT", {
-			orderID: this.orderID,
+			orderID: this.orderID
 		});
 		if (this.result) this.$router.replace("/");
 	}
 
 	async checkoutWithKakaoPay() {
 		let res = await this.$store.dispatch("CHECKOUT_KAKAOPAY", {
-			orderID: this.orderID,
-        });
-        console.log(res)
+			orderID: this.orderID
+		});
+		console.log(res);
 		if (isMobile()) {
 			// 모바일
 			window.open(res.next_redirect_mobile_url);
