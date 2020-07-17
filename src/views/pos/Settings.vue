@@ -16,12 +16,7 @@
 					</div>
 				</div>
 				<div class="setting__content__map">
-					<img
-						src="https://firebasestorage.googleapis.com/v0/b/sunrinpay.appspot.com/o/map.png?alt=media&token=ab11fd7f-edc9-4760-b6e7-fb74f100583c"
-						alt="map"
-						width="100%"
-						draggable="false"
-					/>
+					<img src="https://firebasestorage.googleapis.com/v0/b/sunrinpay.appspot.com/o/map.png?alt=media&token=ab11fd7f-edc9-4760-b6e7-fb74f100583c" alt="map" draggable="false" />
 				</div>
 				<h3>영업 시간</h3>
 
@@ -205,7 +200,10 @@ input {
 			}
 		}
 		.setting__content__map {
-			height: 300px;
+			img {
+				// height: 300px;
+				max-width: 80%;
+			}
 		}
 		.setting__content__time {
 			transition-duration: 0.3s;
