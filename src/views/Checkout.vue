@@ -81,7 +81,8 @@ export default class Checkout extends Vue {
 	async checkoutWithKakaoPay() {
 		let res = await this.$store.dispatch("CHECKOUT_KAKAOPAY", {
 			orderID: this.orderID,
-		});
+        });
+        console.log(res)
 		if (isMobile()) {
 			// 모바일
 			window.open(res.next_redirect_mobile_url);

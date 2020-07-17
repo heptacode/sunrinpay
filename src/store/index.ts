@@ -67,7 +67,7 @@ export default new Vuex.Store({
 					.orderBy("timestamp", "desc")
 					.get();
 				state.transactions = [];
-				querySnapshot.forEach(doc => {
+				querySnapshot.forEach((doc) => {
 					state.transactions.push(doc.data());
 				});
 				return true;
@@ -147,10 +147,18 @@ export default new Vuex.Store({
 				let orderDocRef = db.collection("orders").doc(data.orderID);
 				let orderDocSnapshot = await orderDocRef.get();
 
+				console.log({
+					item_name: `주문번호 [${data.orderID}]`,
+					quantity: 1,
+					total_amount: orderDocSnapshot.data()!.totalPrice,
+					vat_amount: 0,
+					tax_free_amount: 0,
+				});
+
 				let result = await axios.post("https://kl9h2eg0hk.execute-api.ap-northeast-2.amazonaws.com/default/relayPayment", {
 					item_name: `주문번호 [${data.orderID}]`,
 					quantity: 1,
-					total_amount: orderDocSnapshot.data()!.itemData,
+					total_amount: orderDocSnapshot.data()!.totalPrice,
 					vat_amount: 0,
 					tax_free_amount: 0,
 				});
