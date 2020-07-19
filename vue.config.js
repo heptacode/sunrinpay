@@ -21,10 +21,10 @@ module.exports = {
 			},
 		},
 	},
-	chainWebpack: (config) => {
-		config.plugin("html").tap((args) => {
+	chainWebpack: config => {
+		config.plugin("html").tap(args => {
 			args[0].title = "SunrinPay";
-			args[0].manifest = `${storage}manifest.json?alt=media&token=880fe333-0fd9-41af-a40e-30cf213b6c08`;
+			args[0].banner = `${storage}sunrinpay_banner.PNG?alt=media&token=1a20e6d5-3c53-4aa6-b8a1-0353c541ab0d`;
 			args[0].favicon_ico = `${storage}icon%2Ffavicon.ico?alt=media&token=2fa978f2-5d0e-4a0d-b3ec-101f5a64411e`;
 			args[0].apple_icon_57x57 = `${storage}icon%2Fapple-icon-57x57.png?alt=media&token=162cf499-cd14-477e-9dc0-f035a34b304c`;
 			args[0].apple_icon_60x60 = `${storage}icon%2Fapple-icon-60x60.png?alt=media&token=ca09f87b-8bf2-46a8-9b48-8987820bedba`;
