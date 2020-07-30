@@ -18,19 +18,21 @@
 					<div>
 						<p>{{ item.name }}</p>
 					</div>
-					<div class="quantity">
-						<p>X{{ item.quantity }}</p>
-						<p v-if="item.discount">할인 적용</p>
-					</div>
-					<div>
-						<p class="line" v-if="item.discount">{{ item.quantity * item.price }}</p>
-						<p>{{ item.quantity * item.price * ((100 - item.discount) / 100) }}</p>
+					<div class="price">
+						<div class="quantity">
+							<p>X{{ item.quantity }}</p>
+							<p v-if="item.discount">할인 적용</p>
+						</div>
+						<div>
+							<p class="line" v-if="item.discount">{{ item.quantity * item.price }}</p>
+							<p>{{ item.quantity * item.price * ((100 - (item.discount || 0)) / 100) }}</p>
+						</div>
 					</div>
 				</div>
 			</div>
 			<div class="receipt__total">
 				<h3>{{ data.type == "충전" ? "충전 금액" : "결제 금액" }}</h3>
-				<p>{{ data.type == "충전" ? "+" + numberFormat(data.totalPrice) : numberFormat(data.totalPrice) }}</p>
+				<p>{{ data.type == "충전" ? "+" + Number(data.totalPrice).numberFormat() : Number(data.totalPrice).numberFormat() }}</p>
 			</div>
 			<hr />
 			<div class="receipt__result">
@@ -74,9 +76,6 @@ export default class Receipt extends Vue {
 		return this.$store.state.userInformation;
 	}
 
-	numberFormat(number: number): string {
-		return new Intl.NumberFormat().format(number);
-	}
 	close() {
 		this.$emit("close", false);
 	}
@@ -136,6 +135,9 @@ export default class Receipt extends Vue {
 				display: flex;
 				flex-direction: column;
 			}
+			div:nth-child(1){
+				flex: 1;
+			}
 			div:nth-child(2),
 			div:nth-child(3) {
 				text-align: right;
@@ -156,8 +158,13 @@ export default class Receipt extends Vue {
 				}
 			}
 			.quantity p {
-				display: flex;
 				justify-content: center !important;
+			}
+			.price {
+				flex: 2;
+				display: flex;
+				flex-direction: row;
+				justify-content: space-between;
 			}
 		}
 	}
