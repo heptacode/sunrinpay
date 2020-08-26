@@ -33,7 +33,7 @@
 					<img :src="getUserInformation.photoURL" width="40px" height="40px" draggable="false" />
 					<p>
 						<span class="email">{{ getUserInformation.email }}</span>
-						<span v-if="!userInformation.emailVerified" class="badge-unverified">미인증</span>
+						<!-- <span v-if="!userInformation.emailVerified" class="badge-unverified">미인증</span> -->
 					</p>
 				</div>
 				<!-- <button>
