@@ -155,7 +155,7 @@ export default new Vuex.Store({
 					tax_free_amount: 0,
 				});
 
-				let result = await axios.post("https://kl9h2eg0hk.execute-api.ap-northeast-2.amazonaws.com/default/relayPayment", {
+				let result = await axios.post("https://aws-api.hyunwoo.dev/sunrinpayRelay", {
 					item_name: `주문번호 [${data.orderID}]`,
 					quantity: 1,
 					total_amount: orderDocSnapshot.data()!.totalPrice,
