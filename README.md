@@ -71,7 +71,7 @@ SunrinPay 지갑에 충전된 현금을 다른 사용자에게 송금할 수 있
 
 ## 빌드하기
 
-- `npm build`
+- `npm run build`
 
 ## 기여하기
 
