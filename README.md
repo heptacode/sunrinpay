@@ -32,6 +32,7 @@
 ![Firebase](https://img.shields.io/badge/Firebase-282C34?style=for-the-badge&logo=firebase)
 ![PWA](https://img.shields.io/badge/PWA-282C34.svg?&style=for-the-badge&logo=pwa)
 ![AWS Lambda](https://img.shields.io/badge/AWS_Lambda-282C34.svg?style=for-the-badge&logo=amazon-aws&logoColor=FF9900)
+![Vite](https://img.shields.io/badge/Vite-282C34.svg?style=for-the-badge&logo=vite)
 
 ## 기능 소개
 
