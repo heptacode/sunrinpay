@@ -1,6 +1,6 @@
 <div align="center">
 
-![SunrinPay](https://avatars1.githubusercontent.com/u/65395520?s=200&v=4)
+<img src=".github/docs/logo-light.png" alt="SunrinPay" width="180" />
 
 # SunrinPay 💳
 
